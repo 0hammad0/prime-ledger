@@ -374,6 +374,25 @@ def install(country=None):
 	add_uom_data()
 	update_item_variant_settings()
 	update_global_search_doctypes()
+	_rebuild_setup_trees()
+
+
+def _rebuild_setup_trees():
+	"""Heal NestedSet trees after partial / retried fixture inserts."""
+	from frappe.utils.nestedset import rebuild_tree
+
+	for doctype in (
+		"Item Group",
+		"Territory",
+		"Customer Group",
+		"Supplier Group",
+		"Sales Person",
+	):
+		try:
+			if frappe.db.count(doctype):
+				rebuild_tree(doctype)
+		except Exception:
+			frappe.log_error(f"Failed to rebuild nested set for {doctype}")
 
 
 def update_selling_defaults():
@@ -477,6 +496,12 @@ def install_company(args):
 		args.currency = "USD"
 	if not args.get("chart_of_accounts"):
 		args.chart_of_accounts = "Standard"
+
+	# Guard missing FY dates (Retry / partial payloads)
+	if not args.get("fy_start_date") or not args.get("fy_end_date"):
+		today = getdate()
+		args.fy_start_date = args.get("fy_start_date") or f"{today.year}-01-01"
+		args.fy_end_date = args.get("fy_end_date") or f"{today.year}-12-31"
 
 	records = []
 

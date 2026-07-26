@@ -81,7 +81,12 @@ sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FIL
 echo "==> Applying setup-wizard hot patches"
 sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
   SITE_NAME="$SITE_NAME" \
-  bash "$DEPLOY_DIR/patch-setup-wizard.sh" || true
+  bash "$DEPLOY_DIR/patch-setup-wizard.sh"
+
+echo "==> Ensuring onboarding defaults"
+sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
+  SITE_NAME="$SITE_NAME" \
+  bash "$DEPLOY_DIR/ensure-onboarding.sh"
 
 echo "==> Health check"
 sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \

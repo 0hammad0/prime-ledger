@@ -1,12 +1,9 @@
 frappe.provide("erpnext.setup");
 
 frappe.pages["setup-wizard"].on_page_load = function (wrapper) {
-	// Setup already finished (or company exists from a partial run) — leave the wizard.
-	if (
-		frappe.sys_defaults.company ||
-		frappe.boot?.setup_wizard_completed_apps?.includes?.("erpnext") ||
-		frappe.boot?.sysdefaults?.company
-	) {
+	// Only skip wizard when ERPNext setup is marked complete (not merely company exists).
+	const apps = frappe.boot?.setup_wizard_completed_apps || [];
+	if (apps.includes("erpnext") && (frappe.sys_defaults.company || frappe.boot?.sysdefaults?.company)) {
 		frappe.set_route("workspace");
 		return;
 	}

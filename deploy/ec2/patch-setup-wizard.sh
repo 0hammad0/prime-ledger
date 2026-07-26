@@ -53,6 +53,9 @@ copy_file "$PATCH_DIR/setup_wizard.py" "$APP_ROOT/setup/setup_wizard/setup_wizar
 copy_file "$PATCH_DIR/install_fixtures.py" "$APP_ROOT/setup/setup_wizard/operations/install_fixtures.py"
 copy_file "$PATCH_DIR/setup_wizard.js" "$APP_ROOT/public/js/setup_wizard.js"
 copy_file "$PATCH_DIR/setup_wizard.js" "$ASSETS_JS/setup_wizard.js"
+if [[ -f "$PATCH_DIR/demo.py" ]]; then
+  copy_file "$PATCH_DIR/demo.py" "$APP_ROOT/setup/demo.py"
+fi
 if [[ -f "$FRAPPE_LOCALE_PATCH" ]]; then
   copy_file "$FRAPPE_LOCALE_PATCH" "$FRAPPE_ROOT/locale.py"
 fi
@@ -68,6 +71,9 @@ for svc in backend queue-short queue-long scheduler websocket frontend; do
   copy_file "$PATCH_DIR/install_fixtures.py" "$APP_ROOT/setup/setup_wizard/operations/install_fixtures.py" "$cid" || true
   copy_file "$PATCH_DIR/setup_wizard.js" "$APP_ROOT/public/js/setup_wizard.js" "$cid" || true
   copy_file "$PATCH_DIR/setup_wizard.js" "$ASSETS_JS/setup_wizard.js" "$cid" || true
+  if [[ -f "$PATCH_DIR/demo.py" ]]; then
+    copy_file "$PATCH_DIR/demo.py" "$APP_ROOT/setup/demo.py" "$cid" || true
+  fi
   if [[ -f "$FRAPPE_LOCALE_PATCH" ]]; then
     copy_file "$FRAPPE_LOCALE_PATCH" "$FRAPPE_ROOT/locale.py" "$cid" || true
   fi

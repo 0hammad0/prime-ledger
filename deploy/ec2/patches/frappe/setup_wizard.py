@@ -184,14 +184,17 @@ def enable_setup_wizard_complete(app_name):
 
 
 def update_global_settings(args):  # nosemgrep
-	if args.language and args.language != "English":
-		set_default_language(get_language_code(args.lang))
-		frappe.db.commit()
+	language = args.get("language")
+	if language and language != "English":
+		# Use args.language (not args.lang) — lang is often missing and crashes language setup
+		set_default_language(get_language_code(language) or "en")
 	frappe.clear_cache()
 
 	update_system_settings(args)
 	create_or_update_user(args)
-	frappe.enqueue(set_timezone, timezone=args.get("timezone"))
+	tz = args.get("timezone") or args.get("time_zone")
+	if tz:
+		frappe.enqueue(set_timezone, timezone=tz)
 
 
 def run_post_setup_complete(args):  # nosemgrep
