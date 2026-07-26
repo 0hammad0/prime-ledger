@@ -102,8 +102,18 @@ if admin_pw:
 		user.insert(ignore_permissions=True)
 	user.username = "admin"
 	user.enabled = 1
+	user.user_type = "System User"
+	if frappe.db.exists("Role Profile", "Prime Ledger Admin"):
+		user.role_profile_name = "Prime Ledger Admin"
 	user.save(ignore_permissions=True)
 	update_password(user.name, admin_pw)
+	# Full ERP roles — System Manager alone causes permission errors on every click
+	try:
+		from erpnext.setup.ensure_users import ensure_admin_roles
+
+		ensure_admin_roles(email)
+	except Exception as e:
+		print(f"admin_roles_skip: {e}")
 
 frappe.db.commit()
 frappe.clear_cache()

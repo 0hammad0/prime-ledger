@@ -63,6 +63,13 @@ if [[ -f "$FRAPPE_SETUP_PATCH" ]]; then
   copy_file "$FRAPPE_SETUP_PATCH" "$FRAPPE_ROOT/desk/page/setup_wizard/setup_wizard.py"
 fi
 
+# User onboarding helpers (roles / role profiles after wizard)
+for f in ensure_users.py grant_admin_roles.py user_onboarding.py; do
+  if [[ -f "$SCRIPT_DIR/patches/$f" ]]; then
+    copy_file "$SCRIPT_DIR/patches/$f" "$APP_ROOT/setup/$f"
+  fi
+done
+
 # Patch every app container (backend + queues keep code in memory)
 for svc in backend queue-short queue-long scheduler websocket frontend; do
   cid="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" ps -q "$svc" 2>/dev/null | head -n1 || true)"
@@ -84,8 +91,8 @@ for svc in backend queue-short queue-long scheduler websocket frontend; do
     "find '$APP_ROOT/setup/setup_wizard' '$FRAPPE_ROOT/desk/page/setup_wizard' '$FRAPPE_ROOT' -maxdepth 2 -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true" || true
 done
 
-echo "==> Restarting app containers so workers reload patched code"
-"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" restart \
+echo "==> Recreating app containers so workers reload patches (frontend last → fresh backend IP)"
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate \
   backend queue-short queue-long scheduler websocket || true
 
 echo "==> Waiting for backend"
@@ -95,6 +102,10 @@ for i in $(seq 1 40); do
   fi
   sleep 2
 done
+
+# Nginx resolves backend IP at start; recreate frontend after backend is up
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate frontend || true
+sleep 5
 
 echo "==> Clearing cache + sealing completed setup"
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \

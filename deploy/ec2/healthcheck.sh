@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Enterprise health probe — exit 0 healthy, 1 unhealthy. Suitable for cron + monitoring.
+# Production health probe + auto-heal. Exit 0 healthy, 1 unhealthy.
+# Cron every 5m: recovers from stale nginx→backend IP after worker restarts.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -7,6 +8,7 @@ ENV_FILE="${ENV_FILE:-$SCRIPT_DIR/.env}"
 PROJECT_NAME="${PROJECT_NAME:-prime-ledger}"
 COMPOSE_FILE="${COMPOSE_FILE:-$HOME/gitops/prime-ledger-compose.yml}"
 LOG_FILE="${LOG_FILE:-$HOME/deploy-ec2/logs/healthcheck.log}"
+AUTO_HEAL="${AUTO_HEAL:-1}"
 
 mkdir -p "$(dirname "$LOG_FILE")"
 
@@ -20,18 +22,54 @@ URL="https://${PUBLIC_HOST}/api/method/ping"
 TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 FAIL=0
 
-code=$(curl -sS -o /tmp/pl-ping.json -w "%{http_code}" --max-time 20 "$URL" || echo 000)
-body=$(cat /tmp/pl-ping.json 2>/dev/null || true)
+if docker info >/dev/null 2>&1; then
+  DC=(docker compose)
+elif sudo docker info >/dev/null 2>&1; then
+  DC=(sudo docker compose)
+else
+  echo "$TS FAIL docker_unavailable" | tee -a "$LOG_FILE"
+  exit 1
+fi
 
-if [[ "$code" != "200" ]] || ! echo "$body" | grep -q '"message"[[:space:]]*:[[:space:]]*"pong"'; then
-  echo "$TS FAIL ping http=$code body=$body" | tee -a "$LOG_FILE"
+ping_ok() {
+  local code body tmp
+  tmp="$(mktemp "${TMPDIR:-/tmp}/pl-ping.XXXXXX")"
+  code=$(curl -skS -o "$tmp" -w "%{http_code}" --max-time 20 "$URL" || echo 000)
+  body=$(cat "$tmp" 2>/dev/null || true)
+  rm -f "$tmp"
+  [[ "$code" == "200" ]] && echo "$body" | grep -q '"message"[[:space:]]*:[[:space:]]*"pong"'
+}
+
+heal_stack() {
+  echo "$TS HEAL recreating backend then frontend (stale upstream recovery)" | tee -a "$LOG_FILE"
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate backend || true
+  sleep 8
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate \
+    frontend websocket queue-short queue-long scheduler || true
+  # Re-apply user hooks (Hub image resets hooks.py on recreate)
+  if [[ -x "$SCRIPT_DIR/patch-user-hooks.sh" ]]; then
+    bash "$SCRIPT_DIR/patch-user-hooks.sh" >>"$LOG_FILE" 2>&1 || true
+  fi
+  # Give Traefik healthcheck time to re-enable the service
+  sleep 20
+}
+
+if ! ping_ok; then
+  echo "$TS FAIL ping" | tee -a "$LOG_FILE"
   FAIL=1
+  if [[ "$AUTO_HEAL" == "1" ]]; then
+    heal_stack
+    if ping_ok; then
+      echo "$TS OK ping_after_heal" | tee -a "$LOG_FILE"
+      FAIL=0
+    else
+      echo "$TS FAIL ping_after_heal" | tee -a "$LOG_FILE"
+      FAIL=1
+    fi
+  fi
 else
   echo "$TS OK ping" >>"$LOG_FILE"
 fi
-
-DC=(docker compose)
-docker compose version >/dev/null 2>&1 || DC=(sudo docker compose)
 
 # Container presence
 if ! "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" ps --status running --format '{{.Name}}' 2>/dev/null | grep -q backend; then
@@ -47,7 +85,7 @@ fi
 
 # Memory pressure
 avail_mb=$(free -m | awk '/Mem:/ {print $7}')
-if [[ "${avail_mb:-9999}" -lt 100 ]]; then
+if [[ "${avail_mb:-9999}" -lt 80 ]]; then
   echo "$TS WARN low_mem_available_mb=$avail_mb" | tee -a "$LOG_FILE"
 fi
 

@@ -364,6 +364,13 @@ def create_or_update_user(args):  # nosemgrep
 
 		frappe.flags.mute_emails = _mute_emails
 
+	# ERPNext roles already exist at wizard time — grant full Desk access so
+	# the first admin is not stuck with System Manager-only permission errors.
+	try:
+		add_all_roles_to(email)
+	except Exception:
+		frappe.log_error("setup_wizard_add_all_roles", frappe.get_traceback())
+
 	if args.get("password"):
 		update_password(email, args.get("password"))
 

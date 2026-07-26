@@ -19,21 +19,30 @@ OUT="$BACKUP_ROOT/$STAMP"
 mkdir -p "$OUT"
 chmod 700 "$BACKUP_ROOT" "$OUT"
 
+if docker info >/dev/null 2>&1; then
+  DC=(docker compose)
+elif sudo docker info >/dev/null 2>&1; then
+  DC=(sudo docker compose)
+else
+  echo "Docker not available" >&2
+  exit 1
+fi
+
 echo "==> Bench backup (--with-files)"
-docker compose --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
   bench --site "$SITE_NAME" backup --with-files
 
 echo "==> MariaDB dump"
-docker compose --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T db \
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T db \
   mariadb-dump -uroot -p"${DB_PASSWORD}" --all-databases --single-transaction --quick --routines --triggers \
   >"$OUT/mariadb-all.sql"
 gzip -f "$OUT/mariadb-all.sql"
 
 echo "==> Copy latest site backup files out of volume"
-docker compose --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" cp \
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" cp \
   "backend:/home/frappe/frappe-bench/sites/${SITE_NAME}/private/backups/." \
   "$OUT/site-backups/" 2>/dev/null || \
-docker compose --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
   bash -lc "cd /home/frappe/frappe-bench/sites/${SITE_NAME}/private/backups && tar czf - ." >"$OUT/site-backups.tar.gz"
 
 # Retain 14 local backup sets

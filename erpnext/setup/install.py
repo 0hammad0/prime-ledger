@@ -33,6 +33,13 @@ def after_install():
 	create_default_success_action()
 	create_incoterms()
 	create_default_role_profiles()
+	# Prime Ledger desk role profiles + new-user Server Script (local + production)
+	try:
+		from erpnext.setup.ensure_users import run as ensure_users_run
+
+		ensure_users_run()
+	except Exception:
+		frappe.log_error("prime_ledger_ensure_users_after_install")
 	add_company_to_session_defaults()
 	add_standard_navbar_items()
 	add_app_name()
@@ -428,6 +435,18 @@ DEFAULT_ROLE_PROFILES = {
 		"Stock User",
 		"Purchase User",
 		"Purchase Manager",
+	],
+	# Brand profiles (also maintained by erpnext.setup.ensure_users)
+	"Prime Ledger User": [
+		"Desk User",
+		"Employee",
+		"Accounts User",
+		"Sales User",
+		"Purchase User",
+		"Stock User",
+		"Projects User",
+		"Inbox User",
+		"Prepared Report User",
 	],
 }
 

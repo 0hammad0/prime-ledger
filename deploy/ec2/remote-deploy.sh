@@ -10,6 +10,8 @@ GITOPS_FILE="${GITOPS_FILE:-$HOME/gitops/prime-ledger-compose.yml}"
 SITE_NAME="${SITE_NAME:-frontend}"
 
 echo "==> Prime Ledger remote deploy $(date -u +%Y-%m-%dT%H:%M:%SZ) (cd)"
+# Local tip: before pushing, run deploy/ec2/sync-app-patches.sh so Hub
+# hot-patches match erpnext/setup (ensure_users, user_onboarding, wizard).
 
 [[ -f "$ENV_FILE" ]] || { echo "Missing $ENV_FILE on server"; exit 1; }
 [[ -d "$FRAPPE_DOCKER_DIR" ]] || { echo "Missing $FRAPPE_DOCKER_DIR"; exit 1; }
@@ -30,6 +32,7 @@ set -a
 source "$ENV_FILE"
 set +a
 SITE_NAME="${SITE_NAME:-frontend}"
+PUBLIC_HOST="${PUBLIC_HOST:?PUBLIC_HOST required in .env}"
 
 # Non-interactive CI shells often lack docker group — use sudo docker
 DC=(sudo docker compose)
@@ -88,7 +91,46 @@ sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FIL
   SITE_NAME="$SITE_NAME" \
   bash "$DEPLOY_DIR/ensure-onboarding.sh"
 
-echo "==> Health check"
+echo "==> Enterprise site config + user role profiles"
+sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
+  SITE_NAME="$SITE_NAME" PUBLIC_HOST="$PUBLIC_HOST" \
+  bash "$DEPLOY_DIR/enterprise-config.sh" || true
+
+echo "==> Re-apply user hooks after container recreate"
+sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
+  SITE_NAME="$SITE_NAME" \
+  bash "$DEPLOY_DIR/patch-user-hooks.sh" || true
+
+echo "==> Ensure ops cron (health + nightly backup)"
+bash "$DEPLOY_DIR/install-ops-cron.sh" || true
+
+echo "==> Waiting for public HTTPS ping"
+URL="https://${PUBLIC_HOST}/api/method/ping"
+ok=0
+for i in $(seq 1 36); do
+  code=$(curl -skS -o /tmp/pl-deploy-ping.json -w "%{http_code}" --max-time 20 "$URL" || echo 000)
+  body=$(cat /tmp/pl-deploy-ping.json 2>/dev/null || true)
+  echo "  attempt $i → http=$code"
+  if [[ "$code" == "200" ]] && echo "$body" | grep -q '"message"[[:space:]]*:[[:space:]]*"pong"'; then
+    ok=1
+    break
+  fi
+  # One auto-heal mid-wait if still failing after ~1 minute
+  if [[ "$i" -eq 12 ]]; then
+    echo "==> Mid-deploy heal (frontend/backend recreate)"
+    AUTO_HEAL=1 sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
+      bash "$DEPLOY_DIR/healthcheck.sh" || true
+  fi
+  sleep 5
+done
+
+if [[ "$ok" != "1" ]]; then
+  echo "ERROR: public ping failed after deploy" >&2
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" ps || true
+  exit 1
+fi
+
+echo "==> Final health check"
 sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
   bash "$DEPLOY_DIR/healthcheck.sh"
 

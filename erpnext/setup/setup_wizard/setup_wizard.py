@@ -197,3 +197,10 @@ def setup_complete(args=None):  # nosemgrep
 	stage_fixtures(args)
 	setup_company(args)
 	setup_defaults(args)
+	# First admin must have full ERP roles (not System Manager only)
+	try:
+		from erpnext.setup.ensure_users import ensure_admin_roles
+
+		ensure_admin_roles((args or {}).get("email"))
+	except Exception:
+		frappe.log_error("setup_complete_ensure_users")
