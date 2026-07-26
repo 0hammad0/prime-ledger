@@ -3,7 +3,7 @@ name = "erpnext"
 authors = [
     { name = "Frappe Technologies Pvt Ltd", email = "developers@frappe.io"}
 ]
-description = "Open Source ERP"
+description = "Prime Ledger — open-source ERP"
 requires-python = ">=3.14"
 readme = "README.md"
 dynamic = ["version"]
@@ -88,7 +88,7 @@ docstring-code-format = true
 
 
 [project.urls]
-Homepage = "https://frappe.io/erpnext"
-Repository = "https://github.com/frappe/erpnext.git"
+Homepage = "https://github.com/0hammad0/prime-ledger"
+Repository = "https://github.com/0hammad0/prime-ledger.git"
 Documentation = "https://docs.frappe.io/erpnext"
-"Bug Reports" = "https://github.com/frappe/erpnext/issues"
+"Bug Reports" = "https://github.com/0hammad0/prime-ledger/issues"

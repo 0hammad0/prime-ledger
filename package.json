@@ -1,15 +1,15 @@
 {
-  "name": "erpnext",
-  "description": "Open Source ERP System powered by the Frappe Framework",
+  "name": "prime-ledger",
+  "description": "Prime Ledger — open-source ERP powered by the Frappe Framework",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/frappe/erpnext.git"
+    "url": "git+https://github.com/0hammad0/prime-ledger.git"
   },
-  "homepage": "https://frappe.io/erpnext",
+  "homepage": "https://github.com/0hammad0/prime-ledger",
   "author": "Frappe Technologies Pvt. Ltd.",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/frappe/erpnext/issues"
+    "url": "https://github.com/0hammad0/prime-ledger/issues"
   },
   "scripts": {
     "postinstall": "cd banking && yarn install",

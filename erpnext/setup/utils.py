@@ -207,7 +207,7 @@ def insert_record(records):
 
 
 def welcome_email():
-	site_name = get_default_company() or "ERPNext"
+	site_name = get_default_company() or "Prime Ledger"
 	title = _("Welcome to {0}").format(site_name)
 	return title
 

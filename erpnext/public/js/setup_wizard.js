@@ -7,6 +7,28 @@ frappe.pages["setup-wizard"].on_page_load = function (wrapper) {
 	}
 };
 
+// Brand the setup working state (Frappe core still says "Starting Frappe ...").
+frappe.setup.on("after_load", function () {
+	if (!frappe.setup.SetupWizard?.prototype || frappe.setup.SetupWizard.prototype.__prime_ledger_branded) {
+		return;
+	}
+	frappe.setup.SetupWizard.prototype.show_working_state = function () {
+		this.container.hide();
+		frappe.set_route(this.page_name);
+
+		this.$working_state = this.get_message(
+			__("Setting up your system"),
+			__("Starting Prime Ledger ...")
+		).appendTo(this.parent);
+
+		this.attach_abort_button();
+
+		this.current_id = this.slides.length;
+		this.current_slide = null;
+	};
+	frappe.setup.SetupWizard.prototype.__prime_ledger_branded = true;
+});
+
 frappe.setup.on("before_load", function () {
 	if (
 		frappe.boot.setup_wizard_completed_apps?.length &&
