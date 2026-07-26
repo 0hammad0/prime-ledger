@@ -9,7 +9,7 @@ PROJECT_NAME="${PROJECT_NAME:-prime-ledger}"
 GITOPS_FILE="${GITOPS_FILE:-$HOME/gitops/prime-ledger-compose.yml}"
 SITE_NAME="${SITE_NAME:-frontend}"
 
-echo "==> Prime Ledger remote deploy $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+echo "==> Prime Ledger remote deploy $(date -u +%Y-%m-%dT%H:%M:%SZ) (cd)"
 
 [[ -f "$ENV_FILE" ]] || { echo "Missing $ENV_FILE on server"; exit 1; }
 [[ -d "$FRAPPE_DOCKER_DIR" ]] || { echo "Missing $FRAPPE_DOCKER_DIR"; exit 1; }
