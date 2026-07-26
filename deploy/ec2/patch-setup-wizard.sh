@@ -100,16 +100,16 @@ import frappe
 from frappe.desk.page.setup_wizard.setup_wizard import enable_setup_wizard_complete
 
 # If a company already exists, seal the wizard so Desk opens instead of Retry loops.
-if frappe.db.exists("Company", {"name": ("!=", "")}):
-    company = frappe.get_all(
-        "Company", fields=["name", "country", "default_currency"], limit=1
-    )[0]
+companies = frappe.get_all("Company", fields=["name", "country", "default_currency"], limit=1)
+if not companies:
+    print("no_company_yet")
+else:
+    company = companies[0]
     for app in ("frappe", "erpnext"):
         try:
             enable_setup_wizard_complete(app)
         except Exception as e:
             print("seal app", app, e)
-
     ss = frappe.get_doc("System Settings")
     if company.country and not ss.country:
         ss.country = company.country
@@ -121,7 +121,6 @@ if frappe.db.exists("Company", {"name": ("!=", "")}):
         ss.language = "en"
     ss.flags.ignore_mandatory = True
     ss.save(ignore_permissions=True)
-
     frappe.db.set_default("company", company.name)
     frappe.db.set_default("country", company.country)
     frappe.db.set_default("currency", company.default_currency)
@@ -129,13 +128,8 @@ if frappe.db.exists("Company", {"name": ("!=", "")}):
     frappe.clear_cache()
     frappe.db.commit()
     print("sealed_setup", company.name, company.country, company.default_currency)
-else:
-    print("no_company_yet")
 print("setup_complete", frappe.is_setup_complete())
-print(
-    "apps",
-    frappe.get_all("Installed Application", fields=["app_name", "is_setup_complete"]),
-)
+print("apps", frappe.get_all("Installed Application", fields=["app_name", "is_setup_complete"]))
 PY
 
 echo "Setup wizard hardened + workers restarted. Hard-refresh and open /app."
