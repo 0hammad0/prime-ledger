@@ -1,0 +1,81 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-ec2-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy Prime Ledger (EC2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          set -euo pipefail
+          test -n "${EC2_SSH_KEY:-}" || { echo "Missing secret EC2_SSH_KEY"; exit 1; }
+          test -n "${EC2_HOST:-}" || { echo "Missing secret EC2_HOST"; exit 1; }
+          test -n "${EC2_USER:-}" || { echo "Missing secret EC2_USER"; exit 1; }
+          mkdir -p ~/.ssh
+          printf '%s\n' "$EC2_SSH_KEY" > ~/.ssh/ec2.pem
+          chmod 600 ~/.ssh/ec2.pem
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Sync deploy scripts (never overwrite server .env)
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          set -euo pipefail
+          rsync -az --delete \
+            --exclude '.env' \
+            --exclude '.db_password' \
+            --exclude '.admin_password' \
+            --exclude 'logs/' \
+            -e "ssh -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=accept-new" \
+            deploy/ec2/ \
+            "${EC2_USER}@${EC2_HOST}:~/deploy-ec2/"
+
+      - name: Remote deploy
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=accept-new \
+            "${EC2_USER}@${EC2_HOST}" \
+            'bash ~/deploy-ec2/remote-deploy.sh'
+
+      - name: Verify public HTTPS
+        env:
+          PUBLIC_HOST: ${{ vars.PUBLIC_HOST }}
+        run: |
+          set -euo pipefail
+          HOST="${PUBLIC_HOST:-65.1.92.180.sslip.io}"
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "https://${HOST}/api/method/ping" || echo 000)
+            echo "attempt $i → $code"
+            if [[ "$code" == "200" ]]; then
+              echo "Public health OK: https://${HOST}/"
+              exit 0
+            fi
+            sleep 6
+          done
+          echo "Public health check failed"
+          exit 1

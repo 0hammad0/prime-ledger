@@ -23,3 +23,9 @@ node_modules/
 # Banking SPA
 erpnext/public/banking
 erpnext/www/banking.html
+
+# EC2 deploy secrets (never commit)
+deploy/ec2/.env
+deploy/ec2/.db_password
+deploy/ec2/.admin_password
+frappe_docker/

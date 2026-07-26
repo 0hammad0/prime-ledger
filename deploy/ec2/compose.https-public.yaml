@@ -1,0 +1,91 @@
+# Enterprise public edge: Traefik + Let's Encrypt ACME (auto-renew) + security middlewares.
+# Used instead of compose.noproxy.yaml / stock compose.https.yaml.
+services:
+  frontend:
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.frontend.loadbalancer.server.port=8080
+      - traefik.http.services.frontend.loadbalancer.healthcheck.path=/api/method/ping
+      - traefik.http.services.frontend.loadbalancer.healthcheck.interval=30s
+      - traefik.http.services.frontend.loadbalancer.healthcheck.timeout=5s
+
+      # --- Middlewares (enterprise) ---
+      - traefik.http.middlewares.redirect-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.redirect-https.redirectscheme.permanent=true
+
+      - traefik.http.middlewares.sec-headers.headers.stsSeconds=63072000
+      - traefik.http.middlewares.sec-headers.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.sec-headers.headers.stsPreload=true
+      - traefik.http.middlewares.sec-headers.headers.forceSTSHeader=true
+      - traefik.http.middlewares.sec-headers.headers.browserXssFilter=true
+      - traefik.http.middlewares.sec-headers.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.sec-headers.headers.frameDeny=true
+      - traefik.http.middlewares.sec-headers.headers.referrerPolicy=strict-origin-when-cross-origin
+      - traefik.http.middlewares.sec-headers.headers.customResponseHeaders.X-Robots-Tag=noindex, nofollow
+      - traefik.http.middlewares.sec-headers.headers.customResponseHeaders.Permissions-Policy=geolocation=(), microphone=(), camera=()
+
+      # Rate limit: avg 80 req/s per IP, burst 160 (tune in .env later if needed)
+      - traefik.http.middlewares.rate-limit.ratelimit.average=80
+      - traefik.http.middlewares.rate-limit.ratelimit.burst=160
+      - traefik.http.middlewares.rate-limit.ratelimit.period=1s
+
+      - traefik.http.middlewares.compress.compress=true
+      - traefik.http.middlewares.enterprise-chain.chain.middlewares=sec-headers,rate-limit,compress
+
+      # HTTPS router
+      - traefik.http.routers.frontend-https.entrypoints=websecure
+      - traefik.http.routers.frontend-https.rule=${SITES_RULE:?SITES_RULE not set}
+      - traefik.http.routers.frontend-https.tls=true
+      - traefik.http.routers.frontend-https.tls.certresolver=main-resolver
+      - traefik.http.routers.frontend-https.middlewares=enterprise-chain
+      - traefik.http.routers.frontend-https.priority=10
+
+      # HTTP → HTTPS (ACME challenge is handled by Traefik before routers)
+      - traefik.http.routers.frontend-http.entrypoints=web
+      - traefik.http.routers.frontend-http.rule=${SITES_RULE:?SITES_RULE not set}
+      - traefik.http.routers.frontend-http.middlewares=redirect-https
+      - traefik.http.routers.frontend-http.priority=10
+
+  proxy:
+    image: traefik:v3.6
+    restart: unless-stopped
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --serverstransport.forwardingtimeouts.dialtimeout=30s
+      - --serverstransport.forwardingtimeouts.responseheadertimeout=120s
+      - --certificatesresolvers.main-resolver.acme.httpchallenge=true
+      - --certificatesresolvers.main-resolver.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.main-resolver.acme.email=${LETSENCRYPT_EMAIL:?No Let's Encrypt email set}
+      - --certificatesresolvers.main-resolver.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.main-resolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
+      - --accesslog=true
+      - --accesslog.format=json
+      - --log.level=WARN
+      - --ping=true
+    ports:
+      - ${HTTP_PUBLISH_PORT:-80}:80
+      - ${HTTPS_PUBLISH_PORT:-443}:443
+    volumes:
+      - cert-data:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+volumes:
+  cert-data:
