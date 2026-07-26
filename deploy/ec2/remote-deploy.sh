@@ -18,7 +18,6 @@ chmod +x "$DEPLOY_DIR"/*.sh 2>/dev/null || true
 chmod 600 "$ENV_FILE"
 mkdir -p "$(dirname "$GITOPS_FILE")" "$HOME/backups/prime-ledger" "$DEPLOY_DIR/logs"
 
-# Optional: refresh frappe_docker definitions (compose overrides)
 if [[ "${UPDATE_FRAPPE_DOCKER:-1}" == "1" ]]; then
   echo "==> Updating frappe_docker repo"
   git -C "$FRAPPE_DOCKER_DIR" fetch --depth 1 origin main || true
@@ -32,6 +31,9 @@ source "$ENV_FILE"
 set +a
 SITE_NAME="${SITE_NAME:-frontend}"
 
+# Non-interactive CI shells often lack docker group — use sudo docker
+DC=(sudo docker compose)
+
 echo "==> Rendering compose + restarting stack"
 cd "$FRAPPE_DOCKER_DIR"
 COMPOSE_ARGS=(
@@ -44,34 +46,30 @@ COMPOSE_ARGS=(
   -f "$DEPLOY_DIR/compose.resources.yaml"
 )
 
-if docker info >/dev/null 2>&1; then
-  DOCKER=(docker)
-else
-  DOCKER=(sudo docker)
-fi
+"${DC[@]}" "${COMPOSE_ARGS[@]}" config | sudo tee "$GITOPS_FILE" >/dev/null
+sudo chown ubuntu:ubuntu "$GITOPS_FILE" 2>/dev/null || true
 
-"${DOCKER[@]}" compose "${COMPOSE_ARGS[@]}" config > "$GITOPS_FILE"
-"${DOCKER[@]}" compose --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" pull || true
-"${DOCKER[@]}" compose --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" up -d --remove-orphans
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" pull || true
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" up -d --remove-orphans
 
 echo "==> Waiting for backend"
-for i in $(seq 1 30); do
-  if "${DOCKER[@]}" compose --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend true 2>/dev/null; then
+for i in $(seq 1 40); do
+  if "${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend true 2>/dev/null; then
     break
   fi
-  sleep 2
+  sleep 3
 done
 
 echo "==> Migrating site: $SITE_NAME"
-"${DOCKER[@]}" compose --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend \
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend \
   bench --site "$SITE_NAME" migrate
 
-"${DOCKER[@]}" compose --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend \
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend \
   bench --site "$SITE_NAME" clear-cache || true
 
 echo "==> Health check"
-ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
+sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
   bash "$DEPLOY_DIR/healthcheck.sh"
 
 echo "==> Deploy OK → https://${PUBLIC_HOST}/"
-"${DOCKER[@]}" compose --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" ps
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" ps
