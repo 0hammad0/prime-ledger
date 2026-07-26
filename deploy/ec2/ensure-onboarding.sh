@@ -86,6 +86,40 @@ else:
         frappe.db.set_default("fiscal_year", fy)
         print("fiscal_year", fy)
 
+    # Ensure regional currencies are enabled (Pakistan → PKR must be selectable)
+    for code, meta in {
+        "PKR": {"symbol": "Rs", "fraction": "Paisa", "fraction_units": 100, "symbol_on_right": 1},
+        "USD": {},
+        "EUR": {},
+        "GBP": {},
+        "AED": {},
+        "SAR": {},
+        "INR": {},
+    }.items():
+        if frappe.db.exists("Currency", code):
+            frappe.db.set_value("Currency", code, "enabled", 1)
+            for k, v in meta.items():
+                frappe.db.set_value("Currency", code, k, v)
+        elif code == "PKR":
+            frappe.get_doc(
+                {
+                    "doctype": "Currency",
+                    "currency_name": "PKR",
+                    "enabled": 1,
+                    "symbol": "Rs",
+                    "symbol_on_right": 1,
+                    "fraction": "Paisa",
+                    "fraction_units": 100,
+                    "number_format": "#,###.##",
+                }
+            ).insert(ignore_permissions=True)
+            print("created currency PKR")
+    if (company.country or "").lower() == "pakistan":
+        if company.default_currency != "PKR":
+            frappe.db.set_value("Company", company.name, "default_currency", "PKR")
+            company.default_currency = "PKR"
+            print("forced company currency PKR")
+
     # Price lists
     currency = company.default_currency or ss.currency or "PKR"
     for name, buying, selling in (
