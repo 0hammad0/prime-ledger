@@ -21,6 +21,7 @@ SITE_NAME="${SITE_NAME:-frontend}"
 [[ -f "$PATCH_DIR/install_fixtures.py" ]] || { echo "Missing $PATCH_DIR/install_fixtures.py"; exit 1; }
 [[ -f "$PATCH_DIR/setup_wizard.js" ]] || { echo "Missing $PATCH_DIR/setup_wizard.js"; exit 1; }
 FRAPPE_LOCALE_PATCH="${FRAPPE_LOCALE_PATCH:-$SCRIPT_DIR/patches/frappe/locale.py}"
+FRAPPE_SETUP_PATCH="${FRAPPE_SETUP_PATCH:-$SCRIPT_DIR/patches/frappe/setup_wizard.py}"
 
 if docker info >/dev/null 2>&1; then
   DOCKER=(docker)
@@ -47,13 +48,16 @@ copy_file() {
   "${DOCKER[@]}" exec -u root "$cid" chown frappe:frappe "$dest" 2>/dev/null || true
 }
 
-echo "==> Patching setup wizard Python + JS (+ frappe locale fix)"
+echo "==> Patching setup wizard Python + JS (+ frappe locale/setup fixes)"
 copy_file "$PATCH_DIR/setup_wizard.py" "$APP_ROOT/setup/setup_wizard/setup_wizard.py"
 copy_file "$PATCH_DIR/install_fixtures.py" "$APP_ROOT/setup/setup_wizard/operations/install_fixtures.py"
 copy_file "$PATCH_DIR/setup_wizard.js" "$APP_ROOT/public/js/setup_wizard.js"
 copy_file "$PATCH_DIR/setup_wizard.js" "$ASSETS_JS/setup_wizard.js"
 if [[ -f "$FRAPPE_LOCALE_PATCH" ]]; then
   copy_file "$FRAPPE_LOCALE_PATCH" "$FRAPPE_ROOT/locale.py"
+fi
+if [[ -f "$FRAPPE_SETUP_PATCH" ]]; then
+  copy_file "$FRAPPE_SETUP_PATCH" "$FRAPPE_ROOT/desk/page/setup_wizard/setup_wizard.py"
 fi
 
 # Patch every app container (backend + queues keep code in memory)
@@ -67,8 +71,11 @@ for svc in backend queue-short queue-long scheduler websocket frontend; do
   if [[ -f "$FRAPPE_LOCALE_PATCH" ]]; then
     copy_file "$FRAPPE_LOCALE_PATCH" "$FRAPPE_ROOT/locale.py" "$cid" || true
   fi
+  if [[ -f "$FRAPPE_SETUP_PATCH" ]]; then
+    copy_file "$FRAPPE_SETUP_PATCH" "$FRAPPE_ROOT/desk/page/setup_wizard/setup_wizard.py" "$cid" || true
+  fi
   "${DOCKER[@]}" exec -u root "$cid" bash -lc \
-    "find '$APP_ROOT/setup/setup_wizard' '$FRAPPE_ROOT' -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true" || true
+    "find '$APP_ROOT/setup/setup_wizard' '$FRAPPE_ROOT/desk/page/setup_wizard' '$FRAPPE_ROOT' -maxdepth 2 -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true" || true
 done
 
 echo "==> Restarting app containers so workers reload patched code"
@@ -83,8 +90,52 @@ for i in $(seq 1 40); do
   sleep 2
 done
 
-echo "==> Clearing cache"
+echo "==> Clearing cache + sealing completed setup"
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
   bench --site "$SITE_NAME" clear-cache || true
 
-echo "Setup wizard patch applied + workers restarted. Hard-refresh and retry."
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
+  bench --site "$SITE_NAME" console <<'PY'
+import frappe
+from frappe.desk.page.setup_wizard.setup_wizard import enable_setup_wizard_complete
+
+# If a company already exists, seal the wizard so Desk opens instead of Retry loops.
+if frappe.db.exists("Company", {"name": ("!=", "")}):
+    company = frappe.get_all(
+        "Company", fields=["name", "country", "default_currency"], limit=1
+    )[0]
+    for app in ("frappe", "erpnext"):
+        try:
+            enable_setup_wizard_complete(app)
+        except Exception as e:
+            print("seal app", app, e)
+
+    ss = frappe.get_doc("System Settings")
+    if company.country and not ss.country:
+        ss.country = company.country
+    if company.default_currency and not ss.currency:
+        ss.currency = company.default_currency
+    if not ss.time_zone:
+        ss.time_zone = "Asia/Karachi"
+    if not ss.language:
+        ss.language = "en"
+    ss.flags.ignore_mandatory = True
+    ss.save(ignore_permissions=True)
+
+    frappe.db.set_default("company", company.name)
+    frappe.db.set_default("country", company.country)
+    frappe.db.set_default("currency", company.default_currency)
+    frappe.db.set_default("desktop:home_page", "workspace")
+    frappe.clear_cache()
+    frappe.db.commit()
+    print("sealed_setup", company.name, company.country, company.default_currency)
+else:
+    print("no_company_yet")
+print("setup_complete", frappe.is_setup_complete())
+print(
+    "apps",
+    frappe.get_all("Installed Application", fields=["app_name", "is_setup_complete"]),
+)
+PY
+
+echo "Setup wizard hardened + workers restarted. Hard-refresh and open /app."

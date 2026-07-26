@@ -1,11 +1,48 @@
 frappe.provide("erpnext.setup");
 
 frappe.pages["setup-wizard"].on_page_load = function (wrapper) {
-	if (frappe.sys_defaults.company) {
-		frappe.set_route("desk");
+	// Setup already finished (or company exists from a partial run) — leave the wizard.
+	if (
+		frappe.sys_defaults.company ||
+		frappe.boot?.setup_wizard_completed_apps?.includes?.("erpnext") ||
+		frappe.boot?.sysdefaults?.company
+	) {
+		frappe.set_route("workspace");
 		return;
 	}
 };
+
+// Patch wizard submit so country/currency from later slides are never dropped.
+frappe.setup.on("after_load", function () {
+	if (!frappe.setup.SetupWizard?.prototype || frappe.setup.SetupWizard.prototype.__pl_args_patched) {
+		return;
+	}
+	const original = frappe.setup.SetupWizard.prototype.setup_complete_and_show_working_state;
+	if (typeof original !== "function") {
+		return;
+	}
+	frappe.setup.SetupWizard.prototype.setup_complete_and_show_working_state = function () {
+		try {
+			const values = this.values || frappe.wizard?.values || {};
+			(this.slides || []).forEach((slide) => {
+				if (!slide?.form?.fields_dict) return;
+				["country", "currency", "company_name", "company_abbr", "chart_of_accounts", "timezone"].forEach(
+					(key) => {
+						const field = slide.form.fields_dict[key];
+						const val = field?.get_value?.();
+						if (val) values[key] = val;
+					}
+				);
+			});
+			this.values = values;
+			if (frappe.wizard) frappe.wizard.values = values;
+		} catch (e) {
+			console.warn("Prime Ledger setup args merge skipped", e);
+		}
+		return original.apply(this, arguments);
+	};
+	frappe.setup.SetupWizard.prototype.__pl_args_patched = true;
+});
 
 // Brand the setup working state (Frappe core still says "Starting Frappe ...").
 frappe.setup.on("after_load", function () {

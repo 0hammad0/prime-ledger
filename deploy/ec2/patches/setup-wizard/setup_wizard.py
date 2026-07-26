@@ -22,6 +22,15 @@ def normalize_setup_args(args):  # nosemgrep
 	if not isinstance(args, dict):
 		args = frappe._dict(args)
 
+	# Infer country from chart of accounts label when the first wizard slide dropped it
+	coa = args.get("chart_of_accounts") or ""
+	if not args.get("country") and coa:
+		coa_l = coa.lower()
+		for name in ("India", "Pakistan", "United Arab Emirates", "United Kingdom", "United States", "Saudi Arabia"):
+			if name.lower() in coa_l and frappe.db.exists("Country", name):
+				args["country"] = name
+				break
+
 	# Country
 	if not args.get("country"):
 		args["country"] = (
@@ -55,12 +64,15 @@ def normalize_setup_args(args):  # nosemgrep
 	if not args.get("language"):
 		args["language"] = frappe.db.get_single_value("System Settings", "language") or "English"
 	if not args.get("timezone"):
+		args["timezone"] = args.get("time_zone")
+	if not args.get("timezone"):
 		timezones = country_info.get("timezones") or []
 		args["timezone"] = (
 			(timezones[0] if timezones else None)
 			or frappe.db.get_single_value("System Settings", "time_zone")
 			or "Asia/Kolkata"
 		)
+	args["time_zone"] = args.get("time_zone") or args.get("timezone")
 
 	# Ensure locale helpers work during fixture inserts (frappe#39289)
 	lang_code = "en"
