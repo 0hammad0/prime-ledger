@@ -28,6 +28,9 @@ erpnext/www/banking.html
 deploy/ec2/.env
 deploy/ec2/.db_password
 deploy/ec2/.admin_password
+CREDENTIALS.md
+**/CREDENTIALS.md
+*.credentials.md
 
 # Local-only / tooling noise
 frappe_docker/

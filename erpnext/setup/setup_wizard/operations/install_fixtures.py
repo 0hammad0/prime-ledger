@@ -25,15 +25,19 @@ def read_lines(filename: str) -> list[str]:
 
 def _resolve_country(country=None) -> str:
 	"""Never return None — setup wizard can omit country when Frappe slide values are dropped."""
-	resolved = (
-		country
-		or frappe.db.get_default("country")
-		or frappe.db.get_single_value("System Settings", "country")
-		or (frappe.db.exists("Country", "United States") and "United States")
-		or frappe.db.get_value("Country", {}, "name", order_by="name asc")
-		or "United States"
-	)
-	return cstr(resolved).replace("'", "")
+	candidates = [
+		country,
+		frappe.db.get_default("country"),
+		frappe.db.get_single_value("System Settings", "country"),
+	]
+	resolved = next((c for c in candidates if c), None)
+	if not resolved:
+		if frappe.db.exists("Country", "United States"):
+			resolved = "United States"
+		else:
+			resolved = frappe.db.get_value("Country", {}, "name", order_by="name asc") or "United States"
+	# Avoid cstr(None) edge cases; always return a plain str
+	return str(resolved).replace("'", "")
 
 
 def get_preset_records(country=None):
@@ -474,29 +478,45 @@ def install_company(args):
 	if not args.get("chart_of_accounts"):
 		args.chart_of_accounts = "Standard"
 
-	records = [
-		# Fiscal Year
-		{
-			"doctype": "Fiscal Year",
-			"year": get_fy_details(args.fy_start_date, args.fy_end_date),
-			"year_start_date": args.fy_start_date,
-			"year_end_date": args.fy_end_date,
-		},
-		# Company
-		{
-			"doctype": "Company",
-			"company_name": args.company_name,
-			"enable_perpetual_inventory": 1,
-			"abbr": args.company_abbr,
-			"default_currency": args.currency,
-			"country": args.country,
-			"create_chart_of_accounts_based_on": "Standard Template",
-			"chart_of_accounts": args.chart_of_accounts,
-			"domain": args.get("domain") or "",
-		},
-	]
+	records = []
 
-	make_records(records)
+	# Fiscal Year — skip if already present (retry after a failed wizard run)
+	fy_name = get_fy_details(args.fy_start_date, args.fy_end_date)
+	if not frappe.db.exists("Fiscal Year", fy_name):
+		records.append(
+			{
+				"doctype": "Fiscal Year",
+				"year": fy_name,
+				"year_start_date": args.fy_start_date,
+				"year_end_date": args.fy_end_date,
+			}
+		)
+
+	# Company — update in place if a previous attempt already created it
+	if frappe.db.exists("Company", args.company_name):
+		company = frappe.get_doc("Company", args.company_name)
+		company.country = args.country
+		if args.currency:
+			company.default_currency = args.currency
+		company.flags.ignore_mandatory = True
+		company.save(ignore_permissions=True)
+	else:
+		records.append(
+			{
+				"doctype": "Company",
+				"company_name": args.company_name,
+				"enable_perpetual_inventory": 1,
+				"abbr": args.company_abbr,
+				"default_currency": args.currency,
+				"country": args.country,
+				"create_chart_of_accounts_based_on": "Standard Template",
+				"chart_of_accounts": args.chart_of_accounts,
+				"domain": args.get("domain") or "",
+			}
+		)
+
+	if records:
+		make_records(records)
 
 
 def install_defaults(args=None):  # nosemgrep

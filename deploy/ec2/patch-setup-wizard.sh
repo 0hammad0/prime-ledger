@@ -20,6 +20,7 @@ SITE_NAME="${SITE_NAME:-frontend}"
 [[ -f "$PATCH_DIR/setup_wizard.py" ]] || { echo "Missing $PATCH_DIR/setup_wizard.py"; exit 1; }
 [[ -f "$PATCH_DIR/install_fixtures.py" ]] || { echo "Missing $PATCH_DIR/install_fixtures.py"; exit 1; }
 [[ -f "$PATCH_DIR/setup_wizard.js" ]] || { echo "Missing $PATCH_DIR/setup_wizard.js"; exit 1; }
+FRAPPE_LOCALE_PATCH="${FRAPPE_LOCALE_PATCH:-$SCRIPT_DIR/patches/frappe/locale.py}"
 
 if docker info >/dev/null 2>&1; then
   DOCKER=(docker)
@@ -36,6 +37,7 @@ BACKEND_CID="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" ps -
 [[ -n "$BACKEND_CID" ]] || { echo "backend not running"; exit 1; }
 
 APP_ROOT="/home/frappe/frappe-bench/apps/erpnext/erpnext"
+FRAPPE_ROOT="/home/frappe/frappe-bench/apps/frappe/frappe"
 ASSETS_JS="/home/frappe/frappe-bench/sites/assets/erpnext/js"
 
 copy_file() {
@@ -45,20 +47,44 @@ copy_file() {
   "${DOCKER[@]}" exec -u root "$cid" chown frappe:frappe "$dest" 2>/dev/null || true
 }
 
-echo "==> Patching setup wizard Python + JS"
+echo "==> Patching setup wizard Python + JS (+ frappe locale fix)"
 copy_file "$PATCH_DIR/setup_wizard.py" "$APP_ROOT/setup/setup_wizard/setup_wizard.py"
 copy_file "$PATCH_DIR/install_fixtures.py" "$APP_ROOT/setup/setup_wizard/operations/install_fixtures.py"
 copy_file "$PATCH_DIR/setup_wizard.js" "$APP_ROOT/public/js/setup_wizard.js"
 copy_file "$PATCH_DIR/setup_wizard.js" "$ASSETS_JS/setup_wizard.js"
-
-FRONT_CID="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" ps -q frontend 2>/dev/null | head -n1 || true)"
-if [[ -n "${FRONT_CID:-}" ]]; then
-  copy_file "$PATCH_DIR/setup_wizard.js" "$ASSETS_JS/setup_wizard.js" "$FRONT_CID" || true
-  copy_file "$PATCH_DIR/setup_wizard.js" "$APP_ROOT/public/js/setup_wizard.js" "$FRONT_CID" || true
+if [[ -f "$FRAPPE_LOCALE_PATCH" ]]; then
+  copy_file "$FRAPPE_LOCALE_PATCH" "$FRAPPE_ROOT/locale.py"
 fi
+
+# Patch every app container (backend + queues keep code in memory)
+for svc in backend queue-short queue-long scheduler websocket frontend; do
+  cid="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" ps -q "$svc" 2>/dev/null | head -n1 || true)"
+  [[ -n "${cid:-}" ]] || continue
+  copy_file "$PATCH_DIR/setup_wizard.py" "$APP_ROOT/setup/setup_wizard/setup_wizard.py" "$cid" || true
+  copy_file "$PATCH_DIR/install_fixtures.py" "$APP_ROOT/setup/setup_wizard/operations/install_fixtures.py" "$cid" || true
+  copy_file "$PATCH_DIR/setup_wizard.js" "$APP_ROOT/public/js/setup_wizard.js" "$cid" || true
+  copy_file "$PATCH_DIR/setup_wizard.js" "$ASSETS_JS/setup_wizard.js" "$cid" || true
+  if [[ -f "$FRAPPE_LOCALE_PATCH" ]]; then
+    copy_file "$FRAPPE_LOCALE_PATCH" "$FRAPPE_ROOT/locale.py" "$cid" || true
+  fi
+  "${DOCKER[@]}" exec -u root "$cid" bash -lc \
+    "find '$APP_ROOT/setup/setup_wizard' '$FRAPPE_ROOT' -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true" || true
+done
+
+echo "==> Restarting app containers so workers reload patched code"
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" restart \
+  backend queue-short queue-long scheduler websocket || true
+
+echo "==> Waiting for backend"
+for i in $(seq 1 40); do
+  if "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend true 2>/dev/null; then
+    break
+  fi
+  sleep 2
+done
 
 echo "==> Clearing cache"
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
-  bench --site "$SITE_NAME" clear-cache
+  bench --site "$SITE_NAME" clear-cache || true
 
-echo "Setup wizard patch applied. Hard-refresh (Cmd+Shift+R) and click Retry."
+echo "Setup wizard patch applied + workers restarted. Hard-refresh and retry."

@@ -62,6 +62,19 @@ def normalize_setup_args(args):  # nosemgrep
 			or "Asia/Kolkata"
 		)
 
+	# Ensure locale helpers work during fixture inserts (frappe#39289)
+	lang_code = "en"
+	language_name = args.get("language")
+	if language_name and frappe.db.exists("Language", language_name):
+		lang_code = language_name
+	elif language_name:
+		lang_code = frappe.db.get_value("Language", {"language_name": language_name}, "name") or "en"
+	frappe.local.lang = lang_code
+	try:
+		frappe.db.set_default("language", lang_code)
+	except Exception:
+		pass
+
 	# Chart of accounts — company create fails if this is blank on some paths
 	if not args.get("chart_of_accounts"):
 		args["chart_of_accounts"] = "Standard"
