@@ -1,19 +1,19 @@
 app_name = "erpnext"
 app_title = "Prime Ledger"
-app_publisher = "Frappe Technologies Pvt. Ltd."
-app_description = """Prime Ledger — powerful, open-source ERP"""
+app_publisher = "Prime Ledger"
+app_description = """Prime Ledger — business accounting and operations"""
 app_icon = "fa fa-th"
-app_color = "#e74c3c"
-app_email = "hello@frappe.io"
+app_color = "#0B2E24"
+app_email = "support@primeledger.local"
 app_license = "GNU General Public License (v3)"
 source_link = "https://github.com/0hammad0/prime-ledger"
-app_logo_url = "/assets/erpnext/images/erpnext-logo.svg"
+app_logo_url = "/assets/erpnext/images/prime-ledger-logo.svg"
 app_home = "/desk/home"
 
 add_to_apps_screen = [
 	{
 		"name": app_name,
-		"logo": "/assets/erpnext/images/erpnext-logo.svg",
+		"logo": "/assets/erpnext/images/prime-ledger-logo.svg",
 		"title": app_title,
 		"route": app_home,
 		"has_permission": "erpnext.check_app_permission",
@@ -116,8 +116,8 @@ calendars = ["Task", "Work Order", "Sales Order", "Holiday List", "ToDo"]
 website_generators = ["BOM", "Sales Partner"]
 
 website_context = {
-	"favicon": "/assets/erpnext/images/erpnext-favicon.svg",
-	"splash_image": "/assets/erpnext/images/erpnext-logo.svg",
+	"favicon": "/assets/erpnext/images/prime-ledger-favicon.svg",
+	"splash_image": "/assets/erpnext/images/prime-ledger-logo.svg",
 }
 
 # nosemgrep
@@ -529,7 +529,7 @@ scheduler_events = {
 	],
 }
 
-email_brand_image = "assets/erpnext/images/erpnext-logo.jpg"
+email_brand_image = "assets/erpnext/images/prime-ledger-logo.svg"
 
 default_mail_footer = """
 	<span>

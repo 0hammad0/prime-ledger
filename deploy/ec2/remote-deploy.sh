@@ -46,6 +46,12 @@ COMPOSE_ARGS=(
   -f "$DEPLOY_DIR/compose.resources.yaml"
 )
 
+# Optional white-label image (CUSTOM_IMAGE in .env)
+if [[ -n "${CUSTOM_IMAGE:-}" && -f "$DEPLOY_DIR/compose.brand-image.yaml" ]]; then
+  echo "==> Using CUSTOM_IMAGE=${CUSTOM_IMAGE}"
+  COMPOSE_ARGS+=(-f "$DEPLOY_DIR/compose.brand-image.yaml")
+fi
+
 "${DC[@]}" "${COMPOSE_ARGS[@]}" config | sudo tee "$GITOPS_FILE" >/dev/null
 sudo chown ubuntu:ubuntu "$GITOPS_FILE" 2>/dev/null || true
 
@@ -66,6 +72,16 @@ echo "==> Migrating site: $SITE_NAME"
 
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend \
   bench --site "$SITE_NAME" clear-cache || true
+
+echo "==> Applying Prime Ledger white-label"
+sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
+  SITE_NAME="$SITE_NAME" \
+  bash "$DEPLOY_DIR/brand.sh"
+
+echo "==> Applying setup-wizard hot patches"
+sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
+  SITE_NAME="$SITE_NAME" \
+  bash "$DEPLOY_DIR/patch-setup-wizard.sh" || true
 
 echo "==> Health check"
 sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \

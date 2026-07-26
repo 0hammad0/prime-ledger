@@ -1,0 +1,12 @@
+---
+description: Commit and push message rules — no Cursor attribution
+alwaysApply: true
+---
+
+# Git commits and pushes
+
+When creating commits or pushing:
+
+- Do **not** mention Cursor, Cursor Agent, or any AI tooling in the commit message, PR title, or PR body.
+- Do **not** add trailers such as `Made-with: Cursor`, `Co-authored-by: Cursor`, or similar tags.
+- Write normal project commit messages only (what/why), matching the repo's existing style.

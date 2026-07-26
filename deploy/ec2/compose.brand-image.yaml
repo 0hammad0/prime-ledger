@@ -1,0 +1,20 @@
+# Optional override: use a white-labeled image instead of stock Hub ERPNext.
+# Requires CUSTOM_IMAGE in .env (e.g. prime-ledger/erpnext:v16.29.0)
+x-custom-image: &custom-image
+  image: ${CUSTOM_IMAGE:-frappe/erpnext:v16.29.0}
+
+services:
+  configurator:
+    <<: *custom-image
+  backend:
+    <<: *custom-image
+  frontend:
+    <<: *custom-image
+  websocket:
+    <<: *custom-image
+  queue-short:
+    <<: *custom-image
+  queue-long:
+    <<: *custom-image
+  scheduler:
+    <<: *custom-image

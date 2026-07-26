@@ -28,4 +28,8 @@ erpnext/www/banking.html
 deploy/ec2/.env
 deploy/ec2/.db_password
 deploy/ec2/.admin_password
+
+# Local-only / tooling noise
 frappe_docker/
+package-lock.json
+*.pem

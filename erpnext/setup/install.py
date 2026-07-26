@@ -14,7 +14,7 @@ from erpnext.setup.utils import identity as _
 from .default_success_action import get_default_success_action
 
 default_mail_footer = """<div style="padding: 7px; text-align: right; color: #888"><small>Sent via
-	<a style="color: #888" href="http://frappe.io/erpnext">ERPNext</a></div>"""
+	<a style="color: #888" href="https://github.com/0hammad0/prime-ledger">Prime Ledger</a></div>"""
 
 
 def after_install():
@@ -225,43 +225,35 @@ def add_company_to_session_defaults():
 
 
 def add_standard_navbar_items():
+	"""Keep help menu free of ERPNext / Frappe marketing links."""
 	navbar_settings = frappe.get_single("Navbar Settings")
-	erpnext_navbar_items = [
-		{
-			"item_label": _("Documentation"),
-			"item_type": "Route",
-			"route": "https://docs.erpnext.com/",
-			"is_standard": 1,
-		},
-		{
-			"item_label": _("User Forum"),
-			"item_type": "Route",
-			"route": "https://discuss.frappe.io",
-			"is_standard": 1,
-		},
-		{
-			"item_label": _("Frappe School"),
-			"item_type": "Route",
-			"route": "https://frappe.io/school?utm_source=in_app",
-			"is_standard": 1,
-		},
-		{
-			"item_label": _("Report an Issue"),
-			"item_type": "Route",
-			"route": "https://github.com/frappe/erpnext/issues",
-			"is_standard": 1,
-		},
-	]
+	blocked_labels = {
+		"Documentation",
+		"User Forum",
+		"Frappe School",
+		"Report an Issue",
+		"About",
+	}
+	blocked_hosts = (
+		"docs.erpnext.com",
+		"erpnext.com",
+		"discuss.frappe.io",
+		"frappe.io",
+		"github.com/frappe/erpnext",
+	)
 
-	current_navbar_items = navbar_settings.help_dropdown
+	kept = []
+	for item in navbar_settings.help_dropdown or []:
+		label = (item.item_label or "").strip()
+		item_route = (item.route or "").strip()
+		if label in blocked_labels:
+			continue
+		if any(host in item_route for host in blocked_hosts):
+			continue
+		kept.append(item)
+
 	navbar_settings.set("help_dropdown", [])
-
-	for item in erpnext_navbar_items:
-		current_labels = [item.get("item_label") for item in current_navbar_items]
-		if item.get("item_label") not in current_labels:
-			navbar_settings.append("help_dropdown", item)
-
-	for item in current_navbar_items:
+	for item in kept:
 		navbar_settings.append(
 			"help_dropdown",
 			{
@@ -280,6 +272,26 @@ def add_standard_navbar_items():
 def add_app_name():
 	frappe.db.set_single_value("System Settings", "app_name", "Prime Ledger")
 	frappe.db.set_single_value("Website Settings", "app_name", "Prime Ledger")
+	_set_website_brand_assets()
+
+
+def _set_website_brand_assets():
+	logo = "/assets/erpnext/images/prime-ledger-logo.svg"
+	favicon = "/assets/erpnext/images/prime-ledger-favicon.svg"
+	for field, value in (
+		("splash_image", logo),
+		("banner_image", logo),
+		("favicon", favicon),
+		("footer_powered", "Prime Ledger"),
+		("copyright", "Prime Ledger"),
+	):
+		try:
+			frappe.db.set_single_value("Website Settings", field, value)
+		except Exception:
+			pass
+
+	if frappe.db.exists("Desktop Icon", "Prime Ledger"):
+		frappe.db.set_value("Desktop Icon", "Prime Ledger", "logo_url", logo)
 
 
 def update_roles():
