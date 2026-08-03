@@ -1,7 +1,7 @@
 frappe.provide("erpnext.setup");
 
 frappe.pages["setup-wizard"].on_page_load = function (wrapper) {
-	// Only skip wizard when ERPNext setup is marked complete (not merely company exists).
+	// Only skip wizard when setup is marked complete (not merely company exists).
 	const apps = frappe.boot?.setup_wizard_completed_apps || [];
 	if (apps.includes("erpnext") && (frappe.sys_defaults.company || frappe.boot?.sysdefaults?.company)) {
 		frappe.set_route("workspace");

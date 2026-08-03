@@ -22,4 +22,21 @@ def execute():
 	except Exception:
 		pass
 
+	try:
+		for name, label in frappe.get_all("Workspace", fields=["name", "label"], as_list=True):
+			if label and "ERPNext" in label:
+				frappe.db.set_value(
+					"Workspace",
+					name,
+					"label",
+					label.replace("ERPNext", "Prime Ledger"),
+					update_modified=False,
+				)
+	except Exception:
+		pass
+
+	if frappe.db.exists("Desktop Icon", "ERPNext"):
+		frappe.db.set_value("Desktop Icon", "ERPNext", "label", "Prime Ledger")
+		frappe.db.set_value("Desktop Icon", "ERPNext", "logo_url", "/assets/erpnext/images/prime-ledger-logo.svg")
+
 	frappe.db.commit()

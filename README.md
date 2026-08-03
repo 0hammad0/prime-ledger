@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="./erpnext/public/images/v16/erpnext.svg" alt="Prime Ledger Logo" height="80px" width="80px"/>
+	<img src="./erpnext/public/images/prime-ledger-logo.svg" alt="Prime Ledger Logo" height="80px" width="80px"/>
 	<h2>Prime Ledger</h2>
 	<p>Powerful, Intuitive and Open-Source ERP</p>
 </div>
@@ -10,7 +10,7 @@
 
 ## Prime Ledger
 
-100% Open-Source ERP System to help you run your business. Built on [ERPNext](https://github.com/frappe/erpnext) / [Frappe Framework](https://github.com/frappe/frappe).
+100% Open-Source ERP system to help you run your business.
 
 ### Motivation
 
@@ -66,4 +66,4 @@ yarn dev      # Vite hot reload for /banking
 
 ## License
 
-GNU General Public License (v3). See [license.txt](license.txt) and [TRADEMARK_POLICY.md](TRADEMARK_POLICY.md).
+GNU General Public License (v3). See [license.txt](license.txt).

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Apply enterprise Frappe/ERPNext site hardening (run after site exists).
+# Apply enterprise Prime Ledger site hardening (run after site exists).
 # Uses bench execute (not console) so CI/SSH heredocs are not consumed.
 set -euo pipefail
 

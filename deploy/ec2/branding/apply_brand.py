@@ -85,6 +85,30 @@ if frappe.db.exists("Desktop Icon", "ERPNext"):
 	frappe.db.set_value("Desktop Icon", "ERPNext", "label", "Prime Ledger")
 	frappe.db.set_value("Desktop Icon", "ERPNext", "logo_url", logo)
 
+# Scrub any remaining ERPNext labels from desk surfaces
+try:
+	for name, label in frappe.get_all(
+		"Workspace", fields=["name", "label"], as_list=True
+	):
+		if label and "ERPNext" in label:
+			frappe.db.set_value(
+				"Workspace",
+				name,
+				"label",
+				label.replace("ERPNext", "Prime Ledger"),
+				update_modified=False,
+			)
+except Exception as e:
+	print(f"skip workspace labels: {e}")
+
+try:
+	if frappe.db.exists("Module Def", "ERPNext Integrations"):
+		frappe.rename_doc(
+			"Module Def", "ERPNext Integrations", "Integrations", force=True, show_alert=False
+		)
+except Exception as e:
+	print(f"skip module rename: {e}")
+
 admin_pw = os.environ.get("ADMIN_PASSWORD", "")
 if admin_pw:
 	update_password("Administrator", admin_pw)

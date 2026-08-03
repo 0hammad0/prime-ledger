@@ -1,4 +1,4 @@
-# Overlay Prime Ledger branding onto a stock ERPNext image.
+# Overlay Prime Ledger branding onto a stock Hub image.
 # Full app-source builds are heavier; this image swaps logos/CSS for white-label.
 #
 # Build:
