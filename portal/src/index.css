@@ -1,12 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --pl-ink: #0b2e24;
-  --pl-ink-soft: #164536;
-  --pl-brass: #c4a35a;
-  --pl-paper: #f7f4ee;
-  --pl-mist: #e7efe9;
-  --pl-line: rgba(11, 46, 36, 0.12);
+  --pl-ink: #102a43;
+  --pl-ink-soft: #243b53;
+  --pl-accent: #0f766e;
+  --pl-brass: #0f766e;
+  --pl-paper: #f0f4f8;
+  --pl-mist: #e0e7ef;
+  --pl-line: rgba(16, 42, 67, 0.12);
 }
 
 * {
@@ -23,7 +24,9 @@ body,
 body {
   font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   color: var(--pl-ink);
-  background: var(--pl-paper);
+  background:
+    radial-gradient(900px 420px at 0% 0%, rgba(15, 118, 110, 0.08), transparent 50%),
+    var(--pl-paper);
 }
 
 a {

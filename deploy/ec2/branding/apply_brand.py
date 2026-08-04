@@ -8,6 +8,8 @@ from frappe.utils.password import update_password
 
 logo = "/assets/erpnext/images/prime-ledger-logo.svg"
 favicon = "/assets/erpnext/images/prime-ledger-favicon.svg"
+# Also keep legacy filename path used by login templates
+legacy_logo = "/assets/erpnext/images/erpnext-logo.svg"
 css_link = '<link rel="stylesheet" href="/assets/erpnext/css/prime_ledger_brand.css">'
 
 frappe.db.set_single_value("System Settings", "app_name", "Prime Ledger")
@@ -19,6 +21,7 @@ for field, value in (
 	("favicon", favicon),
 	("footer_powered", "Prime Ledger"),
 	("copyright", "Prime Ledger"),
+	("title_prefix", "Prime Ledger"),
 ):
 	try:
 		frappe.db.set_single_value("Website Settings", field, value)
@@ -27,8 +30,12 @@ for field, value in (
 
 try:
 	head = frappe.db.get_single_value("Website Settings", "head_html") or ""
+	# Drop generator / third-party product mentions from custom head if present
+	for junk in ("ERPNext", "erpnext.com", "Built on Frappe"):
+		head = head.replace(junk, "Prime Ledger" if junk != "erpnext.com" else "")
 	if "prime_ledger_brand.css" not in head:
-		frappe.db.set_single_value("Website Settings", "head_html", (css_link + "\n" + head).strip())
+		head = (css_link + "\n" + head).strip()
+	frappe.db.set_single_value("Website Settings", "head_html", head)
 except Exception as e:
 	print(f"skip head_html: {e}")
 
@@ -54,7 +61,6 @@ try:
 		item_route = (getattr(item, "route", None) or "").strip()
 		if label in blocked_labels:
 			continue
-		# Avoid genexp inside exec() — can raise NameError for locals
 		blocked = False
 		for host in blocked_hosts:
 			if host in item_route:
@@ -62,9 +68,13 @@ try:
 				break
 		if blocked:
 			continue
+		# Relabel any ERPNext wording in remaining items
+		item_label = item.item_label or ""
+		if "ERPNext" in item_label:
+			item_label = item_label.replace("ERPNext", "Prime Ledger")
 		kept.append(
 			{
-				"item_label": item.item_label,
+				"item_label": item_label,
 				"item_type": item.item_type,
 				"route": item.route,
 				"action": item.action,
@@ -79,17 +89,29 @@ try:
 except Exception as e:
 	print(f"skip navbar: {e}")
 
-if frappe.db.exists("Desktop Icon", "Prime Ledger"):
-	frappe.db.set_value("Desktop Icon", "Prime Ledger", "logo_url", logo)
-if frappe.db.exists("Desktop Icon", "ERPNext"):
-	frappe.db.set_value("Desktop Icon", "ERPNext", "label", "Prime Ledger")
-	frappe.db.set_value("Desktop Icon", "ERPNext", "logo_url", logo)
-
-# Scrub any remaining ERPNext labels from desk surfaces
+# Desktop icons — rename any ERPNext* labels
 try:
-	for name, label in frappe.get_all(
-		"Workspace", fields=["name", "label"], as_list=True
-	):
+	for row in frappe.get_all("Desktop Icon", fields=["name", "label", "logo_url"]):
+		label = row.label or ""
+		new_label = label
+		if "ERPNext" in label:
+			new_label = label.replace("ERPNext", "Prime Ledger")
+		elif label.strip() == "ERPNext":
+			new_label = "Prime Ledger"
+		updates = {}
+		if new_label != label:
+			updates["label"] = new_label
+		if not row.logo_url or "erpnext-logo" in (row.logo_url or "") or "frappe" in (row.logo_url or ""):
+			updates["logo_url"] = logo
+		if updates:
+			frappe.db.set_value("Desktop Icon", row.name, updates, update_modified=False)
+			print(f"desktop_icon:{row.name}->{updates}")
+except Exception as e:
+	print(f"skip desktop icons: {e}")
+
+# Workspaces
+try:
+	for name, label in frappe.get_all("Workspace", fields=["name", "label"], as_list=True):
 		if label and "ERPNext" in label:
 			frappe.db.set_value(
 				"Workspace",
@@ -98,16 +120,31 @@ try:
 				label.replace("ERPNext", "Prime Ledger"),
 				update_modified=False,
 			)
+			print(f"workspace:{name}")
 except Exception as e:
 	print(f"skip workspace labels: {e}")
 
+# Module Def display — Hub may block rename; scrub label field if present
 try:
 	if frappe.db.exists("Module Def", "ERPNext Integrations"):
-		frappe.rename_doc(
-			"Module Def", "ERPNext Integrations", "Integrations", force=True, show_alert=False
-		)
+		meta = frappe.get_meta("Module Def")
+		if meta.has_field("module_name"):
+			frappe.db.set_value("Module Def", "ERPNext Integrations", "module_name", "Integrations")
+		try:
+			frappe.rename_doc(
+				"Module Def", "ERPNext Integrations", "Integrations", force=True, show_alert=False
+			)
+			print("module_renamed")
+		except Exception as e:
+			print(f"module_rename_skip: {e}")
 except Exception as e:
-	print(f"skip module rename: {e}")
+	print(f"skip module: {e}")
+
+# Navbar app switcher / splash
+try:
+	frappe.db.set_single_value("System Settings", "disable_standard_email_footer", 1)
+except Exception:
+	pass
 
 admin_pw = os.environ.get("ADMIN_PASSWORD", "")
 if admin_pw:
@@ -131,7 +168,6 @@ if admin_pw:
 		user.role_profile_name = "Prime Ledger Admin"
 	user.save(ignore_permissions=True)
 	update_password(user.name, admin_pw)
-	# Full ERP roles — System Manager alone causes permission errors on every click
 	try:
 		from erpnext.setup.ensure_users import ensure_admin_roles
 

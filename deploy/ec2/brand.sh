@@ -66,27 +66,12 @@ for svc in frontend websocket; do
   brand_container "${cid:-}"
 done
 
-# Append theme into built Desk CSS bundles (Hub images ignore our hooks app_include_css)
+# Refresh theme into built CSS bundles
 append_theme() {
   local cid="$1"
   [[ -n "$cid" ]] || return 0
-  "${DOCKER[@]}" exec -u root "$cid" bash -lc '
-    CSS_SRC="/home/frappe/frappe-bench/apps/erpnext/erpnext/public/css/prime_ledger_brand.css"
-    [ -f "$CSS_SRC" ] || CSS_SRC="/home/frappe/frappe-bench/sites/assets/erpnext/css/prime_ledger_brand.css"
-    [ -f "$CSS_SRC" ] || exit 0
-    shopt -s nullglob
-    for f in \
-      /home/frappe/frappe-bench/sites/assets/erpnext/dist/css/*.css \
-      /home/frappe/frappe-bench/sites/assets/frappe/dist/css/desk*.css \
-      /home/frappe/frappe-bench/sites/assets/css/erpnext.bundle.*.css
-    do
-      grep -q "Prime Ledger desk / login skin" "$f" 2>/dev/null && continue
-      printf "\n" >> "$f"
-      cat "$CSS_SRC" >> "$f"
-    done
-    mkdir -p /home/frappe/frappe-bench/sites/assets/css
-    cp -f "$CSS_SRC" /home/frappe/frappe-bench/sites/assets/css/prime_ledger_brand.css 2>/dev/null || true
-  ' || true
+  "${DOCKER[@]}" cp "$BRAND_DIR/inject_theme.py" "${cid}:/tmp/inject_theme.py"
+  "${DOCKER[@]}" exec -u root "$cid" python3 /tmp/inject_theme.py || true
 }
 append_theme "$BACKEND_CID"
 for svc in frontend websocket; do
@@ -112,5 +97,7 @@ PY
 
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
   bash -lc 'sed -i "s/Starting Frappe \\.\\.\\./Starting Prime Ledger .../g" /home/frappe/frappe-bench/apps/frappe/frappe/desk/page/setup_wizard/setup_wizard.js 2>/dev/null || true'
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
+  bash -lc 'sed -i "s/ERPNext/Prime Ledger/g" /home/frappe/frappe-bench/apps/frappe/frappe/templates/includes/footer/footer.html 2>/dev/null || true'
 
 echo "Branded as Prime Ledger (logos, theme CSS, navbar, site settings)."

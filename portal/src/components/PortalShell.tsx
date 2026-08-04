@@ -65,7 +65,7 @@ export function PortalShell({ mode }: { mode: "tenant" | "admin" }) {
     <div className="flex min-h-full">
       <aside className="flex w-64 shrink-0 flex-col border-r border-[var(--pl-line)] bg-white">
         <div className="border-b border-[var(--pl-line)] px-4 py-5">
-          <div className="text-xs tracking-[0.14em] text-[var(--pl-brass)] uppercase">Prime Ledger</div>
+          <div className="text-xs tracking-[0.14em] text-[var(--pl-accent)] uppercase">Prime Ledger</div>
           <div className="mt-1 text-lg font-semibold">{boot.app_name}</div>
           <div className="mt-1 text-xs text-[var(--pl-ink-soft)]">
             {mode === "admin" ? "Super Admin" : "Tenant"}

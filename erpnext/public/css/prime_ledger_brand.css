@@ -1,35 +1,43 @@
-/* Prime Ledger desk / login skin — injected on deploy */
+/* Prime Ledger desk / login skin — navy + teal */
 :root,
 [data-theme="light"] {
-	--pl-ink: #0b2e24;
-	--pl-ink-soft: #164536;
-	--pl-brass: #c4a35a;
-	--pl-paper: #f3ede2;
-	--pl-mist: #e7efe9;
-	--primary: #0b2e24;
-	--primary-color: #0b2e24;
-	--btn-primary: #0b2e24;
-	--bg-color: #f7f4ee;
-	--subtle-fg: #5c6b63;
-	--navbar-bg: #0b2e24;
-	--text-muted: #6a776f;
+	--pl-ink: #102a43;
+	--pl-ink-soft: #243b53;
+	--pl-accent: #0f766e;
+	--pl-accent-soft: #14b8a6;
+	--pl-paper: #f0f4f8;
+	--pl-mist: #e0e7ef;
+	--pl-brass: #0f766e;
+	--primary: #102a43;
+	--primary-color: #102a43;
+	--btn-primary: #0f766e;
+	--bg-color: #f0f4f8;
+	--subtle-fg: #486581;
+	--navbar-bg: #102a43;
+	--text-muted: #627d98;
+	--control-bg: #ffffff;
+	--fg-color: #102a43;
 }
 
 [data-theme="dark"] {
-	--pl-ink: #0b2e24;
-	--pl-brass: #d4b56a;
-	--primary: #c4a35a;
-	--primary-color: #c4a35a;
-	--btn-primary: #c4a35a;
+	--pl-ink: #d9e2ec;
+	--pl-ink-soft: #bcccdc;
+	--pl-accent: #2dd4bf;
+	--pl-brass: #2dd4bf;
+	--primary: #2dd4bf;
+	--primary-color: #2dd4bf;
+	--btn-primary: #0f766e;
+	--navbar-bg: #102a43;
+	--bg-color: #102a43;
 }
 
 .page-card,
 .for-login .page-card,
 .for-forgot .page-card,
 .for-signup .page-card {
-	border-radius: 16px;
-	border: 1px solid rgba(11, 46, 36, 0.08);
-	box-shadow: 0 18px 50px rgba(11, 46, 36, 0.08);
+	border-radius: 14px;
+	border: 1px solid rgba(16, 42, 67, 0.1);
+	background: #ffffff;
 }
 
 body.frappe-login,
@@ -37,9 +45,9 @@ body.frappe-login,
 .for-forgot,
 .for-signup {
 	background:
-		radial-gradient(1200px 600px at 10% -10%, rgba(196, 163, 90, 0.18), transparent 55%),
-		radial-gradient(900px 500px at 100% 0%, rgba(11, 46, 36, 0.12), transparent 50%),
-		linear-gradient(180deg, #f7f4ee 0%, #e7efe9 100%) !important;
+		radial-gradient(1000px 520px at 8% -8%, rgba(15, 118, 110, 0.16), transparent 55%),
+		radial-gradient(800px 480px at 100% 0%, rgba(16, 42, 67, 0.14), transparent 50%),
+		linear-gradient(180deg, #f0f4f8 0%, #e0e7ef 100%) !important;
 }
 
 .for-login .page-card-head img,
@@ -49,32 +57,39 @@ body.frappe-login,
 }
 
 .navbar {
-	border-bottom: 1px solid rgba(196, 163, 90, 0.25);
+	background: var(--navbar-bg) !important;
+	border-bottom: 1px solid rgba(15, 118, 110, 0.35);
 }
 
 .btn-primary,
 .btn.btn-primary {
-	background-color: var(--pl-ink) !important;
-	border-color: var(--pl-ink) !important;
-	color: #f3ede2 !important;
+	background-color: var(--pl-accent) !important;
+	border-color: var(--pl-accent) !important;
+	color: #f0f4f8 !important;
 }
 
 .btn-primary:hover,
 .btn.btn-primary:hover {
-	background-color: var(--pl-ink-soft) !important;
-	border-color: var(--pl-ink-soft) !important;
+	background-color: #0d9488 !important;
+	border-color: #0d9488 !important;
 }
 
 .indicator-pill.blue,
 .indicator.blue {
-	--indicator-dot: var(--pl-brass);
+	--indicator-dot: var(--pl-accent);
 }
 
 .workspace-sidebar .standard-sidebar-item.selected,
 .desk-sidebar .standard-sidebar-item.selected {
-	background: rgba(11, 46, 36, 0.08);
+	background: rgba(15, 118, 110, 0.12);
+	color: var(--pl-ink);
 }
 
 a {
-	--link-color: var(--pl-ink-soft);
+	--link-color: var(--pl-accent);
+}
+
+/* Hide framework generator noise where possible */
+meta[name="generator"] {
+	display: none;
 }
