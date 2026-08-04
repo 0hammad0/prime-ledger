@@ -69,12 +69,21 @@ for i in $(seq 1 40); do
   sleep 3
 done
 
+echo "==> Hot-patching Prime Ledger portal (SPA + DocTypes)"
+sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
+  SITE_NAME="$SITE_NAME" \
+  bash "$DEPLOY_DIR/patch-portal.sh" || true
+
 echo "==> Migrating site: $SITE_NAME"
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend \
   bench --site "$SITE_NAME" migrate
 
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend \
   bench --site "$SITE_NAME" clear-cache || true
+
+echo "==> Seeding portal modules / roles"
+"${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend \
+  bench --site "$SITE_NAME" execute erpnext.portal_control.seed.run || true
 
 echo "==> Applying Prime Ledger white-label"
 sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \

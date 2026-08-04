@@ -40,6 +40,12 @@ def after_install():
 		ensure_users_run()
 	except Exception:
 		frappe.log_error("prime_ledger_ensure_users_after_install")
+	try:
+		from erpnext.portal_control.seed import run as seed_portal_run
+
+		seed_portal_run()
+	except Exception:
+		frappe.log_error("prime_ledger_portal_seed_after_install")
 	add_company_to_session_defaults()
 	add_standard_navbar_items()
 	add_app_name()

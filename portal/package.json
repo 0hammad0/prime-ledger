@@ -1,0 +1,28 @@
+{
+  "name": "prime-ledger-portal",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --base=/assets/erpnext/portal/ && yarn copy-html-entry",
+    "copy-html-entry": "cp ../erpnext/public/portal/index.html ../erpnext/www/portal.html",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "@vitejs/plugin-react": "^6.0.3",
+    "frappe-react-sdk": "^1.17.0",
+    "lucide-react": "^1.14.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router": "^8.1.0",
+    "tailwindcss": "^4.3.0",
+    "vite": "^8.0.16"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "~5.9.3"
+  }
+}

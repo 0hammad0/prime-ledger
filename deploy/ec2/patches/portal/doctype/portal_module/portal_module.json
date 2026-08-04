@@ -1,0 +1,157 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:module_key",
+ "creation": "2026-08-04 00:00:00.000000",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "module_key",
+  "label",
+  "enabled",
+  "column_break_1",
+  "category",
+  "sort_order",
+  "icon",
+  "section_routes",
+  "portal_route",
+  "desk_route",
+  "column_break_2",
+  "is_super_admin_only",
+  "section_access",
+  "roles",
+  "section_desc",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "module_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Module Key",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Label",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Tenant",
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Category",
+   "options": "Tenant\nSuper Admin\nShared",
+   "reqd": 1
+  },
+  {
+   "default": "100",
+   "fieldname": "sort_order",
+   "fieldtype": "Int",
+   "label": "Sort Order"
+  },
+  {
+   "fieldname": "icon",
+   "fieldtype": "Data",
+   "label": "Icon"
+  },
+  {
+   "fieldname": "section_routes",
+   "fieldtype": "Section Break",
+   "label": "Routes"
+  },
+  {
+   "fieldname": "portal_route",
+   "fieldtype": "Data",
+   "label": "Portal Route",
+   "description": "Path inside /portal (e.g. /products)"
+  },
+  {
+   "fieldname": "desk_route",
+   "fieldtype": "Data",
+   "label": "Desk Route",
+   "description": "Legacy desk path if needed (e.g. /app/item)"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_super_admin_only",
+   "fieldtype": "Check",
+   "label": "Super Admin Only"
+  },
+  {
+   "fieldname": "section_access",
+   "fieldtype": "Section Break",
+   "label": "Role Access"
+  },
+  {
+   "fieldname": "roles",
+   "fieldtype": "Table",
+   "label": "Allowed Roles",
+   "options": "Portal Module Role",
+   "description": "Empty = all System Users (subject to Super Admin Only)"
+  },
+  {
+   "fieldname": "section_desc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
+ ],
+ "links": [],
+ "modified": "2026-08-04 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Setup",
+ "name": "Portal Module",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Prime Ledger Super Admin",
+   "share": 1
+  }
+ ],
+ "sort_field": "sort_order",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

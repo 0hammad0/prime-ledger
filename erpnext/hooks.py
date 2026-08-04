@@ -219,6 +219,8 @@ website_route_rules = [
 	{"from_route": "/project", "to_route": "Project"},
 	{"from_route": "/tasks", "to_route": "Task"},
 	{"from_route": "/banking/<path:app_path>", "to_route": "banking"},
+	{"from_route": "/portal", "to_route": "portal"},
+	{"from_route": "/portal/<path:app_path>", "to_route": "portal"},
 ]
 
 standard_navbar_items = [

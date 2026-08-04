@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root {
+  --pl-ink: #0b2e24;
+  --pl-ink-soft: #164536;
+  --pl-brass: #c4a35a;
+  --pl-paper: #f7f4ee;
+  --pl-mist: #e7efe9;
+  --pl-line: rgba(11, 46, 36, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--pl-ink);
+  background: var(--pl-paper);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}

@@ -24,6 +24,10 @@ node_modules/
 erpnext/public/banking
 erpnext/www/banking.html
 
+# Portal SPA (built assets — CI uses deploy/ec2/patches/portal)
+erpnext/public/portal
+erpnext/www/portal.html
+
 # EC2 deploy secrets (never commit)
 deploy/ec2/.env
 deploy/ec2/.db_password

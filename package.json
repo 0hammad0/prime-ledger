@@ -12,9 +12,11 @@
     "url": "https://github.com/0hammad0/prime-ledger/issues"
   },
   "scripts": {
-    "postinstall": "cd banking && yarn install",
+    "postinstall": "cd banking && yarn install && cd ../portal && yarn install",
     "dev": "cd banking && yarn dev",
-    "build": "cd banking && yarn build"
+    "dev:portal": "cd portal && yarn dev",
+    "build": "cd banking && yarn build && cd ../portal && yarn build",
+    "build:portal": "cd portal && yarn build"
   },
   "devDependencies": {},
   "dependencies": {
