@@ -49,7 +49,7 @@ def get_portal_boot():
 	super_admin = is_super_admin()
 	user_roles = set(frappe.get_roles())
 
-	settings = frappe.get_single("Portal Settings")
+	settings = frappe.get_single("PL Portal Settings")
 	modules = frappe.get_all(
 		"Portal Module",
 		fields=[
@@ -123,7 +123,7 @@ def set_module_enabled(module_key: str, enabled: int | str):
 def save_portal_settings(enable_portal_home: int | str | None = None, portal_title: str | None = None):
 	if not is_super_admin():
 		frappe.throw(_("Not permitted"), frappe.PermissionError)
-	doc = frappe.get_single("Portal Settings")
+	doc = frappe.get_single("PL Portal Settings")
 	if enable_portal_home is not None:
 		doc.enable_portal_home = int(enable_portal_home)
 	if portal_title is not None:

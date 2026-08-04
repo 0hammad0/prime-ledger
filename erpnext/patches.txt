@@ -502,4 +502,5 @@ erpnext.patches.v16_0.access_control_for_project_users
 erpnext.patches.v16_0.enable_book_stock_expense_gl_entries
 erpnext.patches.v16_0.prime_ledger_white_label
 erpnext.patches.v16_0.rename_erpnext_integrations_module
+erpnext.patches.v16_0.restore_frappe_portal_settings
 erpnext.patches.v16_0.seed_portal_control

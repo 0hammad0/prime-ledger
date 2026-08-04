@@ -19,11 +19,12 @@ mkdir -p "$DEST/portal_control" \
 cp -R "$ROOT/erpnext/portal_control/." "$DEST/portal_control/"
 cp -R "$ROOT/erpnext/setup/doctype/portal_module" "$DEST/doctype/"
 cp -R "$ROOT/erpnext/setup/doctype/portal_module_role" "$DEST/doctype/"
-cp -R "$ROOT/erpnext/setup/doctype/portal_settings" "$DEST/doctype/"
+cp -R "$ROOT/erpnext/setup/doctype/pl_portal_settings" "$DEST/doctype/"
 cp "$ROOT/erpnext/www/portal.py" "$DEST/www/"
 cp "$ROOT/erpnext/www/portal.html" "$DEST/www/"
 cp -R "$ROOT/erpnext/public/portal/." "$DEST/public/"
 cp "$ROOT/erpnext/patches/v16_0/seed_portal_control.py" "$DEST/patches/"
+cp "$ROOT/erpnext/patches/v16_0/restore_frappe_portal_settings.py" "$DEST/patches/"
 
 echo "synced portal → deploy/ec2/patches/portal"
 echo "Commit deploy/ec2/patches/portal so CI can hot-patch Hub images."

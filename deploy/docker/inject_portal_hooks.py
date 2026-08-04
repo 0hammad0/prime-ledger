@@ -17,7 +17,11 @@ if needle not in text:
 		)
 
 patches = Path("/home/frappe/frappe-bench/apps/erpnext/erpnext/patches.txt")
-line = "erpnext.patches.v16_0.seed_portal_control"
 pt = patches.read_text()
-if line not in pt:
-	patches.write_text(pt.rstrip() + "\n" + line + "\n")
+for line in (
+	"erpnext.patches.v16_0.restore_frappe_portal_settings",
+	"erpnext.patches.v16_0.seed_portal_control",
+):
+	if line not in pt:
+		pt = pt.rstrip() + "\n" + line + "\n"
+patches.write_text(pt)

@@ -50,7 +50,9 @@ patch_cid() {
     /home/frappe/frappe-bench/sites/assets/erpnext/portal
 
   "${DOCKER[@]}" cp "$PATCH_ROOT/portal_control/." "${cid}:${APP}/portal_control/"
-  for dt in portal_module portal_module_role portal_settings; do
+  # Remove mistaken Portal Settings overlay if present (conflicts with Frappe website DocType)
+  "${DOCKER[@]}" exec -u root "$cid" rm -rf "$APP/setup/doctype/portal_settings" || true
+  for dt in portal_module portal_module_role pl_portal_settings; do
     "${DOCKER[@]}" cp "$PATCH_ROOT/doctype/${dt}" "${cid}:${APP}/setup/doctype/"
   done
   "${DOCKER[@]}" cp "$PATCH_ROOT/www/portal.py" "${cid}:${APP}/www/portal.py"
@@ -59,6 +61,10 @@ patch_cid() {
   "${DOCKER[@]}" cp "$PATCH_ROOT/public/." "${cid}:${SITE_ASSETS}/portal/" || true
   "${DOCKER[@]}" cp "$PATCH_ROOT/patches/seed_portal_control.py" \
     "${cid}:${APP}/patches/v16_0/seed_portal_control.py"
+  if [[ -f "$PATCH_ROOT/patches/restore_frappe_portal_settings.py" ]]; then
+    "${DOCKER[@]}" cp "$PATCH_ROOT/patches/restore_frappe_portal_settings.py" \
+      "${cid}:${APP}/patches/v16_0/restore_frappe_portal_settings.py"
+  fi
 
   # Ensure website routes + patches.txt include portal
   "${DOCKER[@]}" exec -u root "$cid" python3 - <<'PY'
@@ -84,20 +90,23 @@ else:
     print("hooks_portal_routes_present")
 
 patches = Path("/home/frappe/frappe-bench/apps/erpnext/erpnext/patches.txt")
-line = "erpnext.patches.v16_0.seed_portal_control"
 pt = patches.read_text()
-if line not in pt:
-    patches.write_text(pt.rstrip() + "\n" + line + "\n")
-    print("patches_txt_ok")
-else:
-    print("patches_txt_present")
+for line in (
+    "erpnext.patches.v16_0.restore_frappe_portal_settings",
+    "erpnext.patches.v16_0.seed_portal_control",
+):
+    if line not in pt:
+        pt = pt.rstrip() + "\n" + line + "\n"
+        print("patches_txt_added", line)
+patches.write_text(pt)
+print("patches_txt_ok")
 PY
 
   "${DOCKER[@]}" exec -u root "$cid" chown -R frappe:frappe \
     "$APP/portal_control" \
     "$APP/setup/doctype/portal_module" \
     "$APP/setup/doctype/portal_module_role" \
-    "$APP/setup/doctype/portal_settings" \
+    "$APP/setup/doctype/pl_portal_settings" \
     "$APP/www/portal.py" \
     "$APP/www/portal.html" \
     "$APP/public/portal" \

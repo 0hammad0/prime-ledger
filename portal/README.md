@@ -31,4 +31,4 @@ Outputs:
 - Super Admin: `/portal/admin`
 - Master Controls: `/portal/admin/modules`
 
-Requires migrate so `Portal Module` and `Portal Settings` exist (this fork / custom image).
+Requires migrate so `Portal Module` and `PL Portal Settings` exist (this fork / custom image).

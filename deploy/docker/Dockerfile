@@ -37,8 +37,8 @@ COPY deploy/ec2/patches/portal/doctype/portal_module \
 	/home/frappe/frappe-bench/apps/erpnext/erpnext/setup/doctype/portal_module
 COPY deploy/ec2/patches/portal/doctype/portal_module_role \
 	/home/frappe/frappe-bench/apps/erpnext/erpnext/setup/doctype/portal_module_role
-COPY deploy/ec2/patches/portal/doctype/portal_settings \
-	/home/frappe/frappe-bench/apps/erpnext/erpnext/setup/doctype/portal_settings
+COPY deploy/ec2/patches/portal/doctype/pl_portal_settings \
+	/home/frappe/frappe-bench/apps/erpnext/erpnext/setup/doctype/pl_portal_settings
 COPY deploy/ec2/patches/portal/www/portal.py \
 	/home/frappe/frappe-bench/apps/erpnext/erpnext/www/portal.py
 COPY deploy/ec2/patches/portal/www/portal.html \
@@ -58,7 +58,7 @@ RUN printf '%s\n' \
 	&& chown -R frappe:frappe /home/frappe/frappe-bench/apps/erpnext/erpnext/portal_control \
 	&& chown -R frappe:frappe /home/frappe/frappe-bench/apps/erpnext/erpnext/setup/doctype/portal_module \
 	&& chown -R frappe:frappe /home/frappe/frappe-bench/apps/erpnext/erpnext/setup/doctype/portal_module_role \
-	&& chown -R frappe:frappe /home/frappe/frappe-bench/apps/erpnext/erpnext/setup/doctype/portal_settings \
+	&& chown -R frappe:frappe /home/frappe/frappe-bench/apps/erpnext/erpnext/setup/doctype/pl_portal_settings \
 	&& chown frappe:frappe /home/frappe/frappe-bench/apps/erpnext/erpnext/www/portal.py \
 	&& chown frappe:frappe /home/frappe/frappe-bench/apps/erpnext/erpnext/www/portal.html \
 	&& chown frappe:frappe /home/frappe/frappe-bench/apps/erpnext/erpnext/patches/v16_0/seed_portal_control.py \

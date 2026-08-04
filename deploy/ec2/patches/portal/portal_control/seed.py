@@ -162,12 +162,12 @@ def ensure_roles() -> None:
 
 
 def ensure_settings() -> None:
-	if not frappe.db.exists("DocType", "Portal Settings"):
+	if not frappe.db.exists("DocType", "PL Portal Settings"):
 		return
 	try:
-		doc = frappe.get_single("Portal Settings")
+		doc = frappe.get_single("PL Portal Settings")
 	except Exception:
-		doc = frappe.new_doc("Portal Settings")
+		doc = frappe.new_doc("PL Portal Settings")
 	changed = False
 	if not doc.portal_title:
 		doc.portal_title = "Prime Ledger"
