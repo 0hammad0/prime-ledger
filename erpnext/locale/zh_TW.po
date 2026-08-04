@@ -1,11 +1,11 @@
-# Translations template for ERPNext.
+# Translations template for Prime Ledger.
 # Copyright (C) 2024 Frappe Technologies Pvt. Ltd.
-# This file is distributed under the same license as the ERPNext project.
+# This file is distributed under the same license as the Prime Ledger project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ERPNext VERSION\n"
+"Project-Id-Version: Prime Ledger VERSION\n"
 "Report-Msgid-Bugs-To: info@erpnext.com\n"
 "POT-Creation-Date: 2024-01-12 13:34+0053\n"
 "PO-Revision-Date: 2024-01-10 16:34+0553\n"
@@ -84,7 +84,7 @@ msgstr "“是固定的資產”不能選中，作為資產記錄存在對項目
 msgid ""
 "# Account Settings\n"
 "\n"
-"In ERPNext, Accounting features are configurable as per your business needs. Accounts Settings is the place to define some of your accounting preferences like:\n"
+"In Prime Ledger, Accounting features are configurable as per your business needs. Accounts Settings is the place to define some of your accounting preferences like:\n"
 "\n"
 " - Credit Limit and over billing settings\n"
 " - Taxation preferences\n"
@@ -96,7 +96,7 @@ msgstr ""
 msgid ""
 "# Account Settings\n"
 "\n"
-"This is a crucial piece of configuration. There are various account settings in ERPNext to restrict and configure actions in the Accounting module.\n"
+"This is a crucial piece of configuration. There are various account settings in Prime Ledger to restrict and configure actions in the Accounting module.\n"
 "\n"
 "The following settings are avaialble for you to configure\n"
 "\n"
@@ -113,7 +113,7 @@ msgstr ""
 msgid ""
 "# Add an Existing Asset\n"
 "\n"
-"If you are just starting with ERPNext, you will need to enter Assets you already possess. You can add them as existing fixed assets in ERPNext. Please note that you will have to make a Journal Entry separately updating the opening balance in the fixed asset account."
+"If you are just starting with Prime Ledger, you will need to enter Assets you already possess. You can add them as existing fixed assets in Prime Ledger. Please note that you will have to make a Journal Entry separately updating the opening balance in the fixed asset account."
 msgstr ""
 
 #. Description of the Onboarding Step 'Create Your First Sales Invoice '
@@ -134,7 +134,7 @@ msgid ""
 "Here's the flow of how a sales invoice is generally created\n"
 "\n"
 "\n"
-"![Sales Flow](https://docs.erpnext.com/docs/assets/img/accounts/so-flow.png)"
+"![Sales Flow]()"
 msgstr ""
 
 #. Description of the Onboarding Step 'Define Asset Category'
@@ -189,7 +189,7 @@ msgstr ""
 msgid ""
 "# Chart Of Accounts\n"
 "\n"
-"ERPNext sets up a simple chart of accounts for each Company you create, but you can modify it according to business and legal requirements."
+"Prime Ledger sets up a simple chart of accounts for each Company you create, but you can modify it according to business and legal requirements."
 msgstr ""
 
 #. Description of the Onboarding Step 'Check Stock Ledger'
@@ -198,7 +198,7 @@ msgstr ""
 #: stock/onboarding_step/view_stock_projected_qty/view_stock_projected_qty.json
 msgid ""
 "# Check Stock Reports\n"
-"Based on the various stock transactions, you can get a host of one-click Stock Reports in ERPNext like Stock Ledger, Stock Balance, Projected Quantity, and Ageing analysis."
+"Based on the various stock transactions, you can get a host of one-click Stock Reports in Prime Ledger like Stock Ledger, Stock Balance, Projected Quantity, and Ageing analysis."
 msgstr ""
 
 #. Description of the Onboarding Step 'Cost Centers for Budgeting and Analysis'
@@ -208,7 +208,7 @@ msgid ""
 "\n"
 "While your Books of Accounts are framed to fulfill statutory requirements, you can set up Cost Center and Accounting Dimensions to address your companies reporting and budgeting requirements.\n"
 "\n"
-"Click here to learn more about how  <b>[Cost Center](https://docs.erpnext.com/docs/v13/user/manual/en/accounts/cost-center)</b> and <b> [Dimensions](https://docs.erpnext.com/docs/v13/user/manual/en/accounts/accounting-dimensions)</b> allow you to get advanced financial analytics reports from ERPNext."
+"Click here to learn more about how  <b>[Cost Center]()</b> and <b> [Dimensions]()</b> allow you to get advanced financial analytics reports from Prime Ledger."
 msgstr ""
 
 #. Description of the Onboarding Step 'Finished Items'
@@ -263,7 +263,7 @@ msgstr ""
 msgid ""
 "# Create a Letter Head\n"
 "\n"
-"A Letter Head contains your organization's name, logo, address, etc which appears at the header and footer portion in documents. You can learn more about Setting up Letter Head in ERPNext here.\n"
+"A Letter Head contains your organization's name, logo, address, etc which appears at the header and footer portion in documents. You can learn more about Setting up Letter Head in Prime Ledger here.\n"
 msgstr ""
 
 #. Description of the Onboarding Step 'Create your first Quotation'
@@ -315,7 +315,7 @@ msgid ""
 "\n"
 "Item is a product or a service offered by your company, or something you buy as a part of your supplies or raw materials.\n"
 "\n"
-"Items are integral to everything you do in ERPNext - from billing, purchasing to managing inventory. Everything you buy or sell, whether it is a physical product or a service is an Item. Items can be stock, non-stock, variants, serialized, batched, assets, etc.\n"
+"Items are integral to everything you do in Prime Ledger - from billing, purchasing to managing inventory. Everything you buy or sell, whether it is a physical product or a service is an Item. Items can be stock, non-stock, variants, serialized, batched, assets, etc.\n"
 msgstr ""
 
 #. Description of the Onboarding Step 'Create an Item'
@@ -324,7 +324,7 @@ msgid ""
 "# Create an Item\n"
 "The Stock module deals with the movement of items.\n"
 "\n"
-"In this step we will create an  [**Item**](https://docs.erpnext.com/docs/user/manual/en/stock/item)."
+"In this step we will create an  [**Item**]()."
 msgstr ""
 
 #. Description of the Onboarding Step 'Create first Purchase Order'
@@ -332,7 +332,7 @@ msgstr ""
 msgid ""
 "# Create first Purchase Order\n"
 "\n"
-"Purchase Order is at the heart of your buying transactions. In ERPNext, Purchase Order can can be created against a Purchase Material Request (indent) and Supplier Quotation as well.  Purchase Orders is also linked to Purchase Receipt and Purchase Invoices, allowing you to keep a birds-eye view on your purchase deals.\n"
+"Purchase Order is at the heart of your buying transactions. In Prime Ledger, Purchase Order can can be created against a Purchase Material Request (indent) and Supplier Quotation as well.  Purchase Orders is also linked to Purchase Receipt and Purchase Invoices, allowing you to keep a birds-eye view on your purchase deals.\n"
 "\n"
 msgstr ""
 
@@ -351,9 +351,9 @@ msgstr ""
 msgid ""
 "# Financial Statements\n"
 "\n"
-"In ERPNext, you can get crucial financial reports like [Balance Sheet] and [Profit and Loss] statements with a click of a button. You can run in the report for a different period and plot analytics charts premised on statement data. For more reports, check sections like Financial Statements, General Ledger, and Profitability reports.\n"
+"In Prime Ledger, you can get crucial financial reports like [Balance Sheet] and [Profit and Loss] statements with a click of a button. You can run in the report for a different period and plot analytics charts premised on statement data. For more reports, check sections like Financial Statements, General Ledger, and Profitability reports.\n"
 "\n"
-"<b>[Check Accounting reports](https://docs.erpnext.com/docs/v13/user/manual/en/accounts/accounting-reports)</b>"
+"<b>[Check Accounting reports]()</b>"
 msgstr ""
 
 #. Description of the Onboarding Step 'Review Fixed Asset Accounts'
@@ -381,7 +381,7 @@ msgstr ""
 msgid ""
 "# Import Data from Spreadsheet\n"
 "\n"
-"In ERPNext, you can easily migrate your historical data using spreadsheets. You can use it for migrating not just masters (like Customer, Supplier, Items), but also for transactions like (outstanding invoices, opening stock and accounting entries, etc)."
+"In Prime Ledger, you can easily migrate your historical data using spreadsheets. You can use it for migrating not just masters (like Customer, Supplier, Items), but also for transactions like (outstanding invoices, opening stock and accounting entries, etc)."
 msgstr ""
 
 #: manufacturing/report/work_order_stock_report/work_order_stock_report.py:148
@@ -392,24 +392,24 @@ msgstr ""
 #: stock/onboarding_step/introduction_to_stock_entry/introduction_to_stock_entry.json
 msgid ""
 "# Introduction to Stock Entry\n"
-"This video will give a quick introduction to [**Stock Entry**](https://docs.erpnext.com/docs/user/manual/en/stock/stock-entry)."
+"This video will give a quick introduction to [**Stock Entry**]()."
 msgstr ""
 
 #. Description of the Onboarding Step 'Manage Stock Movements'
 #: stock/onboarding_step/create_a_stock_entry/create_a_stock_entry.json
 msgid ""
 "# Manage Stock Movements\n"
-"Stock entry allows you to register the movement of stock for various purposes like transfer, received, issues, repacked, etc. To address issues related to theft and pilferages,  you can always ensure that the movement of goods happens against a document reference Stock Entry in ERPNext.\n"
+"Stock entry allows you to register the movement of stock for various purposes like transfer, received, issues, repacked, etc. To address issues related to theft and pilferages,  you can always ensure that the movement of goods happens against a document reference Stock Entry in Prime Ledger.\n"
 "\n"
 "Let’s get a quick walk-through on the various scenarios covered in Stock Entry by watching [*this video*](https://www.youtube.com/watch?v=Njt107hlY3I)."
 msgstr ""
 
-#. Description of the Onboarding Step 'How to Navigate in ERPNext'
+#. Description of the Onboarding Step 'How to Navigate in Prime Ledger'
 #: setup/onboarding_step/navigation_help/navigation_help.json
 msgid ""
-"# Navigation in ERPNext\n"
+"# Navigation in Prime Ledger\n"
 "\n"
-"Ease of navigating and browsing around the ERPNext is one of our core strengths. In the following video, you will learn how to reach a specific feature in ERPNext via module page or AwesomeBar."
+"Ease of navigating and browsing around the Prime Ledger is one of our core strengths. In the following video, you will learn how to reach a specific feature in Prime Ledger via module page or AwesomeBar."
 msgstr ""
 
 #. Description of the Onboarding Step 'Purchase an Asset'
@@ -429,7 +429,7 @@ msgstr ""
 msgid ""
 "# Review Manufacturing Settings\n"
 "\n"
-"In ERPNext, the Manufacturing module’s features are configurable as per your business needs. Manufacturing Settings is the place where you can set your preferences for:\n"
+"In Prime Ledger, the Manufacturing module’s features are configurable as per your business needs. Manufacturing Settings is the place where you can set your preferences for:\n"
 "\n"
 "- Capacity planning for allocating jobs to workstations\n"
 "- Raw-material consumption based on BOM or actual\n"
@@ -441,7 +441,7 @@ msgstr ""
 msgid ""
 "# Review Stock Settings\n"
 "\n"
-"In ERPNext, the Stock module’s features are configurable as per your business needs. Stock Settings is the place where you can set your preferences for:\n"
+"In Prime Ledger, the Stock module’s features are configurable as per your business needs. Stock Settings is the place where you can set your preferences for:\n"
 "- Default values for Item and Pricing\n"
 "- Default valuation method for inventory valuation\n"
 "- Set preference for serialization and batching of item\n"
@@ -473,7 +473,7 @@ msgstr ""
 msgid ""
 "# Set Up a Company\n"
 "\n"
-"A company is a legal entity for which you will set up your books of account and create accounting transactions. In ERPNext, you can create multiple companies, and establish relationships (group/subsidiary) among them.\n"
+"A company is a legal entity for which you will set up your books of account and create accounting transactions. In Prime Ledger, you can create multiple companies, and establish relationships (group/subsidiary) among them.\n"
 "\n"
 "Within the company master, you can capture various default accounts for that Company and set crucial settings related to the accounting methodology followed for a company.\n"
 msgstr ""
@@ -483,7 +483,7 @@ msgstr ""
 msgid ""
 "# Setting up Taxes\n"
 "\n"
-"ERPNext lets you configure your taxes so that they are automatically applied in your buying and selling transactions. You can configure them globally or even on Items. ERPNext taxes are pre-configured for most regions."
+"Prime Ledger lets you configure your taxes so that they are automatically applied in your buying and selling transactions. You can configure them globally or even on Items. Prime Ledger taxes are pre-configured for most regions."
 msgstr ""
 
 #. Description of the Onboarding Step 'Routing'
@@ -500,7 +500,7 @@ msgid ""
 "# Setup a Warehouse\n"
 "The warehouse can be your location/godown/store where you maintain the item's inventory, and receive/deliver them to various parties.\n"
 "\n"
-"In ERPNext, you can maintain a Warehouse in the tree structure, so that location and sub-location of an item can be tracked. Also, you can link a Warehouse to a specific Accounting ledger, where the real-time stock value of that warehouse’s item will be reflected."
+"In Prime Ledger, you can maintain a Warehouse in the tree structure, so that location and sub-location of an item can be tracked. Also, you can link a Warehouse to a specific Accounting ledger, where the real-time stock value of that warehouse’s item will be reflected."
 msgstr ""
 
 #. Description of the Onboarding Step 'Track Material Request'
@@ -517,7 +517,7 @@ msgstr ""
 #: stock/onboarding_step/stock_opening_balance/stock_opening_balance.json
 msgid ""
 "# Update Stock Opening Balance\n"
-"It’s an entry to update the stock balance of an item, in a warehouse, on a date and time you are going live on ERPNext.\n"
+"It’s an entry to update the stock balance of an item, in a warehouse, on a date and time you are going live on Prime Ledger.\n"
 "\n"
 "Once opening stocks are updated, you can create transactions like manufacturing and stock deliveries, where this opening stock will be consumed."
 msgstr ""
@@ -527,18 +527,18 @@ msgstr ""
 msgid ""
 "# Updating Opening Balances\n"
 "\n"
-"Once you close the financial statement in previous accounting software, you can update the same as opening in your ERPNext's Balance Sheet accounts. This will allow you to get complete financial statements from ERPNext in the coming years, and discontinue the parallel accounting system right away."
+"Once you close the financial statement in previous accounting software, you can update the same as opening in your Prime Ledger's Balance Sheet accounts. This will allow you to get complete financial statements from Prime Ledger in the coming years, and discontinue the parallel accounting system right away."
 msgstr ""
 
 #. Description of the Onboarding Step 'View Warehouses'
 #: stock/onboarding_step/view_warehouses/view_warehouses.json
 msgid ""
 "# View Warehouse\n"
-"In ERPNext the term 'warehouse' can be thought of as a storage location.\n"
+"In Prime Ledger the term 'warehouse' can be thought of as a storage location.\n"
 "\n"
-"Warehouses are arranged in ERPNext in a tree like structure, where multiple sub-warehouses can be grouped under a single warehouse.\n"
+"Warehouses are arranged in Prime Ledger in a tree like structure, where multiple sub-warehouses can be grouped under a single warehouse.\n"
 "\n"
-"In this step we will view the [**Warehouse Tree**](https://docs.erpnext.com/docs/user/manual/en/stock/warehouse#21-tree-view) to view the [**Warehouses**](https://docs.erpnext.com/docs/user/manual/en/stock/warehouse) that are set by default."
+"In this step we will view the [**Warehouse Tree**]() to view the [**Warehouses**]() that are set by default."
 msgstr ""
 
 #. Description of the Onboarding Step 'Create a Sales Item'
@@ -547,11 +547,11 @@ msgid ""
 "## Products and Services\n"
 "\n"
 "Depending on the nature of your business, you might be selling products or services to your clients or even both. \n"
-"ERPNext is optimized for itemized management of your sales and purchase.\n"
+"Prime Ledger is optimized for itemized management of your sales and purchase.\n"
 "\n"
 "The **Item Master**  is where you can add all your sales items. If you are in services, you can create an Item for each service that you offer. If you run a manufacturing business, the same master is used for keeping a record of raw materials, sub-assemblies etc.\n"
 "\n"
-"Completing the Item Master is very essential for the successful implementation of ERPNext. We have a brief video introducing the item master for you, you can watch it in the next step."
+"Completing the Item Master is very essential for the successful implementation of Prime Ledger. We have a brief video introducing the item master for you, you can watch it in the next step."
 msgstr ""
 
 #. Description of the Onboarding Step 'Create a Customer'
@@ -571,7 +571,7 @@ msgstr ""
 msgid ""
 "## Who is a Supplier?\n"
 "\n"
-"Suppliers are companies or individuals who provide you with products or services. ERPNext has comprehensive features for purchase cycles. \n"
+"Suppliers are companies or individuals who provide you with products or services. Prime Ledger has comprehensive features for purchase cycles. \n"
 "\n"
 "Let's quickly create a supplier with the minimal details required. You need the name of the supplier, assign the supplier to a group, and select the type of the supplier, viz. Company or Individual."
 msgstr ""
@@ -11870,7 +11870,7 @@ msgid "Buying must be checked, if Applicable For is selected as {0}"
 msgstr "採購必須進行檢查，如果適用於被選擇為{0}"
 
 #: buying/doctype/buying_settings/buying_settings.js:14
-msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a <a href='https://docs.erpnext.com/docs/user/manual/en/setting-up/settings/naming-series' target='_blank'>Naming Series</a> choose the 'Naming Series' option."
+msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a choose the 'Naming Series' option."
 msgstr ""
 
 #: templates/pages/home.html:59
@@ -25295,13 +25295,13 @@ msgstr ""
 #. Label of a Data field in DocType 'Tally Migration'
 #: erpnext_integrations/doctype/tally_migration/tally_migration.json
 msgctxt "Tally Migration"
-msgid "ERPNext Company"
+msgid "Prime Ledger Company"
 msgstr ""
 
 #. Label of a Data field in DocType 'Employee Group Table'
 #: setup/doctype/employee_group_table/employee_group_table.json
 msgctxt "Employee Group Table"
-msgid "ERPNext User ID"
+msgid "Prime Ledger User ID"
 msgstr ""
 
 #. Option for the 'Update frequency of Project' (Select) field in DocType
@@ -31188,7 +31188,7 @@ msgstr ""
 
 #. Title of an Onboarding Step
 #: setup/onboarding_step/navigation_help/navigation_help.json
-msgid "How to Navigate in ERPNext"
+msgid "How to Navigate in Prime Ledger"
 msgstr ""
 
 #. Label of a Float field in DocType 'Timesheet Detail'
@@ -31557,11 +31557,11 @@ msgid "If this item has variants, then it cannot be selected in sales orders etc
 msgstr "如果此項目已變種，那麼它不能在銷售訂單等選擇"
 
 #: buying/doctype/buying_settings/buying_settings.js:24
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
 msgstr ""
 
 #: buying/doctype/buying_settings/buying_settings.js:29
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
 msgstr ""
 
 #: manufacturing/doctype/manufacturing_settings/manufacturing_settings.js:11
@@ -31573,7 +31573,7 @@ msgid "If ticked, the BOM cost will be automatically updated based on Valuation 
 msgstr ""
 
 #: stock/doctype/item/item.js:828
-msgid "If you are maintaining stock of this Item in your Inventory, ERPNext will make a stock ledger entry for each transaction of this item."
+msgid "If you are maintaining stock of this Item in your Inventory, Prime Ledger will make a stock ledger entry for each transaction of this item."
 msgstr ""
 
 #. Description of the 'Unreconciled Entries' (Section Break) field in DocType
@@ -38077,7 +38077,7 @@ msgstr ""
 msgid "Learn Sales Management"
 msgstr ""
 
-#. Label of an action in the Onboarding Step 'How to Navigate in ERPNext'
+#. Label of an action in the Onboarding Step 'How to Navigate in Prime Ledger'
 #: setup/onboarding_step/navigation_help/navigation_help.json
 msgid "Learn about  Navigation options"
 msgstr ""
@@ -38087,7 +38087,7 @@ msgstr ""
 #: accounts/doctype/accounts_settings/accounts_settings.json
 #, python-format
 msgctxt "Accounts Settings"
-msgid "Learn about <a href=\"https://docs.erpnext.com/docs/v13/user/manual/en/accounts/articles/common_party_accounting#:~:text=Common%20Party%20Accounting%20in%20ERPNext,Invoice%20against%20a%20primary%20Supplier.\">Common Party</a>"
+msgid "Learn about <a href=\" Ledger,Invoice%20against%20a%20primary%20Supplier.\">Common Party</a>"
 msgstr ""
 
 #. Label of an action in the Onboarding Step 'Updating Opening Balances'
@@ -38254,7 +38254,7 @@ msgstr ""
 
 #. Title of the Module Onboarding 'Home'
 #: setup/module_onboarding/home/home.json
-msgid "Let's begin your journey with ERPNext"
+msgid "Let's begin your journey with Prime Ledger"
 msgstr ""
 
 #. Label of an action in the Onboarding Step 'Purchase an Asset'
@@ -72279,7 +72279,7 @@ msgid "There are only {0} asset created or linked to {1}. Please create or link 
 msgstr ""
 
 #: stock/doctype/item/item.js:843
-msgid "There are two options to maintain valuation of stock. FIFO (first in - first out) and Moving Average. To understand this topic in detail please visit <a href='https://docs.erpnext.com/docs/v13/user/manual/en/stock/articles/item-valuation-fifo-and-moving-average' target='_blank'>Item Valuation, FIFO and Moving Average.</a>"
+msgid "There are two options to maintain valuation of stock. FIFO (first in - first out) and Moving Average. To understand this topic in detail please visit"
 msgstr ""
 
 #: stock/report/item_variant_details/item_variant_details.py:25
@@ -72379,7 +72379,7 @@ msgid "This action will stop future billing. Are you sure you want to cancel thi
 msgstr "此操作將停止未來的結算。您確定要取消此訂閱嗎？"
 
 #: accounts/doctype/bank_account/bank_account.js:35
-msgid "This action will unlink this account from any external service integrating ERPNext with your bank accounts. It cannot be undone. Are you certain ?"
+msgid "This action will unlink this account from any external service integrating Prime Ledger with your bank accounts. It cannot be undone. Are you certain ?"
 msgstr ""
 
 #: buying/doctype/supplier_scorecard/supplier_scorecard_dashboard.py:7
@@ -72436,7 +72436,7 @@ msgstr "這是一個 root 科目，不能被編輯。"
 
 #: setup/doctype/customer_group/customer_group.js:44
 msgid "This is a root customer group and cannot be edited."
-msgstr "ERPNext是一個開源的基於Web的ERP系統，通過網路技術，向私人有限公司提供整合的工具，在一個小的組織管理大多數流程。有關Web註釋，或購買託管，想得到更多資訊，請連結"
+msgstr "Prime Ledger是一個開源的基於Web的ERP系統，通過網路技術，向私人有限公司提供整合的工具，在一個小的組織管理大多數流程。有關Web註釋，或購買託管，想得到更多資訊，請連結"
 
 #: setup/doctype/department/department.js:14
 msgid "This is a root department and cannot be edited."
@@ -72459,8 +72459,8 @@ msgid "This is a root territory and cannot be edited."
 msgstr "集團或Ledger ，借方或貸方，是特等科目"
 
 #: portal/doctype/homepage/homepage.py:31
-msgid "This is an example website auto-generated from ERPNext"
-msgstr "這是一個由 ERPNext 自動產生的範例網站"
+msgid "This is an example website auto-generated from Prime Ledger"
+msgstr "這是一個由 Prime Ledger 自動產生的範例網站"
 
 #: stock/doctype/item/item_dashboard.py:7
 msgid "This is based on stock movement. See {0} for details"
@@ -78075,7 +78075,7 @@ msgid "Vouchers"
 msgstr ""
 
 #: patches/v15_0/remove_exotel_integration.py:32
-msgid "WARNING: Exotel app has been separated from ERPNext, please install the app to continue using Exotel integration."
+msgid "WARNING: Exotel app has been separated from Prime Ledger, please install the app to continue using Exotel integration."
 msgstr ""
 
 #. Label of a Link field in DocType 'Material Request Item'
@@ -80247,7 +80247,7 @@ msgstr ""
 
 #. Success message of the Module Onboarding 'Home'
 #: setup/module_onboarding/home/home.json
-msgid "You're ready to start your journey with ERPNext"
+msgid "You're ready to start your journey with Prime Ledger"
 msgstr ""
 
 #. Option for the 'Provider' (Select) field in DocType 'Video'
@@ -80261,11 +80261,11 @@ msgstr ""
 msgid "YouTube Interactions"
 msgstr ""
 
-#. Description of the 'ERPNext Company' (Data) field in DocType 'Tally
+#. Description of the 'Prime Ledger Company' (Data) field in DocType 'Tally
 #. Migration'
 #: erpnext_integrations/doctype/tally_migration/tally_migration.json
 msgctxt "Tally Migration"
-msgid "Your Company set in ERPNext"
+msgid "Your Company set in Prime Ledger"
 msgstr ""
 
 #: www/book_appointment/index.html:49
@@ -80327,7 +80327,7 @@ msgid "Zip File"
 msgstr ""
 
 #: stock/reorder_item.py:244
-msgid "[Important] [ERPNext] Auto Reorder Errors"
+msgid "[Important] [Prime Ledger] Auto Reorder Errors"
 msgstr ""
 
 #: controllers/status_updater.py:238

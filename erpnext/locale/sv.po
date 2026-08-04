@@ -707,8 +707,8 @@ msgstr "<div id=\\\"item-prices-container\\\"></div>"
 
 #. Content of the 'uom_help_html' (HTML) field in DocType 'Item'
 #: erpnext/stock/doctype/item/item.json
-msgid "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Define alternate units for this item. Eg: 1 Box = 12 Nos, set conversion factor as 12. (Will also apply for variants) <a href=\"https://docs.frappe.io/erpnext/uom\" target=\"_blank\">Learn more &#8594;</a></div>"
-msgstr "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Definiera alternativa enheter för denna artikel. Exempel: 1 Box = 12 St, ange konvertering faktor till 12. (Gäller även för varianter) <a href=\"https://docs.frappe.io/erpnext/uom\" target=\"_blank\">Läs mer &#8594;</a></div>"
+msgid "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Define alternate units for this item. Eg: 1 Box = 12 Nos, set conversion factor as 12. (Will also apply for variants) <a href=\"" target=\"_blank\">Learn more &#8594;</a></div>"
+msgstr "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Definiera alternativa enheter för denna artikel. Exempel: 1 Box = 12 St, ange konvertering faktor till 12. (Gäller även för varianter) <a href=\"" target=\"_blank\">Läs mer &#8594;</a></div>"
 
 #. Content of the 'settings' (HTML) field in DocType 'Cheque Print Template'
 #: erpnext/accounts/doctype/cheque_print_template/cheque_print_template.json
@@ -972,7 +972,7 @@ msgstr "<span class=\"h4\"><b>Rapporter &amp; Inställningar</b></span>"
 msgid "<span class=\"h4\"><b>Subcontracting Inward and Outward</b></span>"
 msgstr "<span class=\"h4\"><b>Extern & Intern Underleverantör</b></span>"
 
-#. Header text in the ERPNext Settings Workspace
+#. Header text in the Prime Ledger Settings Workspace
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 msgid "<span class=\"h4\"><b>Your Shortcuts\n"
 "\t\t\t\n"
@@ -2250,7 +2250,7 @@ msgstr "Fordring Obetald Konto"
 
 #. Name of a DocType
 #. Label of a Link in the Invoicing Workspace
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/accounts/doctype/accounts_settings/accounts_settings.json
 #: erpnext/accounts/workspace/invoicing/invoicing.json
@@ -9270,7 +9270,7 @@ msgstr "Inköp Pris"
 
 #. Name of a DocType
 #. Label of a Link in the Buying Workspace
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/buying/doctype/buying_settings/buying_settings.json
 #: erpnext/buying/workspace/buying/buying.json
@@ -9294,8 +9294,8 @@ msgid "Buying must be checked, if Applicable For is selected as {0}"
 msgstr "Inköp måste väljas, om Gäller för är valt som {0}"
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:62
-msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a <a href='https://docs.erpnext.com/docs/user/manual/en/setting-up/settings/naming-series' target='_blank'>Naming Series</a> choose the 'Naming Series' option."
-msgstr "Som standard är leverantör namn satt enligt angiven Leverantörs Namn. Om man vill att leverantörer ska namnges av <a href=\"https://docs.erpnext.com/docs/user/manual/en/setting-up/settings/naming-series\" target=\"_blank\">Namngivning Serie</a> Välj 'Namngivning Serie'."
+msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a choose the 'Naming Series' option."
+msgstr "Som standard är leverantör namn satt enligt angiven Leverantörs Namn. Om man vill att leverantörer ska namnges av <a href=\"" target=\"_blank\">Namngivning Serie</a> Välj 'Namngivning Serie'."
 
 #. Option for the 'Type' (Select) field in DocType 'BOM Secondary Item'
 #. Option for the 'Type' (Select) field in DocType 'Job Card Secondary Item'
@@ -16486,7 +16486,7 @@ msgstr "Ta bort Transaktioner"
 msgid "Delete all the Transactions for {0}"
 msgstr "Ta bort alla Transaktioner för {0}"
 
-#. Label of a Link in the ERPNext Settings Workspace
+#. Label of a Link in the Prime Ledger Settings Workspace
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 msgid "Deleted Documents"
 msgstr "Papperskorg"
@@ -18538,7 +18538,7 @@ msgstr "EMU of current"
 #. Label of a Desktop Icon
 #: erpnext/desktop_icon/erpnext.json
 #: erpnext/public/js/shop_floor/shop_floor.js:103
-msgid "ERPNext"
+msgid "Prime Ledger"
 msgstr "Affärssystem"
 
 #. Label of a Desktop Icon
@@ -18547,17 +18547,17 @@ msgstr "Affärssystem"
 #: erpnext/desktop_icon/erpnext_settings.json
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 #: erpnext/workspace_sidebar/erpnext_settings.json
-msgid "ERPNext Settings"
+msgid "Prime Ledger Settings"
 msgstr "Inställningar"
 
 #. Label of the user_id (Data) field in DocType 'Employee Group Table'
 #: erpnext/setup/doctype/employee_group_table/employee_group_table.json
-msgid "ERPNext User ID"
+msgid "Prime Ledger User ID"
 msgstr "System Användare"
 
 #. Description of the 'Maintain Stock' (Check) field in DocType 'Item'
 #: erpnext/stock/doctype/item/item.json
-msgid "ERPNext will make a stock ledger entry for each transaction of this item. Keep unchecked for non-stock or service items."
+msgid "Prime Ledger will make a stock ledger entry for each transaction of this item. Keep unchecked for non-stock or service items."
 msgstr "System kommer att skapa lager bokföring post för varje transaktion av denna artikel. Behåll inaktiverad för ej lager hanterade eller service artiklar."
 
 #. Option for the 'How often should project be updated of Total Purchase Cost
@@ -21607,7 +21607,7 @@ msgid "Frappe CRM Allowed User"
 msgstr "Säljstöd Tillåten Användare"
 
 #: erpnext/crm/frappe_crm_api.py:186
-msgid "Frappe CRM data synchronization is not enabled on ERPNext. Contact System Manager of ERPNext."
+msgid "Frappe CRM data synchronization is not enabled on Prime Ledger. Contact System Manager of Prime Ledger."
 msgstr "Säljstöd data synkronisering är inte aktiverad i Affärssystem. Kontakta Systemansvarig."
 
 #: erpnext/setup/install.py:243
@@ -22626,7 +22626,7 @@ msgid "Give free item for every N quantity"
 msgstr "Lämna gratis artikel för varje N kvantitet"
 
 #. Name of a DocType
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/setup/doctype/global_defaults/global_defaults.json
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
@@ -23799,17 +23799,17 @@ msgstr "Om aktiverad, uppdatera inte serie nummer /parti värde i lager transakt
 #. DocType 'Production Plan'
 #: erpnext/manufacturing/doctype/production_plan/production_plan.json
 msgid "If enabled, formula for <b>Qty to Order</b>: <br>\n"
-"Required Qty (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Projected Qty</a>. <br> This helps avoid over-ordering."
+"Required Qty (BOM) - <a href=\"">Projected Qty</a>. <br> This helps avoid over-ordering."
 msgstr "Om aktiverad, formel för <b>Order Kvantitet</b>: <br>\n"
-"Erfordrad Kvantitet (Stycklista) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Beräknad Kvantitet</a>. <br> Detta hjälper till att undvika överbeställning."
+"Erfordrad Kvantitet (Stycklista) - <a href=\"">Beräknad Kvantitet</a>. <br> Detta hjälper till att undvika överbeställning."
 
 #. Description of the 'Consider Projected Qty in Calculation (RM)' (Check)
 #. field in DocType 'Production Plan'
 #: erpnext/manufacturing/doctype/production_plan/production_plan.json
 msgid "If enabled, formula for <b>Required Qty</b>: <br>\n"
-"Required Qty (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Projected Qty</a>. <br> This helps avoid over-ordering."
+"Required Qty (BOM) - <a href=\"">Projected Qty</a>. <br> This helps avoid over-ordering."
 msgstr "Om aktiverad, formel för <b>Erfordrad Kvantitet</b>: <br>\n"
-"Erfordrad Kvantitet (Stycklista) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Beräknd Kvantitet</a>. <br> Detta hjälper till att undvika överbeställning."
+"Erfordrad Kvantitet (Stycklista) - <a href=\"">Beräknd Kvantitet</a>. <br> Detta hjälper till att undvika överbeställning."
 
 #. Description of the 'Create Ledger Entries for Change Amount' (Check) field
 #. in DocType 'POS Settings'
@@ -24078,11 +24078,11 @@ msgid "If this item has variants, then it cannot be selected in sales orders etc
 msgstr "Om artikel har varianter, kan den inte väljas i Försäljning Order osv."
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:76
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
 msgstr "Om 'Ja' kommer System att hindra dig från att skapa Inköp Faktura eller Faktura utan att först skapa Inköp Order.Vald konfiguration kan åsidosättas för viss Leverantör genom att aktivera kryssruta 'Tillåt skapande av Inköp Faktura utan Inköp Order' i Leverantör Inställningar."
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:83
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
 msgstr "Om 'Ja' kommer System att hindra dig från att skapa Inköp Faktura utan att skapa Inköp Följesedel.Vald konfiguration kan åsidosättas för viss Leverantör genom att aktivera kryssruta 'Tillåt skapande av Inköp Faktura utan Inköp Följesedel' i Leverantör Inställningar. "
 
 #: erpnext/manufacturing/doctype/manufacturing_settings/manufacturing_settings.js:10
@@ -24108,7 +24108,7 @@ msgid "If yes, then this warehouse will be used to store rejected materials"
 msgstr "Om ja, kommer detta lager att användas för att lagra avvisat material"
 
 #: erpnext/stock/doctype/item/item.js:1572
-msgid "If you are maintaining stock of this Item in your Inventory, ERPNext will make a stock ledger entry for each transaction of this item."
+msgid "If you are maintaining stock of this Item in your Inventory, Prime Ledger will make a stock ledger entry for each transaction of this item."
 msgstr "Om man har denna artikel i Lager, kommer System att lagerbokföra varje transaktion av denna artikel."
 
 #. Description of the 'Unreconciled Entries' (Section Break) field in DocType
@@ -24313,7 +24313,7 @@ msgstr "Importera Bank Kontoutdrag"
 msgid "Import Chart of Accounts from a csv file"
 msgstr "Importera Kontoplan från CSV fil"
 
-#. Label of a Link in the ERPNext Settings Workspace
+#. Label of a Link in the Prime Ledger Settings Workspace
 #. Label of a Link in the Home Workspace
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 #: erpnext/setup/workspace/home/home.json
@@ -29202,8 +29202,8 @@ msgstr "Lär dig om Underleverantör"
 #. Description of the 'Enable Common Party Accounting' (Check) field in DocType
 #. 'Accounts Settings'
 #: erpnext/accounts/doctype/accounts_settings/accounts_settings.json
-msgid "Learn about <a href=\"https://docs.frappe.io/erpnext/user/manual/en/common_party_accounting\" rel=\"noopener noreferrer\">Common Party</a>"
-msgstr "Lär dig mer om <a href=\"https://docs.frappe.io/erpnext/user/manual/en/common_party_accounting\" rel=\"noopener noreferrer\">Gemensam Parti</a>"
+msgid "Learn about <a href=\"" rel=\"noopener noreferrer\">Common Party</a>"
+msgstr "Lär dig mer om <a href=\"" rel=\"noopener noreferrer\">Gemensam Parti</a>"
 
 #. Label of the leave_encashed (Select) field in DocType 'Employee'
 #: erpnext/setup/doctype/employee/employee.json
@@ -49731,7 +49731,7 @@ msgstr "Försäljning Pris"
 
 #. Name of a DocType
 #. Label of a Link in the Selling Workspace
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/selling/doctype/selling_settings/selling_settings.json
 #: erpnext/selling/workspace/selling/selling.json
@@ -52901,7 +52901,7 @@ msgstr "Lager Reserverad Kvantitet (Lager Enhet)"
 
 #. Label of the auto_accounting_for_stock_settings (Section Break) field in
 #. DocType 'Company'
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Name of a DocType
 #. Label of a Link in the Stock Workspace
 #. Label of a Workspace Sidebar Item
@@ -56270,8 +56270,8 @@ msgid "The shares don't exist with the {0}"
 msgstr "Aktier finns inte med {0}"
 
 #: erpnext/stock/stock_ledger.py:908
-msgid "The stock for the item {0} in the {1} warehouse was negative on the {2}. You should create a positive entry {3} before the date {4} and time {5} to post the correct valuation rate. For more details, please read the <a href='https://docs.erpnext.com/docs/user/manual/en/stock-adjustment-cogs-with-negative-stock'>documentation</a>."
-msgstr "Lager för artikel {0} i {1} lager var negativt {2}. Skapa positiv post {3} före {4} och {5} för att bokföra rätt Värdering Pris. För mer information, läs dokumentation <a href='https://docs.erpnext.com/docs/user/manual/en/stock-adjustment-cogs-with-negative-stock'></a>."
+msgid "The stock for the item {0} in the {1} warehouse was negative on the {2}. You should create a positive entry {3} before the date {4} and time {5} to post the correct valuation rate. For more details, please read the."
+msgstr "Lager för artikel {0} i {1} lager var negativt {2}. Skapa positiv post {3} före {4} och {5} för att bokföra rätt Värdering Pris. För mer information, läs dokumentation."
 
 #: erpnext/stock/doctype/stock_reconciliation/stock_reconciliation.py:863
 msgid "The stock has been reserved for the following Items and Warehouses, un-reserve the same to {0} the Stock Reconciliation: <br /><br /> {1}"
@@ -56441,8 +56441,8 @@ msgid "There are no transactions in the system for the selected bank account and
 msgstr "Det finns inga transaktioner i system för vald bankkonto och datum som stämmer med filter."
 
 #: erpnext/stock/doctype/item/item.js:1591
-msgid "There are two options to maintain valuation of stock. FIFO (first in - first out) and Moving Average. To understand this topic in detail please visit <a href='https://docs.frappe.io/erpnext/user/manual/en/calculation-of-valuation-rate-in-fifo-and-moving-average' target='_blank'>Item Valuation, FIFO and Moving Average.</a>"
-msgstr "Det finns två alternativ för att upprätthålla lager värdering. FIFO (först in - först ut) och Medel Värde. För att förstå detta ämne i detalj, besök <a href='https://docs.frappe.io/erpnext/user/manual/en/calculation-of-valuation-rate-in-fifo-and-moving-average' target='_blank'>Artikel värdering, FIFO och MV.</a>"
+msgid "There are two options to maintain valuation of stock. FIFO (first in - first out) and Moving Average. To understand this topic in detail please visit"
+msgstr "Det finns två alternativ för att upprätthålla lager värdering. FIFO (först in - först ut) och Medel Värde. För att förstå detta ämne i detalj, besök"
 
 #: banking/src/components/features/BankReconciliation/MatchAndReconcile.tsx:982
 msgid "There are {0} unreconciled transactions before {1}."
@@ -56565,7 +56565,7 @@ msgid "This action will stop future billing. Are you sure you want to cancel thi
 msgstr "Denna åtgärd stoppar framtida fakturering.Fortsätt?"
 
 #: erpnext/accounts/doctype/bank_account/bank_account.js:35
-msgid "This action will unlink this account from any external service integrating ERPNext with your bank accounts. It cannot be undone. Are you certain ?"
+msgid "This action will unlink this account from any external service integrating Prime Ledger with your bank accounts. It cannot be undone. Are you certain ?"
 msgstr "Detta åtgärd kommer att koppla bort detta konto från alla externa tjänster som integrerar System med  Bank Konto. Det kan inte bli ogjort. Fortsätt ?"
 
 #. Description of the 'Allow Sales Order creation for expired Quotation'
@@ -60184,7 +60184,7 @@ msgid "User has not applied rule on the invoice {0}"
 msgstr "Användare har inte tillämpat regel på faktura {0}"
 
 #: erpnext/crm/frappe_crm_api.py:197
-msgid "User not allowed to synchronize data from Frappe CRM on ERPNext. Contact System Manager of ERPNext."
+msgid "User not allowed to synchronize data from Frappe CRM on Prime Ledger. Contact System Manager of Prime Ledger."
 msgstr "Användare har inte behörighet att synkronisera data från Säljstöd. Kontakta Systemansvarig."
 
 #: erpnext/setup/doctype/employee/employee.py:298
@@ -61237,7 +61237,7 @@ msgid "Vouchers"
 msgstr "Verifikat"
 
 #: erpnext/patches/v15_0/remove_exotel_integration.py:32
-msgid "WARNING: Exotel app has been separated from ERPNext, please install the app to continue using Exotel integration."
+msgid "WARNING: Exotel app has been separated from Prime Ledger, please install the app to continue using Exotel integration."
 msgstr "OBS: Exotel app har separerats från System, installera app för att fortsätta använda Exotelintegration."
 
 #. Label of the wip_composite_asset (Link) field in DocType 'Purchase Invoice
@@ -62819,7 +62819,7 @@ msgid "Zip File"
 msgstr "Zip Fil"
 
 #: erpnext/stock/reorder_item.py:368
-msgid "[Important] [ERPNext] Auto Reorder Errors"
+msgid "[Important] [Prime Ledger] Auto Reorder Errors"
 msgstr "[Viktigt] [System] Automatisk Återbeställning Fel"
 
 #: erpnext/controllers/status_updater.py:307

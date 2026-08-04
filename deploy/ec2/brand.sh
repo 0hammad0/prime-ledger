@@ -57,6 +57,13 @@ brand_container() {
   for css_dir in "$APP_CSS" "$SITE_CSS"; do
     copy_into "$BRAND_DIR/prime_ledger_brand.css" "$cid" "$css_dir/prime_ledger_brand.css" || true
   done
+  APP_JS="/home/frappe/frappe-bench/apps/erpnext/erpnext/public/js"
+  SITE_JS="/home/frappe/frappe-bench/sites/assets/erpnext/js"
+  "${DOCKER[@]}" exec -u root "$cid" mkdir -p "$APP_JS" "$SITE_JS" 2>/dev/null || true
+  if [[ -f "$BRAND_DIR/login_simple.js" ]]; then
+    copy_into "$BRAND_DIR/login_simple.js" "$cid" "$APP_JS/login_simple.js" || true
+    copy_into "$BRAND_DIR/login_simple.js" "$cid" "$SITE_JS/login_simple.js" || true
+  fi
 }
 
 echo "==> Copying Prime Ledger brand assets"
@@ -95,9 +102,51 @@ PY
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
   bench --site "$SITE_NAME" clear-cache || true
 
-"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
-  bash -lc 'sed -i "s/Starting Frappe \\.\\.\\./Starting Prime Ledger .../g" /home/frappe/frappe-bench/apps/frappe/frappe/desk/page/setup_wizard/setup_wizard.js 2>/dev/null || true'
-"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
-  bash -lc 'sed -i "s/ERPNext/Prime Ledger/g" /home/frappe/frappe-bench/apps/frappe/frappe/templates/includes/footer/footer.html 2>/dev/null || true'
+# Scrub remaining ERPNext / Frappe product strings from login, footer, wizard templates
+scrub_frappe() {
+  local cid="$1"
+  [[ -n "$cid" ]] || return 0
+  "${DOCKER[@]}" exec -u root "$cid" bash -lc '
+    set +e
+    for f in \
+      /home/frappe/frappe-bench/apps/frappe/frappe/desk/page/setup_wizard/setup_wizard.js \
+      /home/frappe/frappe-bench/apps/frappe/frappe/templates/includes/footer/footer.html \
+      /home/frappe/frappe-bench/apps/frappe/frappe/www/login.html \
+      /home/frappe/frappe-bench/apps/frappe/frappe/templates/includes/footer/footer_powered.html \
+      /home/frappe/frappe-bench/apps/erpnext/erpnext/templates/includes/footer/footer_powered.html
+    do
+      [ -f "$f" ] || continue
+      sed -i \
+        -e "s/Starting Frappe \\.\\.\\./Starting Prime Ledger .../g" \
+        -e "s/Welcome to Frappe/Welcome to Prime Ledger/g" \
+        -e "s/ERPNext/Prime Ledger/g" \
+        -e "s/Frappe Framework/Prime Ledger/g" \
+        "$f"
+    done
+  ' || true
+}
+scrub_frappe "$BACKEND_CID"
+for svc in frontend websocket; do
+  cid="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" ps -q "$svc" 2>/dev/null | head -n1 || true)"
+  scrub_frappe "${cid:-}"
+done
+
+# Hot-patch scrubbed help/error sources into the Hub erpnext app tree
+if [[ -d "$BRAND_DIR/scrub" ]]; then
+  while IFS= read -r -d '' src; do
+    rel="${src#$BRAND_DIR/scrub/}"
+    dest="/home/frappe/frappe-bench/apps/erpnext/erpnext/${rel}"
+    dest_dir="$(dirname "$dest")"
+    "${DOCKER[@]}" exec -u root "$BACKEND_CID" mkdir -p "$dest_dir" 2>/dev/null || true
+    copy_into "$src" "$BACKEND_CID" "$dest" || true
+    for svc in frontend websocket; do
+      cid="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" ps -q "$svc" 2>/dev/null | head -n1 || true)"
+      if [[ -n "${cid:-}" ]]; then
+        "${DOCKER[@]}" exec -u root "$cid" mkdir -p "$dest_dir" 2>/dev/null || true
+        copy_into "$src" "$cid" "$dest" || true
+      fi
+    done
+  done < <(find "$BRAND_DIR/scrub" -type f -print0 2>/dev/null)
+fi
 
 echo "Branded as Prime Ledger (logos, theme CSS, navbar, site settings)."

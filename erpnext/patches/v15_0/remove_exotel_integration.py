@@ -30,7 +30,7 @@ def notify_existing_users():
 
 	notification = {
 		"subject": _(
-			"WARNING: Exotel app has been separated from ERPNext, please install the app to continue using Exotel integration."
+			"WARNING: Exotel app has been separated from Prime Ledger, please install the app to continue using Exotel integration."
 		),
 		"type": "Alert",
 	}

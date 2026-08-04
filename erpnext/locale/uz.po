@@ -707,8 +707,8 @@ msgstr "<div id=\\\"item-prices-container\\\"></div>"
 
 #. Content of the 'uom_help_html' (HTML) field in DocType 'Item'
 #: erpnext/stock/doctype/item/item.json
-msgid "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Define alternate units for this item. Eg: 1 Box = 12 Nos, set conversion factor as 12. (Will also apply for variants) <a href=\"https://docs.frappe.io/erpnext/uom\" target=\"_blank\">Learn more &#8594;</a></div>"
-msgstr "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Ushbu element uchun muqobil birliklarni aniqlang. Masalan: 1 katak = 12 son, konvertatsiya koeffitsientini 12 ga o'rnating. (Variantlarga ham tegishli) <a href=\"https://docs.frappe.io/erpnext/uom\" target=\"_blank\">Batafsil ma'lumot &#8594;</a></div>"
+msgid "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Define alternate units for this item. Eg: 1 Box = 12 Nos, set conversion factor as 12. (Will also apply for variants) <a href=\"" target=\"_blank\">Learn more &#8594;</a></div>"
+msgstr "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Ushbu element uchun muqobil birliklarni aniqlang. Masalan: 1 katak = 12 son, konvertatsiya koeffitsientini 12 ga o'rnating. (Variantlarga ham tegishli) <a href=\"" target=\"_blank\">Batafsil ma'lumot &#8594;</a></div>"
 
 #. Content of the 'settings' (HTML) field in DocType 'Cheque Print Template'
 #: erpnext/accounts/doctype/cheque_print_template/cheque_print_template.json
@@ -951,7 +951,7 @@ msgstr "<span class=\"h4\"><b>Hisobotlar &amp; Magistrlar</b></span>"
 msgid "<span class=\"h4\"><b>Subcontracting Inward and Outward</b></span>"
 msgstr "<span class=\"h4\"><b>Ichki va tashqi subpudratchilik</b></span>"
 
-#. Header text in the ERPNext Settings Workspace
+#. Header text in the Prime Ledger Settings Workspace
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 msgid "<span class=\"h4\"><b>Your Shortcuts\n"
 "\t\t\t\n"
@@ -2230,7 +2230,7 @@ msgstr "Debitorlik qarzlari To'lanmagan hisobvaraq"
 
 #. Name of a DocType
 #. Label of a Link in the Invoicing Workspace
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/accounts/doctype/accounts_settings/accounts_settings.json
 #: erpnext/accounts/workspace/invoicing/invoicing.json
@@ -9250,7 +9250,7 @@ msgstr "Xarid qilish darajasi"
 
 #. Name of a DocType
 #. Label of a Link in the Buying Workspace
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/buying/doctype/buying_settings/buying_settings.json
 #: erpnext/buying/workspace/buying/buying.json
@@ -9274,8 +9274,8 @@ msgid "Buying must be checked, if Applicable For is selected as {0}"
 msgstr "Agar \"Applicable For\" varianti {0} sifatida tanlangan bo'lsa, sotib olishni belgilash kerak."
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:62
-msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a <a href='https://docs.erpnext.com/docs/user/manual/en/setting-up/settings/naming-series' target='_blank'>Naming Series</a> choose the 'Naming Series' option."
-msgstr "Odatiy bo'lib, Yetkazib beruvchi nomi kiritilgan Yetkazib beruvchi nomiga muvofiq o'rnatiladi. Agar Yetkazib beruvchilar <a href='https://docs.erpnext.com/docs/user/manual/en/setting-up/settings/naming-series' target='_blank'>Nomlash seriyasi</a> bilan nomlanishini istasangiz, \"Nomlash seriyasi\" variantini tanlang."
+msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a choose the 'Naming Series' option."
+msgstr "Odatiy bo'lib, Yetkazib beruvchi nomi kiritilgan Yetkazib beruvchi nomiga muvofiq o'rnatiladi. Agar Yetkazib beruvchilar bilan nomlanishini istasangiz, \"Nomlash seriyasi\" variantini tanlang."
 
 #. Option for the 'Type' (Select) field in DocType 'BOM Secondary Item'
 #. Option for the 'Type' (Select) field in DocType 'Job Card Secondary Item'
@@ -16466,7 +16466,7 @@ msgstr "Tranzaksiyalarni o'chirish"
 msgid "Delete all the Transactions for {0}"
 msgstr "{0} uchun barcha tranzaksiyalarni o'chirish"
 
-#. Label of a Link in the ERPNext Settings Workspace
+#. Label of a Link in the Prime Ledger Settings Workspace
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 msgid "Deleted Documents"
 msgstr "O'chirilgan hujjatlar"
@@ -18518,8 +18518,8 @@ msgstr "Hozirgi EMU"
 #. Label of a Desktop Icon
 #: erpnext/desktop_icon/erpnext.json
 #: erpnext/public/js/shop_floor/shop_floor.js:103
-msgid "ERPNext"
-msgstr "ERPNext"
+msgid "Prime Ledger"
+msgstr "Prime Ledger"
 
 #. Label of a Desktop Icon
 #. Name of a Workspace
@@ -18527,18 +18527,18 @@ msgstr "ERPNext"
 #: erpnext/desktop_icon/erpnext_settings.json
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 #: erpnext/workspace_sidebar/erpnext_settings.json
-msgid "ERPNext Settings"
-msgstr "ERPNext sozlamalari"
+msgid "Prime Ledger Settings"
+msgstr "Prime Ledger sozlamalari"
 
 #. Label of the user_id (Data) field in DocType 'Employee Group Table'
 #: erpnext/setup/doctype/employee_group_table/employee_group_table.json
-msgid "ERPNext User ID"
-msgstr "ERPNext foydalanuvchi identifikatori"
+msgid "Prime Ledger User ID"
+msgstr "Prime Ledger foydalanuvchi identifikatori"
 
 #. Description of the 'Maintain Stock' (Check) field in DocType 'Item'
 #: erpnext/stock/doctype/item/item.json
-msgid "ERPNext will make a stock ledger entry for each transaction of this item. Keep unchecked for non-stock or service items."
-msgstr "ERPNext ushbu mahsulotning har bir tranzaksiya uchun zaxira daftariga yozuv kiritadi. Zaxirada bo'lmagan yoki xizmat ko'rsatuvchi mahsulotlar uchun belgilanmagan holda saqlang."
+msgid "Prime Ledger will make a stock ledger entry for each transaction of this item. Keep unchecked for non-stock or service items."
+msgstr "Prime Ledger ushbu mahsulotning har bir tranzaksiya uchun zaxira daftariga yozuv kiritadi. Zaxirada bo'lmagan yoki xizmat ko'rsatuvchi mahsulotlar uchun belgilanmagan holda saqlang."
 
 #. Option for the 'How often should project be updated of Total Purchase Cost
 #. ?' (Select) field in DocType 'Buying Settings'
@@ -21588,7 +21588,7 @@ msgid "Frappe CRM Allowed User"
 msgstr ""
 
 #: erpnext/crm/frappe_crm_api.py:186
-msgid "Frappe CRM data synchronization is not enabled on ERPNext. Contact System Manager of ERPNext."
+msgid "Frappe CRM data synchronization is not enabled on Prime Ledger. Contact System Manager of Prime Ledger."
 msgstr ""
 
 #: erpnext/setup/install.py:243
@@ -22607,7 +22607,7 @@ msgid "Give free item for every N quantity"
 msgstr "Har bir N miqdor uchun bepul buyum bering"
 
 #. Name of a DocType
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/setup/doctype/global_defaults/global_defaults.json
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
@@ -23779,17 +23779,17 @@ msgstr "Agar yoqilgan bo'lsa, avtomatik Serial \n"
 #. DocType 'Production Plan'
 #: erpnext/manufacturing/doctype/production_plan/production_plan.json
 msgid "If enabled, formula for <b>Qty to Order</b>: <br>\n"
-"Required Qty (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Projected Qty</a>. <br> This helps avoid over-ordering."
+"Required Qty (BOM) - <a href=\"">Projected Qty</a>. <br> This helps avoid over-ordering."
 msgstr "Agar yoqilgan bo'lsa, <b>Buyurtma berish uchun miqdor</b>formulasi: <br>\n"
-"Kerakli miqdor (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Rejalashtirilgan miqdor</a>. <br> Bu ortiqcha buyurtma berishning oldini olishga yordam beradi."
+"Kerakli miqdor (BOM) - <a href=\"">Rejalashtirilgan miqdor</a>. <br> Bu ortiqcha buyurtma berishning oldini olishga yordam beradi."
 
 #. Description of the 'Consider Projected Qty in Calculation (RM)' (Check)
 #. field in DocType 'Production Plan'
 #: erpnext/manufacturing/doctype/production_plan/production_plan.json
 msgid "If enabled, formula for <b>Required Qty</b>: <br>\n"
-"Required Qty (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Projected Qty</a>. <br> This helps avoid over-ordering."
+"Required Qty (BOM) - <a href=\"">Projected Qty</a>. <br> This helps avoid over-ordering."
 msgstr "Agar yoqilgan bo'lsa, <b>uchun formula Kerakli Miqdor</b>: <br>\n"
-"Kerakli Miqdor (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Rejalashtirilgan Miqdor</a>. <br> Bu ortiqcha buyurtma berishning oldini olishga yordam beradi."
+"Kerakli Miqdor (BOM) - <a href=\"">Rejalashtirilgan Miqdor</a>. <br> Bu ortiqcha buyurtma berishning oldini olishga yordam beradi."
 
 #. Description of the 'Create Ledger Entries for Change Amount' (Check) field
 #. in DocType 'POS Settings'
@@ -24058,12 +24058,12 @@ msgid "If this item has variants, then it cannot be selected in sales orders etc
 msgstr "Agar ushbu mahsulotning variantlari bo'lsa, uni savdo buyurtmalarida va hokazolarda tanlab bo'lmaydi."
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:76
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
-msgstr "Agar ushbu parametr \"Ha\" deb sozlangan bo'lsa, ERPNext sizga avval Xarid Buyurtmasini yaratmasdan Xarid Fakturasi yoki Chek yaratishning oldini oladi. Ushbu konfiguratsiyani ma'lum bir yetkazib beruvchi uchun Yetkazib beruvchi asosiy oynasida \"Xarid Buyurtmasisiz Xarid Fakturasini Yaratishga Ruxsat Berish\" katagiga belgi qo'yish orqali bekor qilish mumkin."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
+msgstr "Agar ushbu parametr \"Ha\" deb sozlangan bo'lsa, Prime Ledger sizga avval Xarid Buyurtmasini yaratmasdan Xarid Fakturasi yoki Chek yaratishning oldini oladi. Ushbu konfiguratsiyani ma'lum bir yetkazib beruvchi uchun Yetkazib beruvchi asosiy oynasida \"Xarid Buyurtmasisiz Xarid Fakturasini Yaratishga Ruxsat Berish\" katagiga belgi qo'yish orqali bekor qilish mumkin."
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:83
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
-msgstr "Agar ushbu parametr \"Ha\" deb sozlangan bo'lsa, ERPNext sizga avval Xarid chekini yaratmasdan Xarid fakturasini yaratishga yo'l qo'ymaydi. Ushbu konfiguratsiyani ma'lum bir yetkazib beruvchi uchun Yetkazib beruvchi asosiy oynasida \"Xarid fakturasini Xarid chekisiz yaratishga ruxsat berish\" katagiga belgi qo'yish orqali bekor qilish mumkin."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
+msgstr "Agar ushbu parametr \"Ha\" deb sozlangan bo'lsa, Prime Ledger sizga avval Xarid chekini yaratmasdan Xarid fakturasini yaratishga yo'l qo'ymaydi. Ushbu konfiguratsiyani ma'lum bir yetkazib beruvchi uchun Yetkazib beruvchi asosiy oynasida \"Xarid fakturasini Xarid chekisiz yaratishga ruxsat berish\" katagiga belgi qo'yish orqali bekor qilish mumkin."
 
 #: erpnext/manufacturing/doctype/manufacturing_settings/manufacturing_settings.js:10
 msgid "If ticked, multiple materials can be used for a single Work Order. This is useful if one or more time consuming products are being manufactured."
@@ -24088,8 +24088,8 @@ msgid "If yes, then this warehouse will be used to store rejected materials"
 msgstr "Agar shunday bo'lsa, unda bu ombor rad etilgan materiallarni saqlash uchun ishlatiladi"
 
 #: erpnext/stock/doctype/item/item.js:1572
-msgid "If you are maintaining stock of this Item in your Inventory, ERPNext will make a stock ledger entry for each transaction of this item."
-msgstr "Agar siz ushbu mahsulot zaxirasini inventarizatsiyangizda saqlasangiz, ERPNext ushbu mahsulotning har bir tranzaksiya uchun inventarizatsiya daftariga yozuv kiritadi."
+msgid "If you are maintaining stock of this Item in your Inventory, Prime Ledger will make a stock ledger entry for each transaction of this item."
+msgstr "Agar siz ushbu mahsulot zaxirasini inventarizatsiyangizda saqlasangiz, Prime Ledger ushbu mahsulotning har bir tranzaksiya uchun inventarizatsiya daftariga yozuv kiritadi."
 
 #. Description of the 'Unreconciled Entries' (Section Break) field in DocType
 #. 'Payment Reconciliation'
@@ -24293,7 +24293,7 @@ msgstr "Import banki bayonoti"
 msgid "Import Chart of Accounts from a csv file"
 msgstr "Hisoblar jadvalini csv faylidan import qilish"
 
-#. Label of a Link in the ERPNext Settings Workspace
+#. Label of a Link in the Prime Ledger Settings Workspace
 #. Label of a Link in the Home Workspace
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 #: erpnext/setup/workspace/home/home.json
@@ -29182,8 +29182,8 @@ msgstr "Subpudratchilikni o'rganing"
 #. Description of the 'Enable Common Party Accounting' (Check) field in DocType
 #. 'Accounts Settings'
 #: erpnext/accounts/doctype/accounts_settings/accounts_settings.json
-msgid "Learn about <a href=\"https://docs.frappe.io/erpnext/user/manual/en/common_party_accounting\" rel=\"noopener noreferrer\">Common Party</a>"
-msgstr "<a href=\"https://docs.frappe.io/erpnext/user/manual/en/common_party_accounting\" rel=\"noopener noreferrer\">Umumiy partiya</a> haqida bilib oling"
+msgid "Learn about <a href=\"" rel=\"noopener noreferrer\">Common Party</a>"
+msgstr "<a href=\"" rel=\"noopener noreferrer\">Umumiy partiya</a> haqida bilib oling"
 
 #. Label of the leave_encashed (Select) field in DocType 'Employee'
 #: erpnext/setup/doctype/employee/employee.json
@@ -49709,7 +49709,7 @@ msgstr "Sotish darajasi"
 
 #. Name of a DocType
 #. Label of a Link in the Selling Workspace
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/selling/doctype/selling_settings/selling_settings.json
 #: erpnext/selling/workspace/selling/selling.json
@@ -52879,7 +52879,7 @@ msgstr "Zaxiralangan miqdor (UOM omborida)"
 
 #. Label of the auto_accounting_for_stock_settings (Section Break) field in
 #. DocType 'Company'
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Name of a DocType
 #. Label of a Link in the Stock Workspace
 #. Label of a Workspace Sidebar Item
@@ -56248,7 +56248,7 @@ msgid "The shares don't exist with the {0}"
 msgstr "{0} bilan aksiyalar mavjud emas"
 
 #: erpnext/stock/stock_ledger.py:908
-msgid "The stock for the item {0} in the {1} warehouse was negative on the {2}. You should create a positive entry {3} before the date {4} and time {5} to post the correct valuation rate. For more details, please read the <a href='https://docs.erpnext.com/docs/user/manual/en/stock-adjustment-cogs-with-negative-stock'>documentation</a>."
+msgid "The stock for the item {0} in the {1} warehouse was negative on the {2}. You should create a positive entry {3} before the date {4} and time {5} to post the correct valuation rate. For more details, please read the."
 msgstr ""
 
 #: erpnext/stock/doctype/stock_reconciliation/stock_reconciliation.py:863
@@ -56419,8 +56419,8 @@ msgid "There are no transactions in the system for the selected bank account and
 msgstr "Tanlangan bank hisob raqami va sanalari uchun tizimda filtrlarga mos keladigan hech qanday tranzaksiya yo'q."
 
 #: erpnext/stock/doctype/item/item.js:1591
-msgid "There are two options to maintain valuation of stock. FIFO (first in - first out) and Moving Average. To understand this topic in detail please visit <a href='https://docs.frappe.io/erpnext/user/manual/en/calculation-of-valuation-rate-in-fifo-and-moving-average' target='_blank'>Item Valuation, FIFO and Moving Average.</a>"
-msgstr "Aksiyalar qiymatini saqlab qolishning ikkita varianti mavjud: FIFO (birinchi kiruvchi - birinchi chiquvchi) va Harakatlanuvchi o'rtacha. Ushbu mavzuni batafsil tushunish uchun <a href='https://docs.frappe.io/erpnext/user/manual/en/calculation-of-valuation-rate-in-fifo-and-moving-average' target='_blank'>Mahsulotni baholash, FIFO va Harakatlanuvchi o'rtacha ko'rsatkichga tashrif buyuring.</a>"
+msgid "There are two options to maintain valuation of stock. FIFO (first in - first out) and Moving Average. To understand this topic in detail please visit"
+msgstr "Aksiyalar qiymatini saqlab qolishning ikkita varianti mavjud: FIFO (birinchi kiruvchi - birinchi chiquvchi) va Harakatlanuvchi o'rtacha. Ushbu mavzuni batafsil tushunish uchun"
 
 #: banking/src/components/features/BankReconciliation/MatchAndReconcile.tsx:982
 msgid "There are {0} unreconciled transactions before {1}."
@@ -56543,8 +56543,8 @@ msgid "This action will stop future billing. Are you sure you want to cancel thi
 msgstr "Bu amal kelajakdagi to'lovlarni to'xtatadi. Haqiqatan ham ushbu obunani bekor qilmoqchimisiz?"
 
 #: erpnext/accounts/doctype/bank_account/bank_account.js:35
-msgid "This action will unlink this account from any external service integrating ERPNext with your bank accounts. It cannot be undone. Are you certain ?"
-msgstr "Bu harakat ushbu hisobni ERPNext’ni bank hisoblaringiz bilan integratsiya qiluvchi har qanday tashqi xizmatdan uzib qo‘yadi. Buni bekor qilib bo‘lmaydi. Ishonchingiz komilmi?"
+msgid "This action will unlink this account from any external service integrating Prime Ledger with your bank accounts. It cannot be undone. Are you certain ?"
+msgstr "Bu harakat ushbu hisobni Prime Ledger’ni bank hisoblaringiz bilan integratsiya qiluvchi har qanday tashqi xizmatdan uzib qo‘yadi. Buni bekor qilib bo‘lmaydi. Ishonchingiz komilmi?"
 
 #. Description of the 'Allow Sales Order creation for expired Quotation'
 #. (Check) field in DocType 'Selling Settings'
@@ -60162,7 +60162,7 @@ msgid "User has not applied rule on the invoice {0}"
 msgstr "Foydalanuvchi fakturaga qoida qo'llamagan {0}"
 
 #: erpnext/crm/frappe_crm_api.py:197
-msgid "User not allowed to synchronize data from Frappe CRM on ERPNext. Contact System Manager of ERPNext."
+msgid "User not allowed to synchronize data from Frappe CRM on Prime Ledger. Contact System Manager of Prime Ledger."
 msgstr ""
 
 #: erpnext/setup/doctype/employee/employee.py:298
@@ -61215,7 +61215,7 @@ msgid "Vouchers"
 msgstr "Vaucherlar"
 
 #: erpnext/patches/v15_0/remove_exotel_integration.py:32
-msgid "WARNING: Exotel app has been separated from ERPNext, please install the app to continue using Exotel integration."
+msgid "WARNING: Exotel app has been separated from Prime Ledger, please install the app to continue using Exotel integration."
 msgstr "OGOHLANTIRISH: Exotel ilovasi ERP dan ajratildi. Keyin, Exotel integratsiyasidan foydalanishda davom etish uchun ilovani o'rnating."
 
 #. Label of the wip_composite_asset (Link) field in DocType 'Purchase Invoice
@@ -62797,8 +62797,8 @@ msgid "Zip File"
 msgstr "Zip fayli"
 
 #: erpnext/stock/reorder_item.py:368
-msgid "[Important] [ERPNext] Auto Reorder Errors"
-msgstr "[Muhim] [ERPNext] Avtomatik qayta tartiblash xatolari"
+msgid "[Important] [Prime Ledger] Auto Reorder Errors"
+msgstr "[Muhim] [Prime Ledger] Avtomatik qayta tartiblash xatolari"
 
 #: erpnext/controllers/status_updater.py:307
 msgid "`Allow Negative rates for Items`"

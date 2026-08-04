@@ -109,6 +109,19 @@ patch_cid() {
     "${DOCKER[@]}" cp "$PATCH_ROOT/patches/restore_frappe_portal_settings.py" \
       "${cid}:${APP}/patches/v16_0/restore_frappe_portal_settings.py"
   fi
+  # Login redirect + boot portal home (Hub overlay)
+  if [[ -f "$PATCH_ROOT/portal_control/redirects.py" ]]; then
+    "${DOCKER[@]}" cp "$PATCH_ROOT/portal_control/redirects.py" "${cid}:${APP}/portal_control/redirects.py"
+  fi
+  if [[ -f "$PATCH_ROOT/boot.py" ]]; then
+    "${DOCKER[@]}" cp "$PATCH_ROOT/boot.py" "${cid}:${APP}/startup/boot.py"
+  fi
+  if [[ -f "$SCRIPT_DIR/patches/setup-wizard/setup_wizard.js" ]]; then
+    "${DOCKER[@]}" exec -u root "$cid" mkdir -p \
+      /home/frappe/frappe-bench/apps/erpnext/erpnext/public/js || true
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/patches/setup-wizard/setup_wizard.js" \
+      "${cid}:/home/frappe/frappe-bench/apps/erpnext/erpnext/public/js/setup_wizard.js" || true
+  fi
 
   "${DOCKER[@]}" cp "$INJECT_PY" "${cid}:/tmp/inject_portal_hooks.py"
   "${DOCKER[@]}" exec -u root "$cid" python3 /tmp/inject_portal_hooks.py

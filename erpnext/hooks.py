@@ -3,12 +3,12 @@ app_title = "Prime Ledger"
 app_publisher = "Prime Ledger"
 app_description = """Prime Ledger — business accounting and operations"""
 app_icon = "fa fa-th"
-app_color = "#0B2E24"
+app_color = "#102A43"
 app_email = "support@primeledger.local"
 app_license = "GNU General Public License (v3)"
 source_link = "https://github.com/0hammad0/prime-ledger"
 app_logo_url = "/assets/erpnext/images/prime-ledger-logo.svg"
-app_home = "/desk/home"
+app_home = "/portal"
 
 add_to_apps_screen = [
 	{
@@ -75,6 +75,7 @@ get_help_messages = "erpnext.utilities.activation.get_help_messages"
 filters_config = "erpnext.startup.filters.get_filters_config"
 additional_print_settings = "erpnext.controllers.print_settings.get_print_settings"
 
+on_login = "erpnext.portal_control.redirects.on_login"
 on_session_creation = "erpnext.portal.utils.create_customer_or_supplier"
 
 treeviews = [

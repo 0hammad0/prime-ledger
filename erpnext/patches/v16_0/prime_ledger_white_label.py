@@ -24,12 +24,12 @@ def execute():
 
 	try:
 		for name, label in frappe.get_all("Workspace", fields=["name", "label"], as_list=True):
-			if label and "ERPNext" in label:
+			if label and "Prime Ledger" in label:
 				frappe.db.set_value(
 					"Workspace",
 					name,
 					"label",
-					label.replace("ERPNext", "Prime Ledger"),
+					label.replace("Prime Ledger", "Prime Ledger"),
 					update_modified=False,
 				)
 	except Exception:
@@ -38,11 +38,11 @@ def execute():
 	logo = "/assets/erpnext/images/prime-ledger-logo.svg"
 	for row in frappe.get_all("Desktop Icon", fields=["name", "label"]):
 		label = row.label or ""
-		if "ERPNext" in label:
+		if "Prime Ledger" in label:
 			frappe.db.set_value(
 				"Desktop Icon",
 				row.name,
-				{"label": label.replace("ERPNext", "Prime Ledger"), "logo_url": logo},
+				{"label": label.replace("Prime Ledger", "Prime Ledger"), "logo_url": logo},
 				update_modified=False,
 			)
 

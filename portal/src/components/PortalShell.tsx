@@ -34,8 +34,8 @@ export function PortalShell({ mode }: { mode: "tenant" | "admin" }) {
 
   if (loading) {
     return (
-      <div className="grid h-full place-items-center text-[var(--pl-ink-soft)]">
-        Loading Prime Ledger portal…
+      <div className="grid h-full place-items-center text-base text-[var(--pl-ink-soft)]">
+        Opening your home…
       </div>
     );
   }
@@ -44,9 +44,14 @@ export function PortalShell({ mode }: { mode: "tenant" | "admin" }) {
     return (
       <div className="grid h-full place-items-center p-8 text-center">
         <div>
-          <h1 className="mb-2 text-xl font-semibold">Portal unavailable</h1>
-          <p className="mb-4 text-sm text-[var(--pl-ink-soft)]">{error || "Unknown error"}</p>
-          <a className="underline" href="/login?redirect-to=/portal">
+          <h1 className="mb-2 text-xl font-semibold">Could not open your home</h1>
+          <p className="mb-4 text-base text-[var(--pl-ink-soft)]">
+            {error || "Please sign in again."}
+          </p>
+          <a
+            className="inline-flex min-h-11 items-center rounded-lg bg-[var(--pl-accent)] px-5 font-semibold text-white"
+            href="/login?redirect-to=/portal"
+          >
             Sign in again
           </a>
         </div>
@@ -66,9 +71,9 @@ export function PortalShell({ mode }: { mode: "tenant" | "admin" }) {
       <aside className="flex w-64 shrink-0 flex-col border-r border-[var(--pl-line)] bg-white">
         <div className="border-b border-[var(--pl-line)] px-4 py-5">
           <div className="text-xs tracking-[0.14em] text-[var(--pl-accent)] uppercase">Prime Ledger</div>
-          <div className="mt-1 text-lg font-semibold">{boot.app_name}</div>
-          <div className="mt-1 text-xs text-[var(--pl-ink-soft)]">
-            {mode === "admin" ? "Super Admin" : "Tenant"}
+          <div className="mt-1 text-lg font-semibold">{boot.app_name || "Prime Ledger"}</div>
+          <div className="mt-1 text-sm text-[var(--pl-ink-soft)]">
+            {mode === "admin" ? "Site admin" : "Your business"}
           </div>
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">
@@ -76,24 +81,24 @@ export function PortalShell({ mode }: { mode: "tenant" | "admin" }) {
             <ModuleLink key={m.module_key} mod={m} base={mode} />
           ))}
         </nav>
-        <div className="border-t border-[var(--pl-line)] p-4 text-xs text-[var(--pl-ink-soft)]">
+        <div className="border-t border-[var(--pl-line)] p-4 text-sm text-[var(--pl-ink-soft)]">
           <div className="font-medium text-[var(--pl-ink)]">{boot.user.full_name || boot.user.name}</div>
-          <div className="mt-2 flex gap-3">
+          <div className="mt-3 flex flex-col gap-2">
             {boot.is_super_admin && mode === "tenant" ? (
               <a className="underline" href="/portal/admin">
-                Super Admin
+                Site admin
               </a>
             ) : null}
             {mode === "admin" ? (
               <a className="underline" href="/portal/tenant">
-                Tenant view
+                Back to business home
               </a>
             ) : null}
             <a className="underline" href="/app">
-              Desk
+              Advanced tools
             </a>
-            <a className="underline" href="/logout">
-              Logout
+            <a className="font-medium text-[var(--pl-ink)] underline" href="/logout">
+              Sign out
             </a>
           </div>
         </div>

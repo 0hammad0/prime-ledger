@@ -4,10 +4,19 @@ frappe.pages["setup-wizard"].on_page_load = function (wrapper) {
 	// Only skip wizard when setup is marked complete (not merely company exists).
 	const apps = frappe.boot?.setup_wizard_completed_apps || [];
 	if (apps.includes("erpnext") && (frappe.sys_defaults.company || frappe.boot?.sysdefaults?.company)) {
-		frappe.set_route("workspace");
+		window.location.assign("/portal");
 		return;
 	}
 };
+
+// After setup wizard finishes, land on Prime Ledger portal dashboard.
+frappe.ready(function () {
+	$(document).on("setup_complete", function () {
+		setTimeout(function () {
+			window.location.assign("/portal");
+		}, 800);
+	});
+});
 
 // Patch wizard submit so country/currency from later slides are never dropped.
 frappe.setup.on("after_load", function () {
@@ -51,8 +60,8 @@ frappe.setup.on("after_load", function () {
 		frappe.set_route(this.page_name);
 
 		this.$working_state = this.get_message(
-			__("Setting up your system"),
-			__("Starting Prime Ledger ...")
+			__("Almost done"),
+			__("Setting up Prime Ledger for you… Please wait.")
 		).appendTo(this.parent);
 
 		this.attach_abort_button();
@@ -78,36 +87,33 @@ erpnext.setup.slides_settings = [
 	{
 		// Persona — help us tailor the setup
 		name: "persona",
-		title: __("A little about you"),
-		// subtitle shown under the title
-		help: __("A few quick questions so we can set things up the way you work."),
+		title: __("Welcome to Prime Ledger"),
+		help: __("Answer a few easy questions. We will set things up for you."),
 		fields: [
 			{
 				fieldname: "persona_implementing_for",
-				label: __("Who are you setting this up for?"),
+				label: __("Who is this for?"),
 				fieldtype: "Select",
-				options: ["", "My own business", "A company I work for", "A client I'm consulting for"].join(
-					"\n"
-				),
+				options: ["", "My own business", "A company I work for", "A client I'm helping"].join("\n"),
 				reqd: 1,
 			},
 			{
 				fieldname: "persona_company_size",
-				label: __("How big is the team?"),
+				label: __("How many people work there?"),
 				fieldtype: "Select",
-				options: ["", "1–10", "11–50", "51–200", "201–1,000", "1,000+"].join("\n"),
+				options: ["", "Just me / 1–10", "11–50", "51–200", "201–1,000", "1,000+"].join("\n"),
 				reqd: 1,
 			},
 			{
 				fieldname: "persona_industry",
-				label: __("What kind of work do you do?"),
+				label: __("What kind of business?"),
 				fieldtype: "Select",
 				options: [
 					"",
 					"Manufacturing",
-					"Retail",
+					"Retail / Shop",
 					"Wholesale / Distribution",
-					"E-commerce",
+					"Online shop",
 					"Services / Consulting",
 					"Construction / Real Estate",
 					"Technology / Software",
@@ -122,33 +128,30 @@ erpnext.setup.slides_settings = [
 			},
 			{
 				fieldname: "persona_current_system",
-				label: __("What do you use today?"),
+				label: __("How do you keep records today?"),
 				fieldtype: "Select",
 				options: [
 					"",
+					"Paper / notebook",
+					"Excel / Spreadsheets",
 					"Tally",
 					"QuickBooks",
 					"Zoho",
-					"Sage",
-					"SAP",
-					"Microsoft Dynamics",
-					"Oracle NetSuite",
 					"Xero",
-					"Excel / Spreadsheets",
-					"Nothing yet - starting fresh",
-					"Other",
+					"Something else",
+					"Nothing yet — starting fresh",
 				].join("\n"),
 				reqd: 1,
 			},
 			{
 				fieldtype: "Section Break",
-				description: __("Select the modules that you plan to implement"),
+				description: __("What do you need? (you can change this later)"),
 			},
-			{ fieldname: "module_accounting", label: __("Accounting"), fieldtype: "Check" },
-			{ fieldname: "module_stock", label: __("Stock"), fieldtype: "Check" },
+			{ fieldname: "module_accounting", label: __("Money & accounts"), fieldtype: "Check" },
+			{ fieldname: "module_stock", label: __("Stock / inventory"), fieldtype: "Check" },
 			{ fieldtype: "Column Break" },
-			{ fieldname: "module_manufacturing", label: __("Manufacturing"), fieldtype: "Check" },
-			{ fieldname: "module_projects", label: __("Project Management"), fieldtype: "Check" },
+			{ fieldname: "module_manufacturing", label: __("Making products"), fieldtype: "Check" },
+			{ fieldname: "module_projects", label: __("Projects / jobs"), fieldtype: "Check" },
 		],
 
 		onload: function (slide) {
@@ -173,19 +176,22 @@ erpnext.setup.slides_settings = [
 	{
 		// Organization
 		name: "organization",
-		title: __("Setup your organization"),
+		title: __("Tell us about your business"),
+		help: __("Use the real name people know. We fill the hard parts for you."),
 		fields: [
 			{
 				fieldname: "company_name",
-				label: __("Company Name"),
+				label: __("Business name"),
 				fieldtype: "Data",
 				reqd: 1,
+				description: __("Example: Sultan Traders"),
 			},
 			{
 				fieldname: "company_abbr",
-				label: __("Company Abbreviation"),
+				label: __("Short code"),
 				fieldtype: "Data",
 				reqd: 1,
+				description: __("A short code for documents — we can fill this for you"),
 			},
 			{ fieldtype: "Section Break" },
 			{
@@ -197,7 +203,7 @@ erpnext.setup.slides_settings = [
 			},
 			{
 				fieldname: "currency",
-				label: __("Default Currency"),
+				label: __("Money you use (currency)"),
 				fieldtype: "Link",
 				options: "Currency",
 				reqd: 1,
@@ -205,22 +211,27 @@ erpnext.setup.slides_settings = [
 			{ fieldtype: "Section Break" },
 			{
 				fieldname: "chart_of_accounts",
-				label: __("Chart of Accounts"),
+				label: __("Accounts list"),
 				options: "",
 				fieldtype: "Select",
+				description: __("Leave the first option if you are not sure"),
 			},
-			{ fieldname: "view_coa", label: __("View Chart of Accounts"), fieldtype: "Button" },
-			{ fieldname: "fy_start_date", label: __("Financial Year Begins On"), fieldtype: "Date", reqd: 1 },
+			{ fieldname: "view_coa", label: __("Preview accounts list"), fieldtype: "Button", hidden: 1 },
+			{
+				fieldname: "fy_start_date",
+				label: __("Business year starts on"),
+				fieldtype: "Date",
+				reqd: 1,
+				description: __("Usually 1 January or 1 July"),
+			},
 			// end date should be hidden (auto calculated)
 			{ fieldname: "fy_end_date", label: __("End Date"), fieldtype: "Date", reqd: 1, hidden: 1 },
 			{ fieldtype: "Section Break" },
 			{
 				fieldname: "setup_demo",
-				label: __("Generate Demo Data for Exploration"),
+				label: __("Add sample data so I can click around"),
 				fieldtype: "Check",
-				description: __(
-					"If checked, we will create demo data for you to explore the system. This demo data can be erased later."
-				),
+				description: __("Optional. You can delete the sample data later."),
 			},
 		],
 
@@ -258,21 +269,23 @@ erpnext.setup.slides_settings = [
 			}
 
 			if ((this.values.company_name || "").toLowerCase() == "company") {
-				frappe.msgprint(__("Company Name cannot be Company"));
+				frappe.msgprint(__("Please type your real business name"));
 				return false;
 			}
 			if (!this.values.company_abbr) {
+				frappe.msgprint(__("Please enter a short code (or keep the one we filled)"));
 				return false;
 			}
 			if (this.values.company_abbr.length > 10) {
+				frappe.msgprint(__("Short code should be 10 letters or less"));
 				return false;
 			}
 			if (!this.values.country) {
-				frappe.msgprint(__("Please select a Country"));
+				frappe.msgprint(__("Please choose your country"));
 				return false;
 			}
 			if (!this.values.currency) {
-				frappe.msgprint(__("Please select a Currency"));
+				frappe.msgprint(__("Please choose your currency (money type)"));
 				return false;
 			}
 

@@ -297,11 +297,17 @@ def _set_website_brand_assets():
 		("favicon", favicon),
 		("footer_powered", "Prime Ledger"),
 		("copyright", "Prime Ledger"),
+		("title_prefix", "Prime Ledger"),
 	):
 		try:
 			frappe.db.set_single_value("Website Settings", field, value)
 		except Exception:
 			pass
+
+	try:
+		frappe.db.set_single_value("System Settings", "disable_standard_email_footer", 1)
+	except Exception:
+		pass
 
 	if frappe.db.exists("Desktop Icon", "Prime Ledger"):
 		frappe.db.set_value("Desktop Icon", "Prime Ledger", "logo_url", logo)

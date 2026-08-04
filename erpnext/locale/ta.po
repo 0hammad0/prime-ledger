@@ -8388,7 +8388,7 @@ msgid "Buying must be checked, if Applicable For is selected as {0}"
 msgstr ""
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:13
-msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a <a href='https://docs.erpnext.com/docs/user/manual/en/setting-up/settings/naming-series' target='_blank'>Naming Series</a> choose the 'Naming Series' option."
+msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a choose the 'Naming Series' option."
 msgstr ""
 
 #. Label of the bypass_credit_limit_check (Check) field in DocType 'Customer
@@ -16547,7 +16547,7 @@ msgstr ""
 
 #. Label of the user_id (Data) field in DocType 'Employee Group Table'
 #: erpnext/setup/doctype/employee_group_table/employee_group_table.json
-msgid "ERPNext User ID"
+msgid "Prime Ledger User ID"
 msgstr ""
 
 #. Option for the 'Update frequency of Project' (Select) field in DocType
@@ -21193,14 +21193,14 @@ msgstr ""
 #. DocType 'Production Plan'
 #: erpnext/manufacturing/doctype/production_plan/production_plan.json
 msgid "If enabled, formula for <b>Qty to Order</b>: <br>\n"
-"Required Qty (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Projected Qty</a>. <br> This helps avoid over-ordering."
+"Required Qty (BOM) - <a href=\"">Projected Qty</a>. <br> This helps avoid over-ordering."
 msgstr ""
 
 #. Description of the 'Consider Projected Qty in Calculation (RM)' (Check)
 #. field in DocType 'Production Plan'
 #: erpnext/manufacturing/doctype/production_plan/production_plan.json
 msgid "If enabled, formula for <b>Required Qty</b>: <br>\n"
-"Required Qty (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Projected Qty</a>. <br> This helps avoid over-ordering."
+"Required Qty (BOM) - <a href=\"">Projected Qty</a>. <br> This helps avoid over-ordering."
 msgstr ""
 
 #. Description of the 'Create Ledger Entries for Change Amount' (Check) field
@@ -21406,11 +21406,11 @@ msgid "If this item has variants, then it cannot be selected in sales orders etc
 msgstr ""
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:27
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
 msgstr ""
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:34
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
 msgstr ""
 
 #: erpnext/manufacturing/doctype/manufacturing_settings/manufacturing_settings.js:10
@@ -21436,7 +21436,7 @@ msgid "If yes, then this warehouse will be used to store rejected materials"
 msgstr ""
 
 #: erpnext/stock/doctype/item/item.js:1046
-msgid "If you are maintaining stock of this Item in your Inventory, ERPNext will make a stock ledger entry for each transaction of this item."
+msgid "If you are maintaining stock of this Item in your Inventory, Prime Ledger will make a stock ledger entry for each transaction of this item."
 msgstr ""
 
 #. Description of the 'Unreconciled Entries' (Section Break) field in DocType
@@ -26083,7 +26083,7 @@ msgstr ""
 #. 'Accounts Settings'
 #: erpnext/accounts/doctype/accounts_settings/accounts_settings.json
 #, python-format
-msgid "Learn about <a href=\"https://docs.erpnext.com/docs/v13/user/manual/en/accounts/articles/common_party_accounting#:~:text=Common%20Party%20Accounting%20in%20ERPNext,Invoice%20against%20a%20primary%20Supplier.\">Common Party</a>"
+msgid "Learn about <a href=\" Ledger,Invoice%20against%20a%20primary%20Supplier.\">Common Party</a>"
 msgstr ""
 
 #. Label of the leave_encashed (Select) field in DocType 'Employee'
@@ -50455,142 +50455,7 @@ msgid "The shares don't exist with the {0}"
 msgstr ""
 
 #: erpnext/stock/stock_ledger.py:810
-msgid "The stock for the item {0} in the {1} warehouse was negative on the {2}. You should create a positive entry {3} before the date {4} and time {5} to post the correct valuation rate. For more details, please read the <a href='https://docs.erpnext.com/docs/user/manual/en/stock-adjustment-cogs-with-negative-stock'>documentation<a>."
-msgstr ""
-
-#: erpnext/stock/doctype/stock_reconciliation/stock_reconciliation.py:713
-msgid "The stock has been reserved for the following Items and Warehouses, un-reserve the same to {0} the Stock Reconciliation: <br /><br /> {1}"
-msgstr ""
-
-#: erpnext/erpnext_integrations/doctype/plaid_settings/plaid_settings.js:37
-msgid "The sync has started in the background, please check the {0} list for new records."
-msgstr ""
-
-#. Description of the 'Invoice Type Created via POS Screen' (Select) field in
-#. DocType 'POS Settings'
-#: erpnext/accounts/doctype/pos_settings/pos_settings.json
-msgid "The system will create a Sales Invoice or a POS Invoice from the POS interface based on this setting. For high-volume transactions, it is recommended to use POS Invoice."
-msgstr ""
-
-#: erpnext/accounts/doctype/journal_entry/journal_entry.py:179
-#: erpnext/accounts/doctype/journal_entry/journal_entry.py:186
-msgid "The task has been enqueued as a background job."
-msgstr ""
-
-#: erpnext/stock/doctype/stock_reconciliation/stock_reconciliation.py:1008
-msgid "The task has been enqueued as a background job. In case there is any issue on processing in background, the system will add a comment about the error on this Stock Reconciliation and revert to the Draft stage"
-msgstr ""
-
-#: erpnext/stock/doctype/stock_reconciliation/stock_reconciliation.py:1019
-msgid "The task has been enqueued as a background job. In case there is any issue on processing in background, the system will add a comment about the error on this Stock Reconciliation and revert to the Submitted stage"
-msgstr ""
-
-#: erpnext/stock/doctype/material_request/material_request.py:338
-msgid "The total Issue / Transfer quantity {0} in Material Request {1}  cannot be greater than allowed requested quantity {2} for Item {3}"
-msgstr ""
-
-#: erpnext/stock/doctype/material_request/material_request.py:345
-msgid "The total Issue / Transfer quantity {0} in Material Request {1} cannot be greater than requested quantity {2} for Item {3}"
-msgstr ""
-
-#: erpnext/accounts/doctype/bank_statement_import/bank_statement_import.py:154
-msgid "The uploaded file does not appear to be in valid MT940 format."
-msgstr ""
-
-#: erpnext/edi/doctype/code_list/code_list_import.py:48
-msgid "The uploaded file does not match the selected Code List."
-msgstr ""
-
-#: erpnext/stock/doctype/serial_and_batch_bundle/serial_and_batch_bundle.js:10
-msgid "The user cannot submit the Serial and Batch Bundle manually"
-msgstr ""
-
-#. Description of the 'Transfer Extra Raw Materials to WIP (%)' (Percent) field
-#. in DocType 'Manufacturing Settings'
-#: erpnext/manufacturing/doctype/manufacturing_settings/manufacturing_settings.json
-msgid "The user will be able to transfer additional materials from the store to the Work in Progress (WIP) warehouse."
-msgstr ""
-
-#. Description of the 'Role Allowed to Edit Frozen Stock' (Link) field in
-#. DocType 'Stock Settings'
-#: erpnext/stock/doctype/stock_settings/stock_settings.json
-msgid "The users with this Role are allowed to create/modify a stock transaction, even though the transaction is frozen."
-msgstr ""
-
-#: erpnext/stock/doctype/item_alternative/item_alternative.py:55
-msgid "The value of {0} differs between Items {1} and {2}"
-msgstr ""
-
-#: erpnext/controllers/item_variant.py:148
-msgid "The value {0} is already assigned to an existing Item {1}."
-msgstr ""
-
-#: erpnext/manufacturing/doctype/work_order/work_order.js:1154
-msgid "The warehouse where you store finished Items before they are shipped."
-msgstr ""
-
-#: erpnext/manufacturing/doctype/work_order/work_order.js:1147
-msgid "The warehouse where you store your raw materials. Each required item can have a separate source warehouse. Group warehouse also can be selected as source warehouse. On submission of the Work Order, the raw materials will be reserved in these warehouses for production usage."
-msgstr ""
-
-#: erpnext/manufacturing/doctype/work_order/work_order.js:1159
-msgid "The warehouse where your Items will be transferred when you begin production. Group Warehouse can also be selected as a Work in Progress warehouse."
-msgstr ""
-
-#: erpnext/manufacturing/doctype/job_card/job_card.py:772
-msgid "The {0} ({1}) must be equal to {2} ({3})"
-msgstr ""
-
-#: erpnext/public/js/controllers/transaction.js:3279
-msgid "The {0} contains Unit Price Items."
-msgstr ""
-
-#: erpnext/stock/doctype/item/item.py:423
-msgid "The {0} prefix '{1}' already exists. Please change the Serial No Series, otherwise you will get a Duplicate Entry error."
-msgstr ""
-
-#: erpnext/stock/doctype/material_request/material_request.py:898
-msgid "The {0} {1} created successfully"
-msgstr ""
-
-#: erpnext/controllers/sales_and_purchase_return.py:42
-msgid "The {0} {1} does not match with the {0} {2} in the {3} {4}"
-msgstr ""
-
-#: erpnext/manufacturing/doctype/job_card/job_card.py:875
-msgid "The {0} {1} is used to calculate the valuation cost for the finished good {2}."
-msgstr ""
-
-#: erpnext/accounts/doctype/pricing_rule/pricing_rule.js:44
-msgid "Then Pricing Rules are filtered out based on Customer, Customer Group, Territory, Supplier, Supplier Type, Campaign, Sales Partner etc."
-msgstr ""
-
-#: erpnext/assets/doctype/asset/asset.py:707
-msgid "There are active maintenance or repairs against the asset. You must complete all of them before cancelling the asset."
-msgstr ""
-
-#: erpnext/accounts/doctype/share_transfer/share_transfer.py:201
-msgid "There are inconsistencies between the rate, no of shares and the amount calculated"
-msgstr ""
-
-#: erpnext/accounts/doctype/account/account.py:203
-msgid "There are ledger entries against this account. Changing {0} to non-{1} in live system will cause incorrect output in 'Accounts {2}' report"
-msgstr ""
-
-#: erpnext/utilities/bulk_transaction.py:67
-msgid "There are no Failed transactions"
-msgstr ""
-
-#: erpnext/setup/demo.py:108
-msgid "There are no active Fiscal Years for which Demo Data can be generated."
-msgstr ""
-
-#: erpnext/www/book_appointment/index.js:95
-msgid "There are no slots available on this date"
-msgstr ""
-
-#: erpnext/stock/doctype/item/item.js:1065
-msgid "There are two options to maintain valuation of stock. FIFO (first in - first out) and Moving Average. To understand this topic in detail please visit <a href='https://docs.erpnext.com/docs/v13/user/manual/en/stock/articles/item-valuation-fifo-and-moving-average' target='_blank'>Item Valuation, FIFO and Moving Average.</a>"
+msgid "The stock for the item {0} in the {1} warehouse was negative on the {2}. You should create a positive entry {3} before the date {4} and time {5} to post the correct valuation rate. For more details, please read the"
 msgstr ""
 
 #: erpnext/stock/report/item_variant_details/item_variant_details.py:25
@@ -50681,7 +50546,7 @@ msgid "This action will stop future billing. Are you sure you want to cancel thi
 msgstr ""
 
 #: erpnext/accounts/doctype/bank_account/bank_account.js:35
-msgid "This action will unlink this account from any external service integrating ERPNext with your bank accounts. It cannot be undone. Are you certain ?"
+msgid "This action will unlink this account from any external service integrating Prime Ledger with your bank accounts. It cannot be undone. Are you certain ?"
 msgstr ""
 
 #: erpnext/assets/doctype/asset/asset.py:426
@@ -54691,7 +54556,7 @@ msgid "Vouchers"
 msgstr ""
 
 #: erpnext/patches/v15_0/remove_exotel_integration.py:32
-msgid "WARNING: Exotel app has been separated from ERPNext, please install the app to continue using Exotel integration."
+msgid "WARNING: Exotel app has been separated from Prime Ledger, please install the app to continue using Exotel integration."
 msgstr ""
 
 #. Label of the wip_composite_asset (Link) field in DocType 'Purchase Invoice
@@ -55992,7 +55857,7 @@ msgid "Zip File"
 msgstr ""
 
 #: erpnext/stock/reorder_item.py:382
-msgid "[Important] [ERPNext] Auto Reorder Errors"
+msgid "[Important] [Prime Ledger] Auto Reorder Errors"
 msgstr ""
 
 #: erpnext/controllers/status_updater.py:287

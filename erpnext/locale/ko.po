@@ -692,7 +692,7 @@ msgstr "<div id=\\\"item-prices-container\\\"></div>"
 
 #. Content of the 'uom_help_html' (HTML) field in DocType 'Item'
 #: erpnext/stock/doctype/item/item.json
-msgid "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Define alternate units for this item. Eg: 1 Box = 12 Nos, set conversion factor as 12. (Will also apply for variants) <a href=\"https://docs.frappe.io/erpnext/uom\" target=\"_blank\">Learn more &#8594;</a></div>"
+msgid "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Define alternate units for this item. Eg: 1 Box = 12 Nos, set conversion factor as 12. (Will also apply for variants) <a href=\"" target=\"_blank\">Learn more &#8594;</a></div>"
 msgstr ""
 
 #. Content of the 'settings' (HTML) field in DocType 'Cheque Print Template'
@@ -899,7 +899,7 @@ msgstr "<span class=\"h4\"><b>보고서 &amp; 석사</b></span>"
 msgid "<span class=\"h4\"><b>Subcontracting Inward and Outward</b></span>"
 msgstr "<span class=\"h4\"><b>내부 및 외부 하도급</b></span>"
 
-#. Header text in the ERPNext Settings Workspace
+#. Header text in the Prime Ledger Settings Workspace
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 msgid "<span class=\"h4\"><b>Your Shortcuts\n"
 "\t\t\t\n"
@@ -2172,7 +2172,7 @@ msgstr ""
 
 #. Name of a DocType
 #. Label of a Link in the Invoicing Workspace
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/accounts/doctype/accounts_settings/accounts_settings.json
 #: erpnext/accounts/workspace/invoicing/invoicing.json
@@ -9192,7 +9192,7 @@ msgstr "구매 가격"
 
 #. Name of a DocType
 #. Label of a Link in the Buying Workspace
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/buying/doctype/buying_settings/buying_settings.json
 #: erpnext/buying/workspace/buying/buying.json
@@ -9216,7 +9216,7 @@ msgid "Buying must be checked, if Applicable For is selected as {0}"
 msgstr ""
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:62
-msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a <a href='https://docs.erpnext.com/docs/user/manual/en/setting-up/settings/naming-series' target='_blank'>Naming Series</a> choose the 'Naming Series' option."
+msgid "By default, the Supplier Name is set as per the Supplier Name entered. If you want Suppliers to be named by a choose the 'Naming Series' option."
 msgstr ""
 
 #. Option for the 'Type' (Select) field in DocType 'BOM Secondary Item'
@@ -16408,7 +16408,7 @@ msgstr "거래 삭제"
 msgid "Delete all the Transactions for {0}"
 msgstr ""
 
-#. Label of a Link in the ERPNext Settings Workspace
+#. Label of a Link in the Prime Ledger Settings Workspace
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 msgid "Deleted Documents"
 msgstr "삭제된 문서"
@@ -18460,7 +18460,7 @@ msgstr "현재 EMU"
 #. Label of a Desktop Icon
 #: erpnext/desktop_icon/erpnext.json
 #: erpnext/public/js/shop_floor/shop_floor.js:103
-msgid "ERPNext"
+msgid "Prime Ledger"
 msgstr ""
 
 #. Label of a Desktop Icon
@@ -18469,17 +18469,17 @@ msgstr ""
 #: erpnext/desktop_icon/erpnext_settings.json
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 #: erpnext/workspace_sidebar/erpnext_settings.json
-msgid "ERPNext Settings"
+msgid "Prime Ledger Settings"
 msgstr ""
 
 #. Label of the user_id (Data) field in DocType 'Employee Group Table'
 #: erpnext/setup/doctype/employee_group_table/employee_group_table.json
-msgid "ERPNext User ID"
+msgid "Prime Ledger User ID"
 msgstr ""
 
 #. Description of the 'Maintain Stock' (Check) field in DocType 'Item'
 #: erpnext/stock/doctype/item/item.json
-msgid "ERPNext will make a stock ledger entry for each transaction of this item. Keep unchecked for non-stock or service items."
+msgid "Prime Ledger will make a stock ledger entry for each transaction of this item. Keep unchecked for non-stock or service items."
 msgstr ""
 
 #. Option for the 'How often should project be updated of Total Purchase Cost
@@ -21524,7 +21524,7 @@ msgid "Frappe CRM Allowed User"
 msgstr ""
 
 #: erpnext/crm/frappe_crm_api.py:186
-msgid "Frappe CRM data synchronization is not enabled on ERPNext. Contact System Manager of ERPNext."
+msgid "Frappe CRM data synchronization is not enabled on Prime Ledger. Contact System Manager of Prime Ledger."
 msgstr ""
 
 #: erpnext/setup/install.py:243
@@ -22543,7 +22543,7 @@ msgid "Give free item for every N quantity"
 msgstr ""
 
 #. Name of a DocType
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/setup/doctype/global_defaults/global_defaults.json
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
@@ -23714,16 +23714,16 @@ msgstr ""
 #. DocType 'Production Plan'
 #: erpnext/manufacturing/doctype/production_plan/production_plan.json
 msgid "If enabled, formula for <b>Qty to Order</b>: <br>\n"
-"Required Qty (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Projected Qty</a>. <br> This helps avoid over-ordering."
+"Required Qty (BOM) - <a href=\"">Projected Qty</a>. <br> This helps avoid over-ordering."
 msgstr ""
 
 #. Description of the 'Consider Projected Qty in Calculation (RM)' (Check)
 #. field in DocType 'Production Plan'
 #: erpnext/manufacturing/doctype/production_plan/production_plan.json
 msgid "If enabled, formula for <b>Required Qty</b>: <br>\n"
-"Required Qty (BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">Projected Qty</a>. <br> This helps avoid over-ordering."
+"Required Qty (BOM) - <a href=\"">Projected Qty</a>. <br> This helps avoid over-ordering."
 msgstr "활성화된 경우, <b>필요 수량</b>: <br>\n"
-"필요 수량(BOM) - <a href=\"https://docs.frappe.io/erpnext/user/manual/en/projected-quantity\">예상 수량</a>. <br> 에 대한 공식이 표시됩니다. 이는 과잉 주문을 방지하는 데 도움이 됩니다."
+"필요 수량(BOM) - <a href=\"">예상 수량</a>. <br> 에 대한 공식이 표시됩니다. 이는 과잉 주문을 방지하는 데 도움이 됩니다."
 
 #. Description of the 'Create Ledger Entries for Change Amount' (Check) field
 #. in DocType 'POS Settings'
@@ -23992,11 +23992,11 @@ msgid "If this item has variants, then it cannot be selected in sales orders etc
 msgstr "해당 품목에 변형 상품이 있는 경우, 판매 주문 등에서 선택할 수 없습니다."
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:76
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice or Receipt without creating a Purchase Order first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Order' checkbox in the Supplier master."
 msgstr ""
 
 #: erpnext/buying/doctype/buying_settings/buying_settings.js:83
-msgid "If this option is configured 'Yes', ERPNext will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
+msgid "If this option is configured 'Yes', Prime Ledger will prevent you from creating a Purchase Invoice without creating a Purchase Receipt first. This configuration can be overridden for a particular supplier by enabling the 'Allow Purchase Invoice Creation Without Purchase Receipt' checkbox in the Supplier master."
 msgstr ""
 
 #: erpnext/manufacturing/doctype/manufacturing_settings/manufacturing_settings.js:10
@@ -24022,7 +24022,7 @@ msgid "If yes, then this warehouse will be used to store rejected materials"
 msgstr ""
 
 #: erpnext/stock/doctype/item/item.js:1572
-msgid "If you are maintaining stock of this Item in your Inventory, ERPNext will make a stock ledger entry for each transaction of this item."
+msgid "If you are maintaining stock of this Item in your Inventory, Prime Ledger will make a stock ledger entry for each transaction of this item."
 msgstr ""
 
 #. Description of the 'Unreconciled Entries' (Section Break) field in DocType
@@ -24227,7 +24227,7 @@ msgstr "수입 은행 명세서"
 msgid "Import Chart of Accounts from a csv file"
 msgstr ""
 
-#. Label of a Link in the ERPNext Settings Workspace
+#. Label of a Link in the Prime Ledger Settings Workspace
 #. Label of a Link in the Home Workspace
 #: erpnext/setup/workspace/erpnext_settings/erpnext_settings.json
 #: erpnext/setup/workspace/home/home.json
@@ -29116,8 +29116,8 @@ msgstr "하청 계약에 대해 알아보세요"
 #. Description of the 'Enable Common Party Accounting' (Check) field in DocType
 #. 'Accounts Settings'
 #: erpnext/accounts/doctype/accounts_settings/accounts_settings.json
-msgid "Learn about <a href=\"https://docs.frappe.io/erpnext/user/manual/en/common_party_accounting\" rel=\"noopener noreferrer\">Common Party</a>"
-msgstr "<a href=\"https://docs.frappe.io/erpnext/user/manual/en/common_party_accounting\" rel=\"noopener noreferrer\">공통당</a>에 대해 알아보세요"
+msgid "Learn about <a href=\"" rel=\"noopener noreferrer\">Common Party</a>"
+msgstr "<a href=\"" rel=\"noopener noreferrer\">공통당</a>에 대해 알아보세요"
 
 #. Label of the leave_encashed (Select) field in DocType 'Employee'
 #: erpnext/setup/doctype/employee/employee.json
@@ -49636,7 +49636,7 @@ msgstr "판매 가격"
 
 #. Name of a DocType
 #. Label of a Link in the Selling Workspace
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Label of a Workspace Sidebar Item
 #: erpnext/selling/doctype/selling_settings/selling_settings.json
 #: erpnext/selling/workspace/selling/selling.json
@@ -52806,7 +52806,7 @@ msgstr "예약 재고 수량 (재고 단위)"
 
 #. Label of the auto_accounting_for_stock_settings (Section Break) field in
 #. DocType 'Company'
-#. Label of a shortcut in the ERPNext Settings Workspace
+#. Label of a shortcut in the Prime Ledger Settings Workspace
 #. Name of a DocType
 #. Label of a Link in the Stock Workspace
 #. Label of a Workspace Sidebar Item
@@ -56172,7 +56172,7 @@ msgid "The shares don't exist with the {0}"
 msgstr ""
 
 #: erpnext/stock/stock_ledger.py:908
-msgid "The stock for the item {0} in the {1} warehouse was negative on the {2}. You should create a positive entry {3} before the date {4} and time {5} to post the correct valuation rate. For more details, please read the <a href='https://docs.erpnext.com/docs/user/manual/en/stock-adjustment-cogs-with-negative-stock'>documentation</a>."
+msgid "The stock for the item {0} in the {1} warehouse was negative on the {2}. You should create a positive entry {3} before the date {4} and time {5} to post the correct valuation rate. For more details, please read the."
 msgstr ""
 
 #: erpnext/stock/doctype/stock_reconciliation/stock_reconciliation.py:863
@@ -56343,7 +56343,7 @@ msgid "There are no transactions in the system for the selected bank account and
 msgstr "선택한 은행 계좌와 기간에 대해 필터 조건과 일치하는 거래 내역이 시스템에 없습니다."
 
 #: erpnext/stock/doctype/item/item.js:1591
-msgid "There are two options to maintain valuation of stock. FIFO (first in - first out) and Moving Average. To understand this topic in detail please visit <a href='https://docs.frappe.io/erpnext/user/manual/en/calculation-of-valuation-rate-in-fifo-and-moving-average' target='_blank'>Item Valuation, FIFO and Moving Average.</a>"
+msgid "There are two options to maintain valuation of stock. FIFO (first in - first out) and Moving Average. To understand this topic in detail please visit"
 msgstr ""
 
 #: banking/src/components/features/BankReconciliation/MatchAndReconcile.tsx:982
@@ -56467,7 +56467,7 @@ msgid "This action will stop future billing. Are you sure you want to cancel thi
 msgstr "이 작업을 수행하면 향후 요금 청구가 중단됩니다. 구독을 취소하시겠습니까?"
 
 #: erpnext/accounts/doctype/bank_account/bank_account.js:35
-msgid "This action will unlink this account from any external service integrating ERPNext with your bank accounts. It cannot be undone. Are you certain ?"
+msgid "This action will unlink this account from any external service integrating Prime Ledger with your bank accounts. It cannot be undone. Are you certain ?"
 msgstr ""
 
 #. Description of the 'Allow Sales Order creation for expired Quotation'
@@ -60086,7 +60086,7 @@ msgid "User has not applied rule on the invoice {0}"
 msgstr "사용자가 송장에 규칙을 적용하지 않았습니다 {0}"
 
 #: erpnext/crm/frappe_crm_api.py:197
-msgid "User not allowed to synchronize data from Frappe CRM on ERPNext. Contact System Manager of ERPNext."
+msgid "User not allowed to synchronize data from Frappe CRM on Prime Ledger. Contact System Manager of Prime Ledger."
 msgstr ""
 
 #: erpnext/setup/doctype/employee/employee.py:298
@@ -61139,7 +61139,7 @@ msgid "Vouchers"
 msgstr "상품권"
 
 #: erpnext/patches/v15_0/remove_exotel_integration.py:32
-msgid "WARNING: Exotel app has been separated from ERPNext, please install the app to continue using Exotel integration."
+msgid "WARNING: Exotel app has been separated from Prime Ledger, please install the app to continue using Exotel integration."
 msgstr ""
 
 #. Label of the wip_composite_asset (Link) field in DocType 'Purchase Invoice
@@ -62721,7 +62721,7 @@ msgid "Zip File"
 msgstr "압축 파일"
 
 #: erpnext/stock/reorder_item.py:368
-msgid "[Important] [ERPNext] Auto Reorder Errors"
+msgid "[Important] [Prime Ledger] Auto Reorder Errors"
 msgstr ""
 
 #: erpnext/controllers/status_updater.py:307

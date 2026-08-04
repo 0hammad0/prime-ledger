@@ -25,6 +25,8 @@ cp "$ROOT/erpnext/www/portal.html" "$DEST/www/"
 cp -R "$ROOT/erpnext/public/portal/." "$DEST/public/"
 cp "$ROOT/erpnext/patches/v16_0/seed_portal_control.py" "$DEST/patches/"
 cp "$ROOT/erpnext/patches/v16_0/restore_frappe_portal_settings.py" "$DEST/patches/"
+cp "$ROOT/erpnext/startup/boot.py" "$DEST/boot.py"
+cp "$ROOT/erpnext/public/js/setup_wizard.js" "$ROOT/deploy/ec2/patches/setup-wizard/setup_wizard.js"
 
 echo "synced portal → deploy/ec2/patches/portal"
 echo "Commit deploy/ec2/patches/portal so CI can hot-patch Hub images."

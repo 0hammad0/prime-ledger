@@ -383,7 +383,7 @@
   },
   {
    "depends_on": "is_stock_item",
-   "documentation_url": "https://docs.frappe.io/erpnext/change-valuation-method",
+   "documentation_url": "",
    "fieldname": "valuation_method",
    "fieldtype": "Select",
    "label": "Valuation Method",
@@ -493,7 +493,7 @@
    "default": "0",
    "depends_on": "has_batch_no",
    "description": "Enable to reserve a small sample from each batch for any analysis arising ahead",
-   "documentation_url": "https://docs.frappe.io/erpnext/retain-sample-stock",
+   "documentation_url": "",
    "fieldname": "retain_sample",
    "fieldtype": "Check",
    "label": "Retain Sample",
@@ -1059,7 +1059,7 @@
   {
    "fieldname": "uom_help_html",
    "fieldtype": "HTML",
-   "options": "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Define alternate units for this item. Eg: 1 Box = 12 Nos, set conversion factor as 12. (Will also apply for variants) <a href=\"https://docs.frappe.io/erpnext/uom\" target=\"_blank\">Learn more &#8594;</a></div>"
+   "options": "<div style=\"margin-bottom:10px; color: var(--gray-500) !important;\">Define alternate units for this item. Eg: 1 Box = 12 Nos, set conversion factor as 12. (Will also apply for variants)</div>"
   },
   {
    "fieldname": "section_break_zlmj",

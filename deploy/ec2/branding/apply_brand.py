@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import re
 
 import frappe
 from frappe.utils.password import update_password
@@ -11,9 +12,35 @@ favicon = "/assets/erpnext/images/prime-ledger-favicon.svg"
 # Also keep legacy filename path used by login templates
 legacy_logo = "/assets/erpnext/images/erpnext-logo.svg"
 css_link = '<link rel="stylesheet" href="/assets/erpnext/css/prime_ledger_brand.css">'
+# Prefer asset script; brand.sh also inlines when needed
+js_link = '<script src="/assets/erpnext/js/login_simple.js" defer></script>'
+
+ERP_URL_RE = re.compile(
+	r"https?://(?:docs\.)?(?:frappe\.io/erpnext|erpnext\.com)[^\s\"'<>]*",
+	re.I,
+)
+EMPTY_DOC_ANCHOR_RE = re.compile(
+	r'\s*<a\s+[^>]*href=["\'][^"\']*(?:erpnext|frappe\.io/erpnext)[^"\']*["\'][^>]*>.*?</a>',
+	re.I | re.S,
+)
+
+
+def _scrub_text(value: str | None) -> str | None:
+	if not value:
+		return value
+	out = EMPTY_DOC_ANCHOR_RE.sub("", value)
+	out = ERP_URL_RE.sub("", out)
+	out = out.replace("ERPNext", "Prime Ledger").replace("erpnext.com", "")
+	return out
+
 
 frappe.db.set_single_value("System Settings", "app_name", "Prime Ledger")
 frappe.db.set_single_value("Website Settings", "app_name", "Prime Ledger")
+try:
+	frappe.db.set_single_value("Website Settings", "disable_signup", 0)
+	frappe.db.set_single_value("Website Settings", "hide_footer_signup", 0)
+except Exception as e:
+	print(f"skip signup flags: {e}")
 
 for field, value in (
 	("splash_image", logo),
@@ -31,10 +58,13 @@ for field, value in (
 try:
 	head = frappe.db.get_single_value("Website Settings", "head_html") or ""
 	# Drop generator / third-party product mentions from custom head if present
-	for junk in ("ERPNext", "erpnext.com", "Built on Frappe"):
-		head = head.replace(junk, "Prime Ledger" if junk != "erpnext.com" else "")
+	for junk in ("ERPNext", "erpnext.com", "Built on Frappe", "Frappe Framework"):
+		head = head.replace(junk, "Prime Ledger" if "erpnext.com" not in junk.lower() else "")
+	head = _scrub_text(head) or ""
 	if "prime_ledger_brand.css" not in head:
 		head = (css_link + "\n" + head).strip()
+	if "login_simple.js" not in head:
+		head = (head + "\n" + js_link).strip()
 	frappe.db.set_single_value("Website Settings", "head_html", head)
 except Exception as e:
 	print(f"skip head_html: {e}")
@@ -51,9 +81,11 @@ try:
 	blocked_hosts = (
 		"docs.erpnext.com",
 		"erpnext.com",
+		"docs.frappe.io",
 		"discuss.frappe.io",
 		"frappe.io",
 		"github.com/frappe/erpnext",
+		"github.com/frappe",
 	)
 	kept = []
 	for item in list(nav.help_dropdown or []):
@@ -96,7 +128,7 @@ try:
 		new_label = label
 		if "ERPNext" in label:
 			new_label = label.replace("ERPNext", "Prime Ledger")
-		elif label.strip() == "ERPNext":
+		elif label.strip().lower() == "erpnext":
 			new_label = "Prime Ledger"
 		updates = {}
 		if new_label != label:
@@ -140,7 +172,111 @@ try:
 except Exception as e:
 	print(f"skip module: {e}")
 
-# Navbar app switcher / splash
+# Strip ERPNext documentation URLs / help anchors from DocFields (Desk "?" links)
+try:
+	cleared = frappe.db.sql(
+		"""
+		UPDATE `tabDocField`
+		SET documentation_url = NULL
+		WHERE documentation_url LIKE %s OR documentation_url LIKE %s
+		""",
+		("%erpnext%", "%frappe.io/erpnext%"),
+	)
+	print(f"docfield_docs_cleared:{cleared}")
+except Exception as e:
+	print(f"skip docfield docs: {e}")
+
+try:
+	rows = frappe.db.sql(
+		"""
+		SELECT name, description FROM `tabDocField`
+		WHERE description LIKE %s OR description LIKE %s OR description LIKE %s
+		""",
+		("%erpnext%", "%ERPNext%", "%frappe.io/erpnext%"),
+		as_dict=True,
+	)
+	for row in rows:
+		scrubbed = _scrub_text(row.description)
+		if scrubbed != row.description:
+			frappe.db.set_value("DocField", row.name, "description", scrubbed, update_modified=False)
+	print(f"docfield_desc_scrubbed:{len(rows)}")
+except Exception as e:
+	print(f"skip docfield desc: {e}")
+
+# Custom Field / Property Setter copies of the same help text
+for doctype in ("Custom Field", "Property Setter"):
+	try:
+		if not frappe.db.exists("DocType", doctype):
+			continue
+		meta = frappe.get_meta(doctype)
+		text_fields = [df.fieldname for df in meta.fields if df.fieldtype in ("Small Text", "Text", "Long Text", "Data", "Code", "HTML Editor")]
+		filters = []
+		for tf in text_fields:
+			filters.append([doctype, tf, "like", "%erpnext%"])
+			filters.append([doctype, tf, "like", "%ERPNext%"])
+		if not filters:
+			continue
+		names = set()
+		for f in filters:
+			for n in frappe.get_all(doctype, filters=[f], pluck="name"):
+				names.add(n)
+		for name in names:
+			doc = frappe.get_doc(doctype, name)
+			changed = False
+			for tf in text_fields:
+				val = doc.get(tf)
+				if isinstance(val, str) and ("erpnext" in val.lower() or "ERPNext" in val):
+					doc.set(tf, _scrub_text(val))
+					changed = True
+			if changed:
+				doc.db_update()
+		print(f"{doctype}_scrubbed:{len(names)}")
+	except Exception as e:
+		print(f"skip {doctype}: {e}")
+
+# Onboarding steps that deep-link to ERPNext docs
+try:
+	for row in frappe.get_all("Onboarding Step", fields=["name", "path", "title"]):
+		path = row.path or ""
+		title = row.title or ""
+		updates = {}
+		if "erpnext" in path.lower():
+			updates["path"] = ""
+		if "ERPNext" in title:
+			updates["title"] = title.replace("ERPNext", "Prime Ledger")
+		if updates:
+			frappe.db.set_value("Onboarding Step", row.name, updates, update_modified=False)
+			print(f"onboarding:{row.name}->{updates}")
+except Exception as e:
+	print(f"skip onboarding: {e}")
+
+# Notifications / system messages mentioning ERPNext
+try:
+	for row in frappe.get_all("Notification", fields=["name", "subject", "message"]):
+		updates = {}
+		for field in ("subject", "message"):
+			val = row.get(field) or ""
+			if "ERPNext" in val or "erpnext.com" in val.lower():
+				updates[field] = _scrub_text(val)
+		if updates:
+			frappe.db.set_value("Notification", row.name, updates, update_modified=False)
+except Exception as e:
+	print(f"skip notifications: {e}")
+
+# Email templates
+try:
+	for row in frappe.get_all("Email Template", fields=["name", "subject", "response"]):
+		updates = {}
+		for field in ("subject", "response"):
+			val = row.get(field) or ""
+			if "ERPNext" in val or "erpnext" in val.lower():
+				updates[field] = _scrub_text(val)
+		if updates:
+			frappe.db.set_value("Email Template", row.name, updates, update_modified=False)
+except Exception as e:
+	print(f"skip email templates: {e}")
+
+# Disable standard "Powered by" / product email footers
 try:
 	frappe.db.set_single_value("System Settings", "disable_standard_email_footer", 1)
 except Exception:
