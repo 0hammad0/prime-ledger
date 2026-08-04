@@ -8,6 +8,11 @@ PROJECT_NAME="${PROJECT_NAME:-prime-ledger}"
 COMPOSE_FILE="${COMPOSE_FILE:-$HOME/gitops/prime-ledger-compose.yml}"
 SITE_NAME="${SITE_NAME:-frontend}"
 PATCH_ROOT="${PATCH_ROOT:-$SCRIPT_DIR/patches/portal}"
+INJECT_PY="${SCRIPT_DIR/../docker/inject_portal_hooks.py}"
+# Prefer inject next to deploy scripts if docker path missing on server
+if [[ ! -f "$INJECT_PY" ]]; then
+  INJECT_PY="$SCRIPT_DIR/inject_portal_hooks.py"
+fi
 
 if [[ -f "$ENV_FILE" ]]; then
   set -a
@@ -33,6 +38,47 @@ fi
   exit 1
 }
 
+# Ensure inject script exists on server (synced via deploy/ec2 or copied once)
+if [[ ! -f "$INJECT_PY" ]]; then
+  cat >"$SCRIPT_DIR/inject_portal_hooks.py" <<'PY'
+from pathlib import Path
+
+hooks = Path("/home/frappe/frappe-bench/apps/erpnext/erpnext/hooks.py")
+text = hooks.read_text()
+needle = '{"from_route": "/portal", "to_route": "portal"}'
+if needle not in text:
+	old = '{"from_route": "/banking/<path:app_path>", "to_route": "banking"},'
+	if old in text:
+		hooks.write_text(
+			text.replace(
+				old,
+				old
+				+ '\n\t{"from_route": "/portal", "to_route": "portal"},'
+				+ '\n\t{"from_route": "/portal/<path:app_path>", "to_route": "portal"},',
+				1,
+			)
+		)
+		print("hooks_portal_routes_ok")
+	else:
+		print("hooks_portal_routes_banking_missing")
+else:
+	print("hooks_portal_routes_present")
+
+patches = Path("/home/frappe/frappe-bench/apps/erpnext/erpnext/patches.txt")
+pt = patches.read_text()
+for line in (
+	"erpnext.patches.v16_0.restore_frappe_portal_settings",
+	"erpnext.patches.v16_0.seed_portal_control",
+):
+	if line not in pt:
+		pt = pt.rstrip() + "\n" + line + "\n"
+		print("patches_txt_added", line)
+patches.write_text(pt)
+print("patches_txt_ok")
+PY
+  INJECT_PY="$SCRIPT_DIR/inject_portal_hooks.py"
+fi
+
 APP="/home/frappe/frappe-bench/apps/erpnext/erpnext"
 SITE_ASSETS="/home/frappe/frappe-bench/sites/assets/erpnext"
 
@@ -46,11 +92,9 @@ patch_cid() {
     "$APP/www" \
     "$APP/public/portal" \
     "$APP/patches/v16_0" \
-    "$SITE_ASSETS/portal" \
-    /home/frappe/frappe-bench/sites/assets/erpnext/portal
+    "$SITE_ASSETS/portal"
 
   "${DOCKER[@]}" cp "$PATCH_ROOT/portal_control/." "${cid}:${APP}/portal_control/"
-  # Remove mistaken Portal Settings overlay if present (conflicts with Frappe website DocType)
   "${DOCKER[@]}" exec -u root "$cid" rm -rf "$APP/setup/doctype/portal_settings" || true
   for dt in portal_module portal_module_role pl_portal_settings; do
     "${DOCKER[@]}" cp "$PATCH_ROOT/doctype/${dt}" "${cid}:${APP}/setup/doctype/"
@@ -66,41 +110,8 @@ patch_cid() {
       "${cid}:${APP}/patches/v16_0/restore_frappe_portal_settings.py"
   fi
 
-  # Ensure website routes + patches.txt include portal
-  "${DOCKER[@]}" exec -u root "$cid" python3 - <<'PY'
-from pathlib import Path
-
-hooks = Path("/home/frappe/frappe-bench/apps/erpnext/erpnext/hooks.py")
-text = hooks.read_text()
-needle = '{"from_route": "/portal", "to_route": "portal"}'
-if needle not in text:
-    old = '{"from_route": "/banking/<path:app_path>", "to_route": "banking"},'
-    new = old + '\n\t{"from_route": "/portal", "to_route": "portal"},\n\t{"from_route": "/portal/<path:app_path>", "to_route": "portal"},'
-    if old in text:
-        hooks.write_text(text.replace(old, new, 1))
-        print("hooks_portal_routes_ok")
-    else:
-        # append before closing of website_route_rules if possible
-        marker = "website_route_rules = ["
-        if marker in text and needle not in text:
-            print("hooks_portal_routes_manual_needed")
-        else:
-            print("hooks_portal_routes_skip")
-else:
-    print("hooks_portal_routes_present")
-
-patches = Path("/home/frappe/frappe-bench/apps/erpnext/erpnext/patches.txt")
-pt = patches.read_text()
-for line in (
-    "erpnext.patches.v16_0.restore_frappe_portal_settings",
-    "erpnext.patches.v16_0.seed_portal_control",
-):
-    if line not in pt:
-        pt = pt.rstrip() + "\n" + line + "\n"
-        print("patches_txt_added", line)
-patches.write_text(pt)
-print("patches_txt_ok")
-PY
+  "${DOCKER[@]}" cp "$INJECT_PY" "${cid}:/tmp/inject_portal_hooks.py"
+  "${DOCKER[@]}" exec -u root "$cid" python3 /tmp/inject_portal_hooks.py
 
   "${DOCKER[@]}" exec -u root "$cid" chown -R frappe:frappe \
     "$APP/portal_control" \
