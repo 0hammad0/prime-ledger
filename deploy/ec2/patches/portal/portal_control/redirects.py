@@ -12,7 +12,11 @@ def _portal_enabled() -> bool:
 	if not frappe.db.exists("DocType", "PL Portal Settings"):
 		return True
 	try:
-		return bool(frappe.db.get_single_value("PL Portal Settings", "enable_portal_home"))
+		val = frappe.db.get_single_value("PL Portal Settings", "enable_portal_home")
+		# Missing / unset Singles row → treat as enabled (portal is the product home)
+		if val is None or val == "":
+			return True
+		return bool(int(val))
 	except Exception:
 		return True
 
@@ -33,19 +37,30 @@ def _default_landing() -> str:
 
 def on_login(login_manager=None):
 	"""Send System Users to the portal after login (unless redirect-to is set)."""
-	if frappe.session.user in ("Guest",):
-		return
-	if not _portal_enabled():
-		return
+	try:
+		if frappe.session.user in ("Guest",):
+			return
+		if not _portal_enabled():
+			return
 
-	# Respect explicit redirect-to from the login form / query string
-	redirect_to = frappe.form_dict.get("redirect-to") or frappe.local.request.args.get("redirect-to")
-	if redirect_to and redirect_to not in ("/", "/app", "/desk", "/desk/home", "/app/home"):
-		return
+		# Respect explicit redirect-to from the login form / query string
+		redirect_to = None
+		try:
+			redirect_to = frappe.form_dict.get("redirect-to")
+			if not redirect_to and getattr(frappe.local, "request", None):
+				redirect_to = frappe.local.request.args.get("redirect-to")
+		except Exception:
+			redirect_to = None
+		if redirect_to and redirect_to not in ("/", "/app", "/desk", "/desk/home", "/app/home"):
+			return
 
-	landing = _default_landing()
-	frappe.local.response["redirect_to"] = landing
-	frappe.local.response["home_page"] = landing
+		landing = _default_landing()
+		frappe.local.response["redirect_to"] = landing
+		frappe.local.response["home_page"] = landing
+	except Exception:
+		# Never block login if portal redirect wiring is missing/broken
+		frappe.log_error(title="Prime Ledger on_login redirect skipped")
+
 
 
 def boot_session(bootinfo):

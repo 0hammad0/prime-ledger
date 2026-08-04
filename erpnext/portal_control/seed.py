@@ -164,25 +164,23 @@ def ensure_roles() -> None:
 def ensure_settings() -> None:
 	if not frappe.db.exists("DocType", "PL Portal Settings"):
 		return
-	try:
-		doc = frappe.get_single("PL Portal Settings")
-	except Exception:
-		doc = frappe.new_doc("PL Portal Settings")
-	changed = False
-	if not doc.portal_title:
-		doc.portal_title = "Prime Ledger"
-		changed = True
-	if not doc.default_tenant_landing:
-		doc.default_tenant_landing = "/portal/tenant"
-		changed = True
-	if not doc.default_super_admin_landing:
-		doc.default_super_admin_landing = "/portal/admin"
-		changed = True
-	if doc.enable_portal_home is None:
-		doc.enable_portal_home = 1
-		changed = True
-	if doc.is_new() or changed:
-		doc.save(ignore_permissions=True)
+	# Write Singles directly — get_single() can show DocType defaults (1) while
+	# tabSingles still has 0/empty, which disabled portal redirect after login.
+	desired = {
+		"portal_title": "Prime Ledger",
+		"default_tenant_landing": "/portal/tenant",
+		"default_super_admin_landing": "/portal/admin",
+		"enable_portal_home": 1,
+		"hide_desk_chrome_hint": 1,
+	}
+	for field, value in desired.items():
+		current = frappe.db.get_single_value("PL Portal Settings", field)
+		if field == "enable_portal_home":
+			if int(current or 0) != 1:
+				frappe.db.set_single_value("PL Portal Settings", field, value)
+		elif not (current or "").strip() if isinstance(value, str) else current != value:
+			frappe.db.set_single_value("PL Portal Settings", field, value)
+	frappe.clear_cache()
 
 
 def seed_modules(replace: bool = False) -> None:

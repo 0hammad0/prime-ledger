@@ -39,21 +39,33 @@ def boot_session(bootinfo):
 		if not bootinfo.customer_count:
 			bootinfo.setup_complete = "Yes" if frappe.db.get_all("Company", limit=1) else "No"
 
+		# Only select columns that exist — Hub image may be ahead of a site that
+		# has not yet migrated (never select default_letter_head_report unless present).
+		company_fields = [
+			"name",
+			"default_currency",
+			"cost_center",
+			"default_selling_terms",
+			"default_buying_terms",
+			"default_letter_head",
+			"default_bank_account",
+			"enable_perpetual_inventory",
+			"country",
+			"exchange_gain_loss_account",
+		]
+		try:
+			existing_cols = set(frappe.db.get_table_columns("Company") or [])
+			# Optional newer columns
+			for optional in ("default_letter_head_report",):
+				if optional in existing_cols:
+					company_fields.append(optional)
+			company_fields = [f for f in company_fields if f in existing_cols]
+		except Exception:
+			pass
+
 		companies = frappe.get_all(
 			"Company",
-			fields=[
-				"name",
-				"default_currency",
-				"cost_center",
-				"default_selling_terms",
-				"default_buying_terms",
-				"default_letter_head",
-				"default_letter_head_report",
-				"default_bank_account",
-				"enable_perpetual_inventory",
-				"country",
-				"exchange_gain_loss_account",
-			],
+			fields=company_fields,
 			limit_page_length=0,  # intentionally unbounded: all companies are needed for boot
 		)
 		for company in companies:

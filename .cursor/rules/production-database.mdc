@@ -1,0 +1,34 @@
+---
+description: Treat the live Prime Ledger database as production — no unsafe writes
+alwaysApply: true
+---
+
+# Production database safety
+
+The EC2 site (`65.1.92.180` / `65.1.92.180.sslip.io`) and its MariaDB data are **production**.
+
+## Default stance
+
+- Prefer **read-only** inspection (list users, check settings, read logs, curl health checks).
+- Do **not** assume staging. If unsure whether a command writes, ask first.
+
+## Never do without explicit user approval
+
+- Password resets (`update_password`, forced new passwords)
+- Creating, disabling, deleting, or renaming Users / Companies / DocTypes / data
+- Bulk SQL `UPDATE` / `DELETE` / schema changes
+- Clearing or rewriting Email Queue, Activity Log, or other live records
+- `bench migrate`, `bench reinstall`, DB restore/drop, or destructive `docker compose` data wipes
+- Changing Email Account credentials or other secrets unless the user asked
+
+## Allowed without asking (when debugging live issues)
+
+- Re-apply **already-known** hot-patches / branding scripts that restore app code (not user data)
+- `bench --site frontend clear-cache` and container restarts that do not wipe volumes
+- Read-only `bench console` / SQL `SELECT` style checks
+
+## If a write is required
+
+1. State exactly what will change and which rows/users are affected.
+2. Wait for explicit approval (e.g. “reset password for X”, “fix email account”).
+3. Prefer the smallest possible change; avoid cascading “cleanup” edits.
