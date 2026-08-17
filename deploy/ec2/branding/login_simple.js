@@ -79,21 +79,26 @@
 			}
 		});
 
-		var login = document.querySelector(".for-login .page-card");
-		if (login && !login.querySelector(".pl-easy-tip")) {
-			var tip = document.createElement("p");
-			tip.className = "pl-easy-tip";
-			if (isTenantHost()) {
-				tip.textContent = "This URL is only for your organization. Use the email you signed up with.";
-			} else {
-				tip.textContent =
-					"New business? Create your organization — you get a private workspace and your own URL.";
+		document.querySelectorAll(".pl-easy-tip").forEach(function (p) {
+			var t = (p.textContent || "").trim();
+			if (/tap sign up|create an account|signups have been disabled|let's setup your account/i.test(t)) {
+				p.textContent = isTenantHost()
+					? "This URL is only for your organization. Use the email you signed up with."
+					: "New business? Create your organization — you get a private workspace and your own URL.";
 			}
-			login.appendChild(tip);
-			var link = document.createElement("p");
-			link.className = "pl-easy-tip";
-			link.innerHTML = '<a href="' + startHref() + '">Create organization →</a>';
-			login.appendChild(link);
+		});
+
+		document.querySelectorAll(".for-signup").forEach(function (el) {
+			el.style.display = "none";
+		});
+
+		var login = document.querySelector(".for-login .page-card") || document.querySelector(".for-login");
+		if (login && !document.getElementById("pl-create-org")) {
+			var wrap = document.createElement("p");
+			wrap.className = "pl-easy-tip";
+			wrap.id = "pl-create-org";
+			wrap.innerHTML = '<a href="' + startHref() + '">Create organization →</a>';
+			login.appendChild(wrap);
 		}
 
 		rewriteSignupLinks();

@@ -140,10 +140,29 @@ patch_cid() {
     "${DOCKER[@]}" cp "$PATCH_ROOT/../user_onboarding.py" \
       "${cid}:${APP}/setup/user_onboarding.py" || true
   fi
-  "${DOCKER[@]}" exec -u root "$cid" mkdir -p "$APP/public/js" "$SITE_ASSETS/js"
+  "${DOCKER[@]}" exec -u root "$cid" mkdir -p "$APP/public/js" "$APP/public/images" "$APP/public/css" \
+    "$SITE_ASSETS/js" "$SITE_ASSETS/images" "$SITE_ASSETS/css"
   if [[ -f "$SCRIPT_DIR/branding/login_simple.js" ]]; then
     "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/login_simple.js" "${cid}:${APP}/public/js/login_simple.js" || true
     "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/login_simple.js" "${cid}:${SITE_ASSETS}/js/login_simple.js" || true
+  fi
+  for img in prime-ledger-logo.svg prime-ledger-favicon.svg erpnext-logo.svg erpnext-favicon.svg; do
+    if [[ -f "$SCRIPT_DIR/branding/$img" ]]; then
+      "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/$img" "${cid}:${APP}/public/images/$img" || true
+      "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/$img" "${cid}:${SITE_ASSETS}/images/$img" || true
+    fi
+  done
+  if [[ -f "$SCRIPT_DIR/branding/prime-ledger-logo.svg" ]]; then
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/prime-ledger-logo.svg" "${cid}:${APP}/public/images/erpnext-logo.svg" || true
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/prime-ledger-logo.svg" "${cid}:${SITE_ASSETS}/images/erpnext-logo.svg" || true
+  fi
+  if [[ -f "$SCRIPT_DIR/branding/prime-ledger-favicon.svg" ]]; then
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/prime-ledger-favicon.svg" "${cid}:${APP}/public/images/erpnext-favicon.svg" || true
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/prime-ledger-favicon.svg" "${cid}:${SITE_ASSETS}/images/erpnext-favicon.svg" || true
+  fi
+  if [[ -f "$SCRIPT_DIR/branding/prime_ledger_brand.css" ]]; then
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/prime_ledger_brand.css" "${cid}:${APP}/public/css/prime_ledger_brand.css" || true
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/prime_ledger_brand.css" "${cid}:${SITE_ASSETS}/css/prime_ledger_brand.css" || true
   fi
   if [[ -f "$SCRIPT_DIR/patches/setup-wizard/setup_wizard.js" ]]; then
     "${DOCKER[@]}" cp "$SCRIPT_DIR/patches/setup-wizard/setup_wizard.js" \
