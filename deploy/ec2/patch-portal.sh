@@ -140,11 +140,14 @@ patch_cid() {
     "${DOCKER[@]}" cp "$PATCH_ROOT/../user_onboarding.py" \
       "${cid}:${APP}/setup/user_onboarding.py" || true
   fi
+  "${DOCKER[@]}" exec -u root "$cid" mkdir -p "$APP/public/js" "$SITE_ASSETS/js"
+  if [[ -f "$SCRIPT_DIR/branding/login_simple.js" ]]; then
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/login_simple.js" "${cid}:${APP}/public/js/login_simple.js" || true
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/branding/login_simple.js" "${cid}:${SITE_ASSETS}/js/login_simple.js" || true
+  fi
   if [[ -f "$SCRIPT_DIR/patches/setup-wizard/setup_wizard.js" ]]; then
-    "${DOCKER[@]}" exec -u root "$cid" mkdir -p \
-      /home/frappe/frappe-bench/apps/erpnext/erpnext/public/js || true
     "${DOCKER[@]}" cp "$SCRIPT_DIR/patches/setup-wizard/setup_wizard.js" \
-      "${cid}:/home/frappe/frappe-bench/apps/erpnext/erpnext/public/js/setup_wizard.js" || true
+      "${cid}:${APP}/public/js/setup_wizard.js" || true
   fi
 
   "${DOCKER[@]}" cp "$INJECT_PY" "${cid}:/tmp/inject_portal_hooks.py"

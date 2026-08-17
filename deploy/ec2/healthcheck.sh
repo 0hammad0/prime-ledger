@@ -40,18 +40,35 @@ ping_ok() {
   [[ "$code" == "200" ]] && echo "$body" | grep -q '"message"[[:space:]]*:[[:space:]]*"pong"'
 }
 
-heal_stack() {
-  echo "$TS HEAL recreating backend then frontend (stale upstream recovery)" | tee -a "$LOG_FILE"
-  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate backend || true
-  sleep 8
-  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate \
-    frontend websocket queue-short queue-long scheduler || true
-  # Re-apply user hooks (Hub image resets hooks.py on recreate)
+repatch_after_recreate() {
+  # Stock Hub images wipe docker cp overlays. Restore portal + login helpers.
+  if [[ -x "$SCRIPT_DIR/patch-portal.sh" ]]; then
+    echo "$TS HEAL re-applying patch-portal.sh" | tee -a "$LOG_FILE"
+    bash "$SCRIPT_DIR/patch-portal.sh" >>"$LOG_FILE" 2>&1 || true
+  fi
   if [[ -x "$SCRIPT_DIR/patch-user-hooks.sh" ]]; then
     bash "$SCRIPT_DIR/patch-user-hooks.sh" >>"$LOG_FILE" 2>&1 || true
   fi
-  # Give Traefik healthcheck time to re-enable the service
-  sleep 20
+}
+
+heal_stack() {
+  # Prefer frontend-only recreate: nginx caches the backend container IP.
+  # Recreating backend wipes hot-patches and is a last resort.
+  echo "$TS HEAL recreating frontend (stale upstream recovery)" | tee -a "$LOG_FILE"
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate frontend || true
+  sleep 8
+  if ping_ok; then
+    repatch_after_recreate
+    return 0
+  fi
+  echo "$TS HEAL ping still down — recreating backend workers, then re-patching" | tee -a "$LOG_FILE"
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate \
+    backend websocket queue-short queue-long scheduler || true
+  sleep 8
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d --no-deps --force-recreate frontend || true
+  sleep 5
+  repatch_after_recreate
+  sleep 15
 }
 
 if ! ping_ok; then

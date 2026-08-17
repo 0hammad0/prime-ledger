@@ -92,12 +92,16 @@ done
 
 echo "==> Applying site branding settings"
 "${DOCKER[@]}" cp "$BRAND_DIR/apply_brand.py" "${BACKEND_CID}:/tmp/apply_brand.py"
-"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T \
-  -e "ADMIN_PASSWORD=${ADMIN_PASSWORD}" backend \
-  bench --site "$SITE_NAME" console <<'PY'
-_code = open("/tmp/apply_brand.py", encoding="utf-8").read()
-exec(_code, globals(), globals())
-PY
+"${DOCKER[@]}" exec -u frappe -e "PL_SITE=${SITE_NAME}" -e "ADMIN_PASSWORD=${ADMIN_PASSWORD}" \
+  "$BACKEND_CID" bash -lc 'cd /home/frappe/frappe-bench && ./env/bin/python - <<"PY"
+import os
+import frappe
+
+frappe.init(site=os.environ["PL_SITE"], sites_path="sites")
+frappe.connect()
+exec(open("/tmp/apply_brand.py", encoding="utf-8").read(), globals())
+print("apply_brand_ok")
+PY'
 
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
   bench --site "$SITE_NAME" clear-cache || true
