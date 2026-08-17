@@ -77,8 +77,8 @@
 <div class="pl-start">
   <h1>Create your organization</h1>
   <p class="lead">
-    You get a private workspace and your own login URL. Your team signs in there —
-    not into a shared pool with other companies.
+    You get a private workspace and your own login URL. We email a confirmation
+    link first — after you confirm, we create the URL and sign you in.
   </p>
 
   <form id="pl-org-form" autocomplete="on">
@@ -98,9 +98,9 @@
   </form>
 
   <div id="pl-wait" class="wait" hidden>
-    <p id="pl-wait-msg" class="msg ok">Preparing your workspace…</p>
+    <p id="pl-wait-msg" class="msg ok">Check your email…</p>
     <code id="pl-wait-url"></code>
-    <p class="lead" style="margin:0.6rem 0 0">Keep this tab open. This usually takes a few minutes.</p>
+    <p class="lead" style="margin:0.6rem 0 0">Open the confirmation link. After that we create your private URL and sign you in.</p>
   </div>
 
   <p id="pl-msg" class="msg" hidden></p>
@@ -185,8 +185,8 @@
         form.hidden = true;
         msg.hidden = true;
         wait.hidden = false;
-        waitUrl.textContent = m.host ? ("https://" + m.host) : (m.login_url || "");
-        waitMsg.textContent = m.message || "Preparing your workspace…";
+        waitUrl.textContent = m.host ? ("https://" + m.host + " (after you confirm)") : "";
+        waitMsg.textContent = m.message || "Check your email to confirm.";
         if (m.poll_token) poll(m.poll_token);
       })
       .catch(function (err) {

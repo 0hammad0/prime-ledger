@@ -60,7 +60,7 @@ export function SignupPage() {
         password,
       })) as SignupResult;
       setWaitHost(result.host ? `https://${result.host}` : result.login_url || null);
-      setWaitMsg(result.message || "Preparing your workspace…");
+      setWaitMsg(result.message || "Check your email to confirm. After that we create your private URL.");
       if (result.poll_token) void poll(result.poll_token);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Could not create organization");
@@ -71,13 +71,13 @@ export function SignupPage() {
   if (waitMsg) {
     return (
       <AuthFrame
-        title="Preparing your workspace"
-        subtitle="Keep this tab open. We'll take you to your private URL when it's ready."
+        title="Check your email"
+        subtitle="Open the confirmation link. After you confirm, we create your private URL and sign you in."
       >
         <div className="mt-6 rounded-2xl border border-[var(--pl-line)] bg-[var(--pl-surface)] p-5">
           <p className="text-sm text-[var(--pl-accent)]">{waitMsg}</p>
           {waitHost ? <p className="mt-3 break-all text-sm font-medium">{waitHost}</p> : null}
-          <p className="mt-3 text-sm text-[var(--pl-ink-soft)]">This usually takes a few minutes.</p>
+          <p className="mt-3 text-sm text-[var(--pl-ink-soft)]">After you confirm, keep that tab open — setup usually takes a few minutes.</p>
         </div>
       </AuthFrame>
     );
@@ -86,7 +86,7 @@ export function SignupPage() {
   return (
     <AuthFrame
       title="Create your organization"
-      subtitle="You get a private workspace and your own login URL — not a shared pool with other companies."
+      subtitle="You get a private workspace and your own login URL. We email a confirmation link first."
     >
       <form onSubmit={submit} className="mt-6 rounded-2xl border border-[var(--pl-line)] bg-[var(--pl-surface)] p-5">
         <label className="block text-sm">

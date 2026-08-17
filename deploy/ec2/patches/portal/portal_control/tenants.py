@@ -137,6 +137,10 @@ def _ticket_cache_key(ticket: str) -> str:
 	return f"pl_login_ticket:{(ticket or '').strip()}"
 
 
+def _confirm_cache_key(token: str) -> str:
+	return f"pl_signup_confirm:{(token or '').strip()}"
+
+
 def _issue_poll_token(site_name: str) -> str:
 	token = secrets.token_urlsafe(24)
 	_cache_set(_poll_cache_key(token), (site_name or "").strip().lower(), 7 * 24 * 3600)
@@ -145,6 +149,18 @@ def _issue_poll_token(site_name: str) -> str:
 
 def _site_from_poll_token(token: str) -> str | None:
 	site = _cache_get(_poll_cache_key(token))
+	out = str(site).strip().lower() if site else ""
+	return out or None
+
+
+def _issue_confirm_token(site_name: str) -> str:
+	token = secrets.token_urlsafe(32)
+	_cache_set(_confirm_cache_key(token), (site_name or "").strip().lower(), 2 * 24 * 3600)
+	return token
+
+
+def _site_from_confirm_token(token: str) -> str | None:
+	site = _cache_get(_confirm_cache_key(token))
 	out = str(site).strip().lower() if site else ""
 	return out or None
 
@@ -297,14 +313,39 @@ def signup_organization(
 
 	_rate_limit_signup(admin_email)
 
-	# Same email cannot own two pending/active tenants as admin
+	existing = None
 	if frappe.db.exists("DocType", "PL Tenant"):
-		dup = frappe.db.exists(
+		existing = frappe.db.get_value(
 			"PL Tenant",
 			{"admin_email": admin_email, "status": ("in", _OPEN_STATUSES)},
+			["name", "site_name", "host", "status", "organization_name", "admin_full_name"],
+			as_dict=True,
 		)
-		if dup:
+	if existing:
+		if existing.status in ("Approved", "Provisioning", "Active"):
 			frappe.throw(_("An organization is already registered with this email."))
+		# Pending: resend confirmation instead of creating a second org
+		_cache_set_pwd(existing.site_name, password)
+		token = _issue_confirm_token(existing.site_name)
+		mail = _send_confirm_email(
+			admin_email=admin_email,
+			admin_full_name=admin_full_name or existing.admin_full_name,
+			organization_name=existing.organization_name,
+			host=existing.host,
+			token=token,
+		)
+		return {
+			"tenant": existing.name,
+			"site_name": existing.site_name,
+			"host": existing.host,
+			"status": existing.status,
+			"needs_confirm": True,
+			"mail_queued": bool(mail.get("queued")),
+			"message": _(
+				"Check your email and open the confirmation link. "
+				"After you confirm, we create your private URL."
+			),
+		}
 
 	result = _insert_pending_tenant(
 		organization_name=organization_name,
@@ -312,40 +353,46 @@ def signup_organization(
 		admin_email=admin_email,
 		admin_full_name=admin_full_name,
 		notes=(
-			f"Public signup {now_datetime()}. "
-			f"Provision with: bash deploy/ec2/provision-tenant.sh "
-			f"{{site}} \"{organization_name}\" {admin_email}"
+			f"Public signup {now_datetime()}. Waiting for email confirmation. "
+			f'Provision after confirm: bash deploy/ec2/provision-tenant.sh '
+			f'{{site}} "{organization_name}" {admin_email}'
 		),
 	)
-	# Store password only in cache for provision script (not in DB notes)
 	_cache_set_pwd(result["site_name"], password)
-	# Fix notes with real slug
 	frappe.db.set_value(
 		"PL Tenant",
 		result["site_name"],
 		"notes",
 		(
 			f"Public signup {now_datetime()}. Admin: {admin_full_name} <{admin_email}>. "
-			f'Run: bash deploy/ec2/provision-tenant.sh {result["site_name"]} '
-			f'"{organization_name}" {admin_email}'
+			"Waiting for email confirmation before provisioning."
 		),
 	)
 	frappe.db.commit()
-	approved = _approve_pending(result["site_name"], actor="public-signup")
-	poll_token = _issue_poll_token(result["site_name"])
-	host = approved.get("host") or result["host"]
+	token = _issue_confirm_token(result["site_name"])
+	mail = _send_confirm_email(
+		admin_email=admin_email,
+		admin_full_name=admin_full_name,
+		organization_name=organization_name,
+		host=result["host"],
+		token=token,
+	)
 	result.update(
 		{
-			"status": approved.get("status") or "Approved",
-			"host": host,
-			"login_url": _login_url(host),
-			"poll_token": poll_token,
+			"needs_confirm": True,
+			"mail_queued": bool(mail.get("queued")),
+			"login_url": _login_url(result["host"]),
 			"message": _(
-				"We're preparing your private workspace. Keep this page open — "
-				"we'll take you to your URL when it's ready."
+				"Check your email and open the confirmation link. "
+				"After you confirm, we create your private URL and sign you in."
 			),
 		}
 	)
+	if not mail.get("queued"):
+		result["message"] = _(
+			"We saved your organization but could not send the confirmation email. "
+			"Wait a minute and try again, or contact support."
+		)
 	return result
 
 
@@ -495,6 +542,75 @@ def _sendmail_branded(*, recipients: list[str], subject: str, html: str) -> None
 	_scrub_queued_mail(subject, recipients)
 
 
+def _confirm_url(token: str) -> str:
+	return f"https://{_public_base_host()}/confirm?token={token}"
+
+
+def _send_confirm_email(
+	*,
+	admin_email: str,
+	admin_full_name: str | None,
+	organization_name: str,
+	host: str,
+	token: str,
+) -> dict:
+	name = (admin_full_name or admin_email.split("@")[0]).strip()
+	org = organization_name or host
+	brand = _product_name()
+	url = _confirm_url(token)
+	future = _login_url(host)
+	subject = _("Confirm your {0} organization").format(brand)
+	text = (
+		f"Hi {name},\n\n"
+		f"Confirm {org} to create your private workspace.\n"
+		f"Your login URL will be:\n{future}\n\n"
+		f"Open this link to confirm:\n{url}\n\n"
+		"After you confirm, we prepare the workspace (a few minutes) and sign you in.\n\n"
+		f"{brand}\n"
+	)
+	html = "<p>" + strip_html(text).replace("\n\n", "</p><p>").replace("\n", "<br>") + "</p>"
+	try:
+		_sendmail_branded(recipients=[admin_email], subject=subject, html=html)
+		frappe.db.commit()
+		return {"queued": True, "to": admin_email, "confirm_url": url}
+	except Exception:
+		frappe.log_error(title="PL signup confirmation email failed")
+		return {"queued": False, "reason": "sendmail_failed", "to": admin_email}
+
+
+@frappe.whitelist(allow_guest=True)
+def confirm_signup(token: str):
+	"""Guest: email confirmation starts provisioning of the private URL."""
+	if not _on_control_plane():
+		frappe.throw(_("Open the confirmation link from the email we sent."))
+	site_name = _site_from_confirm_token((token or "").strip())
+	if not site_name:
+		frappe.throw(_("This confirmation link expired. Sign up again or request a new email."))
+	row = frappe.db.get_value(
+		"PL Tenant",
+		site_name,
+		["organization_name", "site_name", "host", "status"],
+		as_dict=True,
+	)
+	if not row:
+		frappe.throw(_("This confirmation link expired. Sign up again."))
+	approved = _approve_pending(site_name, actor="email-confirm", send_mail=False)
+	poll_token = _issue_poll_token(site_name)
+	host = approved.get("host") or row.host
+	return {
+		"ok": True,
+		"site_name": site_name,
+		"host": host,
+		"login_url": _login_url(host),
+		"status": approved.get("status") or row.status,
+		"poll_token": poll_token,
+		"ready": (approved.get("status") or row.status) == "Active",
+		"message": _(
+			"Email confirmed. We're creating your private URL. Keep this page open."
+		),
+	}
+
+
 def _send_tenant_invite(
 	*,
 	ready: bool,
@@ -537,7 +653,7 @@ def _send_tenant_invite(
 		return {"queued": False, "reason": "sendmail_failed", "login_url": url, "to": admin_email}
 
 
-def _approve_pending(site_name: str, *, actor: str) -> dict:
+def _approve_pending(site_name: str, *, actor: str, send_mail: bool = True) -> dict:
 	site_name = (site_name or "").strip().lower()
 	if not site_name or not frappe.db.exists("PL Tenant", site_name):
 		frappe.throw(_("Unknown organization"))
@@ -577,13 +693,15 @@ def _approve_pending(site_name: str, *, actor: str) -> dict:
 	frappe.db.set_value("PL Tenant", site_name, "notes", f"{note}\n{stamp}".strip())
 	frappe.db.commit()
 
-	mail = _send_tenant_invite(
-		ready=False,
-		organization_name=row.organization_name,
-		host=host,
-		admin_email=row.admin_email,
-		admin_full_name=row.admin_full_name,
-	)
+	mail = {"queued": False, "skipped": True}
+	if send_mail:
+		mail = _send_tenant_invite(
+			ready=False,
+			organization_name=row.organization_name,
+			host=host,
+			admin_email=row.admin_email,
+			admin_full_name=row.admin_full_name,
+		)
 	return {
 		"site_name": site_name,
 		"host": host,
@@ -897,7 +1015,9 @@ def _status_copy(status: str, host: str) -> str:
 	url = _login_url(host)
 	if status == "Active":
 		return _("Your workspace is ready: {0}").format(url)
-	if status in ("Approved", "Provisioning", "Pending"):
+	if status == "Pending":
+		return _("Confirm the email we sent. After that we create your private URL.")
+	if status in ("Approved", "Provisioning"):
 		return _(
 			"Your private workspace is still being prepared. Bookmark {0} — "
 			"we'll send you there as soon as it's ready."

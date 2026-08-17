@@ -113,6 +113,10 @@ patch_cid() {
   if [[ -f "$PATCH_ROOT/www/go.html" ]]; then
     "${DOCKER[@]}" cp "$PATCH_ROOT/www/go.html" "${cid}:${APP}/www/go.html"
   fi
+  if [[ -f "$PATCH_ROOT/www/confirm.py" ]]; then
+    "${DOCKER[@]}" cp "$PATCH_ROOT/www/confirm.py" "${cid}:${APP}/www/confirm.py"
+    "${DOCKER[@]}" cp "$PATCH_ROOT/www/confirm.html" "${cid}:${APP}/www/confirm.html"
+  fi
   "${DOCKER[@]}" cp "$PATCH_ROOT/public/." "${cid}:${APP}/public/portal/"
   "${DOCKER[@]}" cp "$PATCH_ROOT/public/." "${cid}:${SITE_ASSETS}/portal/" || true
   "${DOCKER[@]}" cp "$PATCH_ROOT/patches/seed_portal_control.py" \
