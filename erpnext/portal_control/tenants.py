@@ -989,7 +989,7 @@ def issue_login_ticket(poll_token: str):
 		"ticket": ticket,
 		"host": host,
 		"email": email,
-		"login_url": f"https://{host}/login?ticket={ticket}",
+		"login_url": f"https://{host}/go?ticket={ticket}",
 	}
 
 

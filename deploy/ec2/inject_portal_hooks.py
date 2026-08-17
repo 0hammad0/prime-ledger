@@ -118,6 +118,20 @@ if n:
 	text = text2
 	print("mail_footer_branded")
 
+# Website login helpers on every site (signup ticket + apex redirect)
+if "login_simple.js" not in text:
+	if 'web_include_css = "erpnext-web.bundle.css"' in text:
+		text = text.replace(
+			'web_include_css = "erpnext-web.bundle.css"',
+			'web_include_css = "erpnext-web.bundle.css"\n'
+			'web_include_js = ["/assets/erpnext/js/login_simple.js"]',
+			1,
+		)
+		print("web_include_js_login_simple")
+	else:
+		text += '\nweb_include_js = ["/assets/erpnext/js/login_simple.js"]\n'
+		print("web_include_js_login_simple_appended")
+
 hooks.write_text(text)
 
 patches = Path("/home/frappe/frappe-bench/apps/erpnext/erpnext/patches.txt")

@@ -26,6 +26,7 @@ develop_version = "17.x.x-develop"
 app_include_js = "erpnext.bundle.js"
 app_include_css = "erpnext.bundle.css"
 web_include_css = "erpnext-web.bundle.css"
+web_include_js = ["/assets/erpnext/js/login_simple.js"]
 email_css = "email_erpnext.bundle.css"
 
 app_include_icons = [

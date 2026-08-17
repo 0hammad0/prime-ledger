@@ -103,9 +103,12 @@ patch_cid() {
   done
   "${DOCKER[@]}" cp "$PATCH_ROOT/www/portal.py" "${cid}:${APP}/www/portal.py"
   "${DOCKER[@]}" cp "$PATCH_ROOT/www/portal.html" "${cid}:${APP}/www/portal.html"
-  if [[ -f "$PATCH_ROOT/www/start.py" ]]; then
+	if [[ -f "$PATCH_ROOT/www/start.py" ]]; then
     "${DOCKER[@]}" cp "$PATCH_ROOT/www/start.py" "${cid}:${APP}/www/start.py"
     "${DOCKER[@]}" cp "$PATCH_ROOT/www/start.html" "${cid}:${APP}/www/start.html"
+  fi
+  if [[ -f "$PATCH_ROOT/www/go.py" ]]; then
+    "${DOCKER[@]}" cp "$PATCH_ROOT/www/go.py" "${cid}:${APP}/www/go.py"
   fi
   "${DOCKER[@]}" cp "$PATCH_ROOT/public/." "${cid}:${APP}/public/portal/"
   "${DOCKER[@]}" cp "$PATCH_ROOT/public/." "${cid}:${SITE_ASSETS}/portal/" || true
