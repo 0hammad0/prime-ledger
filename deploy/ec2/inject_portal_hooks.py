@@ -47,6 +47,19 @@ if "erpnext.portal_control.redirects.on_login" not in text:
 		text += '\n\non_login = "erpnext.portal_control.redirects.on_login"\n'
 		print("on_login_hook_appended")
 
+# Customize guardrails — only admins may change Custom Field / Property Setter
+if "erpnext.portal_control.tenancy.assert_can_customize" not in text and "doc_events" in text:
+	text += (
+		"\n\n# Prime Ledger: block non-admin form customization\n"
+		'for _pl_dt in ("Custom Field", "Property Setter"):\n'
+		'\tdoc_events.setdefault(_pl_dt, {}).setdefault("validate", [])\n'
+		'\tif "erpnext.portal_control.tenancy.assert_can_customize" not in doc_events[_pl_dt]["validate"]:\n'
+		'\t\tdoc_events[_pl_dt]["validate"].append(\n'
+		'\t\t\t"erpnext.portal_control.tenancy.assert_can_customize"\n'
+		"\t\t)\n"
+	)
+	print("customize_guard_hooks_ok")
+
 # Force Prime Ledger product branding (strip ERPNext-named logos / titles)
 brand_subs = [
 	(r'app_title\s*=\s*["\'][^"\']*["\']', 'app_title = "Prime Ledger"'),
@@ -82,6 +95,29 @@ if "ERPNext" in text:
 		text = text2
 		print(f"erpnext_literal_scrubbed:{n}")
 
+# Hub stock footer is unquoted HTML, not a "ERPNext" Python string
+if "via_email_footer" in text or "frappe.io/erpnext" in text:
+	text = text.replace(
+		"https://frappe.io/erpnext?source=via_email_footer",
+		"https://github.com/0hammad0/prime-ledger",
+	)
+	text = text.replace(
+		"https://erpnext.com?source=via_email_footer",
+		"https://github.com/0hammad0/prime-ledger",
+	)
+	print("mail_footer_url_branded")
+# Compact ">ERPNext<" and the stock indented-line label between <a>...</a>
+text = text.replace(">ERPNext<", ">Prime Ledger<")
+text2, n = re.subn(
+	r'(<a class="text-muted"[^>]*>)\s*ERPNext\s*(</a>)',
+	r"\1Prime Ledger\2",
+	text,
+	count=1,
+)
+if n:
+	text = text2
+	print("mail_footer_branded")
+
 hooks.write_text(text)
 
 patches = Path("/home/frappe/frappe-bench/apps/erpnext/erpnext/patches.txt")
@@ -89,6 +125,7 @@ pt = patches.read_text()
 for line in (
 	"erpnext.patches.v16_0.restore_frappe_portal_settings",
 	"erpnext.patches.v16_0.seed_portal_control",
+	"erpnext.patches.v16_0.seed_pl_tenant",
 ):
 	if line not in pt:
 		pt = pt.rstrip() + "\n" + line + "\n"

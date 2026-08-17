@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Full enterprise backup: Frappe site (+files) + MariaDB logical dump.
+# Full enterprise backup: every Frappe site (+files) + MariaDB logical dump.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -28,9 +28,24 @@ else
   exit 1
 fi
 
-echo "==> Bench backup (--with-files)"
-"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
-  bench --site "$SITE_NAME" backup --with-files
+mapfile -t SITES < <(
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
+    bash -lc 'cd /home/frappe/frappe-bench/sites && for d in */; do
+      n="${d%/}"
+      case "$n" in assets|arch|*backup*) continue ;; esac
+      [[ -f "$n/site_config.json" ]] && echo "$n"
+    done' | tr -d '\r'
+)
+if [[ ${#SITES[@]} -eq 0 ]]; then
+  SITES=("$SITE_NAME")
+fi
+
+echo "==> Bench backup (--with-files) for sites: ${SITES[*]}"
+for site in "${SITES[@]}"; do
+  echo "  backing up $site"
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
+    bench --site "$site" backup --with-files || echo "backup_failed:$site"
+done
 
 echo "==> MariaDB dump"
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T db \
@@ -39,11 +54,15 @@ echo "==> MariaDB dump"
 gzip -f "$OUT/mariadb-all.sql"
 
 echo "==> Copy latest site backup files out of volume"
-"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" cp \
-  "backend:/home/frappe/frappe-bench/sites/${SITE_NAME}/private/backups/." \
-  "$OUT/site-backups/" 2>/dev/null || \
-"${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
-  bash -lc "cd /home/frappe/frappe-bench/sites/${SITE_NAME}/private/backups && tar czf - ." >"$OUT/site-backups.tar.gz"
+for site in "${SITES[@]}"; do
+  mkdir -p "$OUT/site-backups/$site"
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" cp \
+    "backend:/home/frappe/frappe-bench/sites/${site}/private/backups/." \
+    "$OUT/site-backups/$site/" 2>/dev/null || \
+  "${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" exec -T backend \
+    bash -lc "cd /home/frappe/frappe-bench/sites/${site}/private/backups && tar czf - ." \
+    >"$OUT/site-backups/${site}.tar.gz" || true
+done
 
 # Retain 14 local backup sets
 ls -1dt "$BACKUP_ROOT"/20* 2>/dev/null | tail -n +15 | xargs -r rm -rf

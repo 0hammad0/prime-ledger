@@ -107,6 +107,78 @@ DEFAULT_MODULES = [
 		"description": "Your business name and basic options",
 	},
 	{
+		"module_key": "banking",
+		"label": "Banking",
+		"category": "Tenant",
+		"sort_order": 85,
+		"icon": "building-2",
+		"portal_route": "/tenant/banking",
+		"desk_route": "/app/bank-account",
+		"description": "Bank accounts, deposits, and reconciliation",
+	},
+	{
+		"module_key": "hr",
+		"label": "HR",
+		"category": "Tenant",
+		"sort_order": 86,
+		"icon": "users",
+		"portal_route": "/tenant/hr",
+		"desk_route": "/app/employee",
+		"description": "People, attendance, leave, and payroll",
+	},
+	{
+		"module_key": "crm",
+		"label": "CRM",
+		"category": "Tenant",
+		"sort_order": 55,
+		"icon": "contact",
+		"portal_route": "/tenant/crm",
+		"desk_route": "/app/lead",
+		"description": "Leads, opportunities, and customers",
+	},
+	{
+		"module_key": "epad",
+		"label": "ePad",
+		"category": "Tenant",
+		"sort_order": 95,
+		"icon": "tablet",
+		"portal_route": "/tenant/epad",
+		"desk_route": "/app/todo",
+		"description": "Notes and follow-ups for your team",
+	},
+	{
+		"module_key": "import_custom",
+		"label": "Import & Custom",
+		"category": "Tenant",
+		"sort_order": 96,
+		"icon": "upload",
+		"portal_route": "/tenant/import",
+		"desk_route": "/app/data-import",
+		"description": "Data import and duty / tax calculator",
+	},
+	{
+		"module_key": "manufacturing",
+		"label": "Manufacturing",
+		"category": "Tenant",
+		"sort_order": 200,
+		"icon": "factory",
+		"portal_route": "/tenant/manufacturing",
+		"desk_route": "/app/work-order",
+		"description": "BOM and work orders (locked until enabled)",
+		"enabled": 0,
+	},
+	{
+		"module_key": "projects",
+		"label": "Projects",
+		"category": "Tenant",
+		"sort_order": 210,
+		"icon": "folder-kanban",
+		"portal_route": "/tenant/projects",
+		"desk_route": "/app/project",
+		"description": "Projects (locked until enabled)",
+		"enabled": 0,
+	},
+	{
 		"module_key": "admin_home",
 		"label": "Site admin",
 		"category": "Super Admin",
@@ -130,14 +202,14 @@ DEFAULT_MODULES = [
 	},
 	{
 		"module_key": "tenants",
-		"label": "Businesses",
+		"label": "Organizations",
 		"category": "Super Admin",
 		"sort_order": 20,
 		"icon": "building-2",
 		"portal_route": "/admin/tenants",
-		"desk_route": "/app/company",
+		"desk_route": "/app/pl-tenant",
 		"is_super_admin_only": 1,
-		"description": "Companies set up on this site",
+		"description": "Tenant organizations (one site per org)",
 	},
 	{
 		"module_key": "users",
@@ -190,23 +262,57 @@ def seed_modules(replace: bool = False) -> None:
 		name = row["module_key"]
 		if frappe.db.exists("Portal Module", name):
 			doc = frappe.get_doc("Portal Module", name)
-			# Always refresh plain-language labels/descriptions for easy UX
+			# Always refresh plain-language labels/descriptions + routes for easy UX
 			for key in ("label", "description", "portal_route", "desk_route", "category", "sort_order", "icon"):
-				if key in row and (replace or key in ("label", "description")):
+				if key in row and (replace or key in ("label", "description", "portal_route", "desk_route")):
 					doc.set(key, row[key])
 			if replace:
 				doc.update(row)
 			doc.enabled = 1 if doc.enabled is None else doc.enabled
 			doc.save(ignore_permissions=True)
 		else:
-			doc = frappe.get_doc({"doctype": "Portal Module", "enabled": 1, **row})
+			payload = dict(row)
+			enabled = payload.pop("enabled", 1)
+			doc = frappe.get_doc({"doctype": "Portal Module", "enabled": enabled, **payload})
 			doc.insert(ignore_permissions=True)
+
+
+def ensure_customize_guardrails() -> None:
+	"""Prefer System Manager for customization DocTypes (best-effort)."""
+	for dt in ("Custom Field", "Property Setter", "Client Script"):
+		if not frappe.db.exists("DocType", dt):
+			continue
+		try:
+			# Ensure System Manager keeps full access; strip write from common desk roles if present
+			for role in ("All", "Desk User", "Sales User", "Purchase User", "Stock User"):
+				name = frappe.db.get_value(
+					"Custom DocPerm",
+					{"parent": dt, "role": role},
+					"name",
+				)
+				if name:
+					frappe.db.set_value("Custom DocPerm", name, "write", 0, update_modified=False)
+					frappe.db.set_value("Custom DocPerm", name, "create", 0, update_modified=False)
+					frappe.db.set_value("Custom DocPerm", name, "delete", 0, update_modified=False)
+		except Exception:
+			pass
+
+
+def ensure_signup_policy() -> None:
+	"""Stock signup is disabled; organizations register via /start."""
+	try:
+		frappe.db.set_single_value("Website Settings", "disable_signup", 1)
+		frappe.db.set_single_value("Website Settings", "hide_footer_signup", 1)
+	except Exception:
+		pass
 
 
 def run() -> None:
 	ensure_roles()
 	ensure_settings()
+	ensure_signup_policy()
 	seed_modules(replace=False)
+	ensure_customize_guardrails()
 	# Grant Super Admin role to Administrator
 	if frappe.db.exists("User", "Administrator"):
 		user = frappe.get_doc("User", "Administrator")
@@ -214,4 +320,11 @@ def run() -> None:
 		if "Prime Ledger Super Admin" not in roles:
 			user.append("roles", {"role": "Prime Ledger Super Admin"})
 			user.save(ignore_permissions=True)
+	# Phase 1: bind existing tenant users to their default company
+	try:
+		from erpnext.portal_control.tenancy import apply_company_bindings
+
+		apply_company_bindings()
+	except Exception:
+		frappe.log_error(title="prime_ledger_apply_company_bindings")
 	frappe.db.commit()

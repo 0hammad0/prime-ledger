@@ -96,11 +96,17 @@ patch_cid() {
 
   "${DOCKER[@]}" cp "$PATCH_ROOT/portal_control/." "${cid}:${APP}/portal_control/"
   "${DOCKER[@]}" exec -u root "$cid" rm -rf "$APP/setup/doctype/portal_settings" || true
-  for dt in portal_module portal_module_role pl_portal_settings; do
-    "${DOCKER[@]}" cp "$PATCH_ROOT/doctype/${dt}" "${cid}:${APP}/setup/doctype/"
+  for dt in portal_module portal_module_role pl_portal_settings pl_tenant; do
+    if [[ -d "$PATCH_ROOT/doctype/${dt}" ]]; then
+      "${DOCKER[@]}" cp "$PATCH_ROOT/doctype/${dt}" "${cid}:${APP}/setup/doctype/"
+    fi
   done
   "${DOCKER[@]}" cp "$PATCH_ROOT/www/portal.py" "${cid}:${APP}/www/portal.py"
   "${DOCKER[@]}" cp "$PATCH_ROOT/www/portal.html" "${cid}:${APP}/www/portal.html"
+  if [[ -f "$PATCH_ROOT/www/start.py" ]]; then
+    "${DOCKER[@]}" cp "$PATCH_ROOT/www/start.py" "${cid}:${APP}/www/start.py"
+    "${DOCKER[@]}" cp "$PATCH_ROOT/www/start.html" "${cid}:${APP}/www/start.html"
+  fi
   "${DOCKER[@]}" cp "$PATCH_ROOT/public/." "${cid}:${APP}/public/portal/"
   "${DOCKER[@]}" cp "$PATCH_ROOT/public/." "${cid}:${SITE_ASSETS}/portal/" || true
   "${DOCKER[@]}" cp "$PATCH_ROOT/patches/seed_portal_control.py" \
@@ -109,12 +115,24 @@ patch_cid() {
     "${DOCKER[@]}" cp "$PATCH_ROOT/patches/restore_frappe_portal_settings.py" \
       "${cid}:${APP}/patches/v16_0/restore_frappe_portal_settings.py"
   fi
+  if [[ -f "$PATCH_ROOT/patches/seed_pl_tenant.py" ]]; then
+    "${DOCKER[@]}" cp "$PATCH_ROOT/patches/seed_pl_tenant.py" \
+      "${cid}:${APP}/patches/v16_0/seed_pl_tenant.py"
+  fi
   # Login redirect + boot portal home (Hub overlay)
   if [[ -f "$PATCH_ROOT/portal_control/redirects.py" ]]; then
     "${DOCKER[@]}" cp "$PATCH_ROOT/portal_control/redirects.py" "${cid}:${APP}/portal_control/redirects.py"
   fi
   if [[ -f "$PATCH_ROOT/boot.py" ]]; then
     "${DOCKER[@]}" cp "$PATCH_ROOT/boot.py" "${cid}:${APP}/startup/boot.py"
+  fi
+  # Also copy user_onboarding for company bind on insert
+  if [[ -f "$SCRIPT_DIR/patches/user_onboarding.py" ]]; then
+    "${DOCKER[@]}" cp "$SCRIPT_DIR/patches/user_onboarding.py" \
+      "${cid}:${APP}/setup/user_onboarding.py" || true
+  elif [[ -f "$PATCH_ROOT/../user_onboarding.py" ]]; then
+    "${DOCKER[@]}" cp "$PATCH_ROOT/../user_onboarding.py" \
+      "${cid}:${APP}/setup/user_onboarding.py" || true
   fi
   if [[ -f "$SCRIPT_DIR/patches/setup-wizard/setup_wizard.js" ]]; then
     "${DOCKER[@]}" exec -u root "$cid" mkdir -p \
@@ -131,6 +149,7 @@ patch_cid() {
     "$APP/setup/doctype/portal_module" \
     "$APP/setup/doctype/portal_module_role" \
     "$APP/setup/doctype/pl_portal_settings" \
+    "$APP/setup/doctype/pl_tenant" \
     "$APP/www/portal.py" \
     "$APP/www/portal.html" \
     "$APP/public/portal" \

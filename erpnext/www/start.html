@@ -1,0 +1,199 @@
+{% extends "templates/web.html" %}
+{% block title %}Create organization — {{ app_name }}{% endblock %}
+
+{% block page_content %}
+<style>
+  .pl-start {
+    max-width: 28rem;
+    margin: 2.5rem auto 4rem;
+    padding: 0 1rem;
+  }
+  .pl-start h1 {
+    font-size: 1.6rem;
+    font-weight: 650;
+    margin: 0 0 0.5rem;
+    color: #102a43;
+  }
+  .pl-start .lead {
+    color: #486581;
+    margin-bottom: 1.5rem;
+    line-height: 1.45;
+  }
+  .pl-start label {
+    display: block;
+    font-size: 0.875rem;
+    color: #486581;
+    margin-bottom: 0.35rem;
+  }
+  .pl-start input {
+    width: 100%;
+    border: 1px solid #bcccdc;
+    border-radius: 0.65rem;
+    padding: 0.65rem 0.75rem;
+    margin-bottom: 0.9rem;
+    font-size: 1rem;
+  }
+  .pl-start button {
+    width: 100%;
+    border: 0;
+    border-radius: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: #0f766e;
+    color: #fff;
+    font-weight: 650;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .pl-start button:disabled { opacity: 0.55; cursor: default; }
+  .pl-start .msg {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #102a43;
+  }
+  .pl-start .err { color: #9b1c1c; }
+  .pl-start .ok { color: #0f766e; }
+  .pl-start .foot {
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    color: #486581;
+  }
+  .pl-start a { color: #0f766e; }
+  .pl-start .wait {
+    border: 1px solid #bcccdc;
+    border-radius: 0.85rem;
+    padding: 1.1rem 1rem;
+    background: #f0f4f8;
+  }
+  .pl-start .wait code {
+    display: block;
+    margin: 0.65rem 0 0.35rem;
+    word-break: break-all;
+    font-size: 0.85rem;
+    color: #102a43;
+  }
+</style>
+
+<div class="pl-start">
+  <h1>Create your organization</h1>
+  <p class="lead">
+    You get a private workspace and your own login URL. Your team signs in there —
+    not into a shared pool with other companies.
+  </p>
+
+  <form id="pl-org-form" autocomplete="on">
+    <label for="org">Organization name</label>
+    <input id="org" name="organization_name" required placeholder="e.g. Sultan Group" />
+
+    <label for="fullname">Your full name</label>
+    <input id="fullname" name="admin_full_name" required placeholder="Your name" />
+
+    <label for="email">Work email</label>
+    <input id="email" name="admin_email" type="email" required placeholder="you@company.com" />
+
+    <label for="pwd">Password</label>
+    <input id="pwd" name="password" type="password" required minlength="8" placeholder="At least 8 characters" />
+
+    <button type="submit" id="pl-submit">Create organization</button>
+  </form>
+
+  <div id="pl-wait" class="wait" hidden>
+    <p id="pl-wait-msg" class="msg ok">Preparing your workspace…</p>
+    <code id="pl-wait-url"></code>
+    <p class="lead" style="margin:0.6rem 0 0">Keep this tab open. This usually takes a few minutes.</p>
+  </div>
+
+  <p id="pl-msg" class="msg" hidden></p>
+  <p class="foot">Already have an organization? <a href="/login">Sign in</a></p>
+</div>
+
+<script>
+(function () {
+  var form = document.getElementById("pl-org-form");
+  var wait = document.getElementById("pl-wait");
+  var waitMsg = document.getElementById("pl-wait-msg");
+  var waitUrl = document.getElementById("pl-wait-url");
+  var msg = document.getElementById("pl-msg");
+  var btn = document.getElementById("pl-submit");
+  var csrf = {{ csrf_token|tojson }};
+
+  function token() {
+    return csrf || window.csrf_token || "";
+  }
+
+  function show(text, ok) {
+    msg.hidden = false;
+    msg.textContent = text;
+    msg.className = "msg " + (ok ? "ok" : "err");
+  }
+
+  function call(method, params) {
+    var body = new URLSearchParams(params);
+    return fetch("/api/method/" + method, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Frappe-CSRF-Token": token()
+      },
+      body: body
+    }).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+    }).then(function (res) {
+      var j = res.j || {};
+      if (j.exc_type || j.exception || !res.ok) {
+        throw new Error(j._error_message || j.exception || "Request failed");
+      }
+      return j.message || {};
+    });
+  }
+
+  function poll(pollToken) {
+    call("erpnext.portal_control.tenants.signup_status", { poll_token: pollToken })
+      .then(function (st) {
+        var host = st.host || "";
+        waitUrl.textContent = host ? ("https://" + host) : "";
+        waitMsg.textContent = st.ready
+          ? "Workspace ready. Signing you in…"
+          : (st.message || "Preparing your workspace…");
+        if (!st.ready) {
+          setTimeout(function () { poll(pollToken); }, 5000);
+          return;
+        }
+        return call("erpnext.portal_control.tenants.issue_login_ticket", { poll_token: pollToken })
+          .then(function (t) {
+            window.location.href = t.login_url;
+          });
+      })
+      .catch(function (err) {
+        waitMsg.textContent = err.message || "Still preparing… retrying";
+        setTimeout(function () { poll(pollToken); }, 8000);
+      });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    btn.disabled = true;
+    show("Submitting…", true);
+    call("erpnext.portal_control.tenants.signup_organization", {
+      organization_name: document.getElementById("org").value.trim(),
+      admin_full_name: document.getElementById("fullname").value.trim(),
+      admin_email: document.getElementById("email").value.trim(),
+      password: document.getElementById("pwd").value
+    })
+      .then(function (m) {
+        form.hidden = true;
+        msg.hidden = true;
+        wait.hidden = false;
+        waitUrl.textContent = m.host ? ("https://" + m.host) : (m.login_url || "");
+        waitMsg.textContent = m.message || "Preparing your workspace…";
+        if (m.poll_token) poll(m.poll_token);
+      })
+      .catch(function (err) {
+        show(err.message || "Something went wrong", false);
+        btn.disabled = false;
+      });
+  });
+})();
+</script>
+{% endblock %}

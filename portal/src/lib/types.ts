@@ -13,6 +13,19 @@ export type PortalModule = {
   roles?: string[];
 };
 
+export type PortalTenant = {
+  name: string;
+  organization_name: string;
+  site_name: string;
+  host?: string;
+  status: string;
+  company?: string;
+  admin_email?: string;
+  admin_full_name?: string;
+  creation?: string;
+  notes?: string;
+};
+
 export type PortalBoot = {
   app_name: string;
   user: {
@@ -32,4 +45,5 @@ export type PortalBoot = {
   modules: PortalModule[];
   all_modules: PortalModule[];
   companies: { name: string; abbr?: string; default_currency?: string; country?: string }[];
+  tenants?: PortalTenant[];
 };

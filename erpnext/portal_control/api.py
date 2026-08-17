@@ -6,16 +6,7 @@ from __future__ import annotations
 import frappe
 from frappe import _
 
-
-SUPER_ADMIN_ROLES = frozenset({"Administrator", "System Manager", "Prime Ledger Super Admin"})
-
-
-def is_super_admin(user: str | None = None) -> bool:
-	user = user or frappe.session.user
-	if user == "Administrator":
-		return True
-	roles = set(frappe.get_roles(user))
-	return bool(roles & SUPER_ADMIN_ROLES)
+from erpnext.portal_control.tenancy import get_user_companies, is_super_admin
 
 
 def _module_allowed(module: dict, user_roles: set[str], super_admin: bool) -> bool:
@@ -42,9 +33,15 @@ def get_portal_boot():
 	from erpnext.portal_control.seed import ensure_settings, run
 
 	ensure_settings()
-	# Seed once if empty
+	from erpnext.portal_control.seed import DEFAULT_MODULES, seed_modules
+
 	if not frappe.db.count("Portal Module"):
 		run()
+	else:
+		have = set(frappe.get_all("Portal Module", pluck="name"))
+		needed = {m["module_key"] for m in DEFAULT_MODULES}
+		if not needed.issubset(have):
+			seed_modules(replace=False)
 
 	super_admin = is_super_admin()
 	user_roles = set(frappe.get_roles())
@@ -77,15 +74,50 @@ def get_portal_boot():
 		)
 
 	visible = [m for m in modules if _module_allowed(m, user_roles, super_admin)]
-	# Super Admin master page also needs full catalog when on admin modules page —
-	# return both visible + (for super admin) full list
-	companies = frappe.get_all(
-		"Company",
-		fields=["name", "abbr", "default_currency", "country"],
-		order_by="name asc",
-	)
+	# Super Admin: all companies. Tenant users: only User Permission → Company.
+	if super_admin:
+		companies = frappe.get_all(
+			"Company",
+			fields=["name", "abbr", "default_currency", "country"],
+			order_by="name asc",
+		)
+	else:
+		allowed_names = get_user_companies()
+		companies = (
+			frappe.get_all(
+				"Company",
+				filters={"name": ("in", allowed_names)},
+				fields=["name", "abbr", "default_currency", "country"],
+				order_by="name asc",
+			)
+			if allowed_names
+			else []
+		)
 
 	user = frappe.get_doc("User", frappe.session.user)
+
+	# Tenant registry (Phase 2) — control-plane sites only
+	tenants = []
+	if super_admin and frappe.db.exists("DocType", "PL Tenant"):
+		tenants = frappe.get_all(
+			"PL Tenant",
+			fields=[
+				"name",
+				"organization_name",
+				"site_name",
+				"host",
+				"status",
+				"company",
+				"admin_email",
+				"admin_full_name",
+				"creation",
+				"notes",
+			],
+			order_by="creation desc",
+		)
+
+	from erpnext.portal_control.workspace import leaf_defaults
+
 	return {
 		"app_name": settings.portal_title or "Prime Ledger",
 		"user": {
@@ -105,6 +137,10 @@ def get_portal_boot():
 		"modules": visible,
 		"all_modules": modules if super_admin else visible,
 		"companies": companies,
+		"default_company": frappe.defaults.get_user_default("company")
+		or (companies[0]["name"] if companies else None),
+		"masters": leaf_defaults(),
+		"tenants": tenants,
 	}
 
 

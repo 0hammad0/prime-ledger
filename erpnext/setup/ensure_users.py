@@ -169,22 +169,27 @@ def _ensure_server_script() -> str:
     # safe_exec: no frappe.get_roles / getattr. Use db.get_all only.
     script = """
 # Prefer DB check — Python hook may already have inserted in this transaction
-has_profile = 1 if frappe.db.exists("User Role Profile", {"parent": doc.name}) else 0
-portal = ["Customer", "Supplier", "Partner", "Student", "Instructor", "Guardian"]
-role_names = [r.role for r in (doc.roles or []) if r.role]
-is_portal = 0
-for r in role_names:
-    if r in portal:
-        is_portal = 1
-if (not has_profile) and doc.name not in ("Administrator", "Guest") and (not is_portal or "System Manager" in role_names):
-    profile = "Prime Ledger Admin" if "System Manager" in role_names else "Prime Ledger User"
-    if frappe.db.exists("Role Profile", profile):
-        frappe.get_doc({"doctype": "User Role Profile", "parent": doc.name, "parenttype": "User", "parentfield": "role_profiles", "role_profile": profile}).insert(ignore_permissions=True)
-        existing = frappe.db.get_all("Has Role", filters={"parent": doc.name, "parenttype": "User"}, pluck="role")
-        for role in frappe.db.get_all("Has Role", filters={"parent": profile, "parenttype": "Role Profile"}, pluck="role"):
-            if role and role not in existing:
-                frappe.get_doc({"doctype": "Has Role", "parent": doc.name, "parenttype": "User", "parentfield": "roles", "role": role}).insert(ignore_permissions=True)
-        frappe.db.set_value("User", doc.name, "user_type", "System User", update_modified=False)
+# Skip Guest / self-signup (control plane must not mint shared desk users)
+actor = frappe.session.user if frappe.session else "Guest"
+if actor in ("Guest",) or actor == doc.name:
+    pass
+else:
+    has_profile = 1 if frappe.db.exists("User Role Profile", {"parent": doc.name}) else 0
+    portal = ["Customer", "Supplier", "Partner", "Student", "Instructor", "Guardian"]
+    role_names = [r.role for r in (doc.roles or []) if r.role]
+    is_portal = 0
+    for r in role_names:
+        if r in portal:
+            is_portal = 1
+    if (not has_profile) and doc.name not in ("Administrator", "Guest") and (not is_portal or "System Manager" in role_names):
+        profile = "Prime Ledger Admin" if "System Manager" in role_names else "Prime Ledger User"
+        if frappe.db.exists("Role Profile", profile):
+            frappe.get_doc({"doctype": "User Role Profile", "parent": doc.name, "parenttype": "User", "parentfield": "role_profiles", "role_profile": profile}).insert(ignore_permissions=True)
+            existing = frappe.db.get_all("Has Role", filters={"parent": doc.name, "parenttype": "User"}, pluck="role")
+            for role in frappe.db.get_all("Has Role", filters={"parent": profile, "parenttype": "Role Profile"}, pluck="role"):
+                if role and role not in existing:
+                    frappe.get_doc({"doctype": "Has Role", "parent": doc.name, "parenttype": "User", "parentfield": "roles", "role": role}).insert(ignore_permissions=True)
+            frappe.db.set_value("User", doc.name, "user_type", "System User", update_modified=False)
 """
 
     if frappe.db.exists("Server Script", SERVER_SCRIPT_NAME):

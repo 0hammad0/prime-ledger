@@ -1,0 +1,122 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "field:site_name",
+ "creation": "2026-08-05 00:00:00.000000",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "organization_name",
+  "site_name",
+  "host",
+  "column_break_1",
+  "status",
+  "company",
+  "admin_email",
+  "admin_full_name",
+  "section_notes",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Organization Name",
+   "reqd": 1
+  },
+  {
+   "description": "Frappe site name (slug), e.g. sultan",
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Site Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "description": "Public hostname for this tenant, e.g. sultan.example.com",
+   "fieldname": "host",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Host",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nApproved\nProvisioning\nActive\nError\nArchived",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "label": "Primary Company Name"
+  },
+  {
+   "fieldname": "admin_email",
+   "fieldtype": "Data",
+   "label": "Org Admin Email"
+  },
+  {
+   "fieldname": "admin_full_name",
+   "fieldtype": "Data",
+   "label": "Org Admin Full Name"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "links": [],
+ "modified": "2026-08-05 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Setup",
+ "name": "PL Tenant",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Prime Ledger Super Admin",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

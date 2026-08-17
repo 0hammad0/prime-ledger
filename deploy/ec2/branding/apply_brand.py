@@ -37,8 +37,9 @@ def _scrub_text(value: str | None) -> str | None:
 frappe.db.set_single_value("System Settings", "app_name", "Prime Ledger")
 frappe.db.set_single_value("Website Settings", "app_name", "Prime Ledger")
 try:
-	frappe.db.set_single_value("Website Settings", "disable_signup", 0)
-	frappe.db.set_single_value("Website Settings", "hide_footer_signup", 0)
+	# Stock signup disabled — organization signup is /start
+	frappe.db.set_single_value("Website Settings", "disable_signup", 1)
+	frappe.db.set_single_value("Website Settings", "hide_footer_signup", 1)
 except Exception as e:
 	print(f"skip signup flags: {e}")
 

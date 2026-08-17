@@ -16,9 +16,10 @@ def apply():
     frappe.db.set_single_value("System Settings", "session_expiry_mobile", "06:00")
     frappe.db.set_single_value("System Settings", "backup_limit", 14)
 
-    # Allow signup so new users can register into the Prime Ledger portal flow
-    frappe.db.set_single_value("Website Settings", "disable_signup", 0)
-    frappe.db.set_single_value("Website Settings", "hide_footer_signup", 0)
+    # Stock Frappe signup dumps users into the shared site — disabled.
+    # New organizations use /start → Pending PL Tenant (private site later).
+    frappe.db.set_single_value("Website Settings", "disable_signup", 1)
+    frappe.db.set_single_value("Website Settings", "hide_footer_signup", 1)
     frappe.db.set_single_value("Website Settings", "show_footer_on_login", 0)
 
     try:

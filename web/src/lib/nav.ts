@@ -1,0 +1,18 @@
+export const MODULE_PATH: Record<string, string> = {
+  dashboard: "/",
+  products: "/products",
+  inventory: "/stock",
+  batch_expiry: "/batches",
+  purchases: "/purchases",
+  sales: "/sales",
+  quality: "/quality",
+  finance: "/finance",
+  reports: "/reports",
+  settings: "/settings",
+  admin_home: "/admin",
+  master_controls: "/admin/modules",
+  tenants: "/admin/organizations",
+  users: "/team",
+  customers: "/customers",
+  leads: "/leads",
+};

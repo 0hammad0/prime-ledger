@@ -7,6 +7,7 @@ services:
       - traefik.http.services.frontend.loadbalancer.server.port=8080
       # Softer probe: brief backend restarts should not yank the service to 503
       - traefik.http.services.frontend.loadbalancer.healthcheck.path=/api/method/ping
+      - traefik.http.services.frontend.loadbalancer.healthcheck.hostname=${PUBLIC_HOST:?PUBLIC_HOST not set}
       - traefik.http.services.frontend.loadbalancer.healthcheck.interval=60s
       - traefik.http.services.frontend.loadbalancer.healthcheck.timeout=10s
 

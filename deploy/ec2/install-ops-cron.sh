@@ -9,10 +9,17 @@ mkdir -p "$HOME/deploy-ec2/logs"
 # Scripts source $SCRIPT_DIR/.env and use sudo docker compose when needed.
 HEALTH_LINE="*/5 * * * * AUTO_HEAL=1 $SCRIPT_DIR/healthcheck.sh >>$HOME/deploy-ec2/logs/healthcheck.log 2>&1"
 BACKUP_LINE="15 2 * * * $SCRIPT_DIR/backup-now.sh >>$HOME/deploy-ec2/logs/backup.log 2>&1"
+# Approve in Organizations → this tick provisions the private site (no SSH).
+PROVISION_LINE="* * * * * $SCRIPT_DIR/auto-provision-approved.sh"
 
-(crontab -l 2>/dev/null | grep -v 'deploy-ec2/healthcheck.sh' | grep -v 'deploy-ec2/backup-now.sh' || true
+(crontab -l 2>/dev/null \
+  | grep -v 'deploy-ec2/healthcheck.sh' \
+  | grep -v 'deploy-ec2/backup-now.sh' \
+  | grep -v 'deploy-ec2/auto-provision-approved.sh' \
+  || true
  echo "$HEALTH_LINE"
  echo "$BACKUP_LINE"
+ echo "$PROVISION_LINE"
 ) | crontab -
 
 echo "Installed crontab:"

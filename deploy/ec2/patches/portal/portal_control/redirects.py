@@ -40,7 +40,7 @@ def _default_landing(login_manager=None) -> str:
 	if not frappe.db.exists("DocType", "PL Portal Settings"):
 		return "/portal"
 	try:
-		from erpnext.portal_control.api import is_super_admin
+		from erpnext.portal_control.tenancy import is_super_admin
 
 		settings = frappe.get_single("PL Portal Settings")
 		# During on_login, session roles may not be ready — use login_manager.user
