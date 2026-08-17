@@ -92,16 +92,15 @@ done
 
 echo "==> Applying site branding settings"
 "${DOCKER[@]}" cp "$BRAND_DIR/apply_brand.py" "${BACKEND_CID}:/tmp/apply_brand.py"
-"${DOCKER[@]}" exec -u frappe -e "PL_SITE=${SITE_NAME}" -e "ADMIN_PASSWORD=${ADMIN_PASSWORD}" \
-  "$BACKEND_CID" bash -lc 'cd /home/frappe/frappe-bench && ./env/bin/python - <<"PY"
+# Do not pass ADMIN_PASSWORD: apply_brand.py would reset live Administrator passwords.
+"${DOCKER[@]}" exec -u frappe -e "PL_SITE=${SITE_NAME}" \
+  "$BACKEND_CID" bash -lc 'cd /home/frappe/frappe-bench/sites && ../env/bin/python - <<"PY"
 import os
 import frappe
 
 site = os.environ["PL_SITE"]
-sites_path = "/home/frappe/frappe-bench/sites"
-os.makedirs(os.path.join(sites_path, site, "logs"), exist_ok=True)
-os.chdir("/home/frappe/frappe-bench")
-frappe.init(site=site, sites_path=sites_path)
+os.makedirs(os.path.join(site, "logs"), exist_ok=True)
+frappe.init(site=site)
 frappe.connect()
 exec(open("/tmp/apply_brand.py", encoding="utf-8").read(), globals())
 print("apply_brand_ok")

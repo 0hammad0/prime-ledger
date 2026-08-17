@@ -104,7 +104,7 @@ echo "==> Seeding portal modules / roles"
 echo "==> Applying Prime Ledger white-label"
 sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
   SITE_NAME="$SITE_NAME" \
-  bash "$DEPLOY_DIR/brand.sh"
+  bash "$DEPLOY_DIR/brand.sh" || true
 
 echo "==> Applying setup-wizard hot patches"
 sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FILE" \
