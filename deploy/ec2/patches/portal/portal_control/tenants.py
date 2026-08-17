@@ -508,7 +508,7 @@ def _branded_sender() -> str | None:
 	return brand
 
 
-def _sendmail_branded(*, recipients: list[str], subject: str, html: str) -> None:
+def _sendmail_branded(*, recipients: list[str], subject: str, html: str, now: bool = False) -> None:
 	_ensure_mail_brand()
 	subject = _scrub_product_words(subject)
 	html = _scrub_product_words(html)
@@ -516,8 +516,8 @@ def _sendmail_branded(*, recipients: list[str], subject: str, html: str) -> None
 		recipients=recipients,
 		subject=subject,
 		message=html,
-		delayed=True,
-		now=False,
+		delayed=not now,
+		now=now,
 		sender=_branded_sender(),
 		header=None,
 		add_unsubscribe_link=0,
@@ -570,7 +570,9 @@ def _send_confirm_email(
 	)
 	html = "<p>" + strip_html(text).replace("\n\n", "</p><p>").replace("\n", "<br>") + "</p>"
 	try:
-		_sendmail_branded(recipients=[admin_email], subject=subject, html=html)
+		# Send in this request. Scheduler flush skips mail younger than 10s and
+		# is slow across multiple tenant sites, so delayed queue misses confirmations.
+		_sendmail_branded(recipients=[admin_email], subject=subject, html=html, now=True)
 		frappe.db.commit()
 		return {"queued": True, "to": admin_email, "confirm_url": url}
 	except Exception:
