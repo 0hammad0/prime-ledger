@@ -12,8 +12,8 @@ favicon = "/assets/erpnext/images/prime-ledger-favicon.svg"
 # Also keep legacy filename path used by login templates
 legacy_logo = "/assets/erpnext/images/erpnext-logo.svg"
 css_link = '<link rel="stylesheet" href="/assets/erpnext/css/prime_ledger_brand.css">'
-# Prefer asset script; brand.sh also inlines when needed
-js_link = '<script src="/assets/erpnext/js/login_simple.js" defer></script>'
+js_link = '<script src="/assets/erpnext/js/login_simple.js?v=20260818" defer></script>'
+CLEAN_HEAD = css_link + "\n" + js_link
 
 ERP_URL_RE = re.compile(
 	r"https?://(?:docs\.)?(?:frappe\.io/erpnext|erpnext\.com)[^\s\"'<>]*",
@@ -57,16 +57,9 @@ for field, value in (
 		print(f"skip Website Settings.{field}: {e}")
 
 try:
-	head = frappe.db.get_single_value("Website Settings", "head_html") or ""
-	# Drop generator / third-party product mentions from custom head if present
-	for junk in ("ERPNext", "erpnext.com", "Built on Frappe", "Frappe Framework"):
-		head = head.replace(junk, "Prime Ledger" if "erpnext.com" not in junk.lower() else "")
-	head = _scrub_text(head) or ""
-	if "prime_ledger_brand.css" not in head:
-		head = (css_link + "\n" + head).strip()
-	if "login_simple.js" not in head:
-		head = (head + "\n" + js_link).strip()
+	head = CLEAN_HEAD
 	frappe.db.set_single_value("Website Settings", "head_html", head)
+	print("head_html_clean")
 except Exception as e:
 	print(f"skip head_html: {e}")
 

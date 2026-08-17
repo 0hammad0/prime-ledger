@@ -79,16 +79,23 @@
 			}
 		});
 
+		document.querySelectorAll(".for-login .page-card-subtitle").forEach(function (p) {
+			p.textContent = isTenantHost()
+				? "This URL is only for your organization."
+				: "Enter the email you used for your organization.";
+		});
+
 		document.querySelectorAll(".pl-easy-tip").forEach(function (p) {
+			if (p.id === "pl-create-org") return;
 			var t = (p.textContent || "").trim();
-			if (/tap sign up|create an account|signups have been disabled|let's setup your account/i.test(t)) {
-				p.textContent = isTenantHost()
-					? "This URL is only for your organization. Use the email you signed up with."
-					: "New business? Create your organization — you get a private workspace and your own URL.";
+			if (/tap sign up|create an account|signups have been disabled|let's setup your account|new here\?/i.test(t)) {
+				p.remove();
 			}
 		});
 
-		document.querySelectorAll(".for-signup").forEach(function (el) {
+		document.querySelectorAll(
+			"section.for-signup, .signup-disabled, .signup-disabled-message, .btn-login-with-email-link"
+		).forEach(function (el) {
 			el.style.display = "none";
 		});
 

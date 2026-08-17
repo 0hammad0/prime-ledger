@@ -104,13 +104,17 @@ body[data-path="login"],
 	margin: 0.35rem 0 0.15rem;
 }
 
-.for-login .page-card-head-text h4,
-.for-forgot .page-card-head-text h4,
-.for-signup .page-card-head-text h4 {
-	font-size: 0.95rem !important;
-	font-weight: 500 !important;
+.for-login .page-card-subtitle {
 	color: #486581 !important;
-	margin: 0 !important;
+	font-size: 0.95rem !important;
+}
+
+/* Stock Frappe signup is disabled — org signup is /start */
+section.for-signup,
+.signup-disabled,
+.signup-disabled-message,
+.btn-login-with-email-link {
+	display: none !important;
 }
 
 .for-login .form-control:focus,
