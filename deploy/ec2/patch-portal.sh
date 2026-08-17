@@ -167,7 +167,11 @@ patch_cid() {
 
 echo "==> Hot-patching portal onto app containers"
 for svc in backend frontend websocket queue-short queue-long scheduler; do
-  cid="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" ps -q "$svc" 2>/dev/null | head -n1 || true)"
+  cid="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$COMPOSE_FILE" ps -q --status running "$svc" 2>/dev/null | head -n1 || true)"
+  if [[ -z "${cid:-}" ]]; then
+    echo "  skip $svc (not running)"
+    continue
+  fi
   patch_cid "${cid:-}"
 done
 
