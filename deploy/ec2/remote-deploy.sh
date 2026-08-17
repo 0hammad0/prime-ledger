@@ -74,6 +74,22 @@ sudo ENV_FILE="$ENV_FILE" PROJECT_NAME="$PROJECT_NAME" COMPOSE_FILE="$GITOPS_FIL
   SITE_NAME="$SITE_NAME" \
   bash "$DEPLOY_DIR/patch-portal.sh" || true
 
+echo "==> Reload backend so gunicorn picks up hot-patches"
+BACKEND_CID="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" ps -q --status running backend | head -n1 || true)"
+if [[ -n "${BACKEND_CID:-}" ]]; then
+  sudo docker restart "$BACKEND_CID" || true
+  for i in $(seq 1 30); do
+    if sudo docker exec "$BACKEND_CID" true 2>/dev/null; then
+      break
+    fi
+    sleep 2
+  done
+fi
+FRONTEND_CID="$("${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" ps -q --status running frontend | head -n1 || true)"
+if [[ -n "${FRONTEND_CID:-}" ]]; then
+  sudo docker restart "$FRONTEND_CID" || true
+fi
+
 echo "==> Migrating site: $SITE_NAME"
 "${DC[@]}" --project-name "$PROJECT_NAME" -f "$GITOPS_FILE" exec -T backend \
   bench --site "$SITE_NAME" migrate

@@ -97,7 +97,11 @@ echo "==> Applying site branding settings"
 import os
 import frappe
 
-frappe.init(site=os.environ["PL_SITE"], sites_path="sites")
+site = os.environ["PL_SITE"]
+sites_path = "/home/frappe/frappe-bench/sites"
+os.makedirs(os.path.join(sites_path, site, "logs"), exist_ok=True)
+os.chdir("/home/frappe/frappe-bench")
+frappe.init(site=site, sites_path=sites_path)
 frappe.connect()
 exec(open("/tmp/apply_brand.py", encoding="utf-8").read(), globals())
 print("apply_brand_ok")
